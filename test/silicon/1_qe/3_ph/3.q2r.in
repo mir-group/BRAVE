@@ -1,0 +1,5 @@
+&input
+   fildyn = 'silicon.dyn.xml'
+   flfrc = 'silicon.fc'
+   zasr = 'crystal'
+/

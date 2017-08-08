@@ -1,0 +1,11 @@
+&input
+   flfrc = 'silicon.fc.xml'
+   fldos = 'silicon.vdos'
+   flfrq = 'silicon.freq_vdos'
+   flvec = 'silicon.modes_vdos'
+   asr = 'crystal'
+   dos = .true.
+   nk1 = 48
+   nk2 = 48
+   nk3 = 48
+/

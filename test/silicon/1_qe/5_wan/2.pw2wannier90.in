@@ -1,0 +1,7 @@
+&inputpp
+   prefix = 'silicon'
+   seedname = 'silicon'
+   write_amn = .true.
+   write_mmn = .true.
+   outdir = '.'
+/

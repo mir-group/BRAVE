@@ -1,0 +1,4 @@
+SYSTEM = silicon
+ICHARG = 11
+ISMEAR = 0
+SIGMA = 0.01
