@@ -378,14 +378,14 @@ class File(object):
                     iend = ii
 
         if level > 0:
-            if content[iaunit].split()[0].lower() == 'bohr':
+            if contents[0][iaunit].split()[0].lower() == 'bohr':
                 aunit = 'bohr'
             else:
                 aunit = 'angstrom'
 
             avec = []
             for ii in range(3):
-                words = content[iaunit + 1 + ii].split()
+                words = contents[0][iaunit + 1 + ii].split()
                 avec.append([])
                 for word in words:
                     avec[ii].append(float(word))
@@ -401,7 +401,7 @@ class File(object):
             k2label = []
             k2coord = []
             for ii in range(nkpath - 1):
-                words = content[istart + 1 + ii].split()
+                words = contents[0][istart + 1 + ii].split()
                 k1label.append(words[0])
                 k1coord.append([])
                 k2label.append(words[4])
@@ -476,7 +476,7 @@ class File(object):
         if level > 1:
             kpoint = numpy.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
-                words = content[idxkpt + ikpoint].split()
+                words = contents[0][idxkpt + ikpoint].split()
                 for jj in range(3):
                     kpoint[ikpoint, jj] = float(words[jj])
 
@@ -488,7 +488,7 @@ class File(object):
             for ispin in range(nspin):
                 for ikpoint in range(nkpoint):
                     for iband in range(nband):
-                        words = content[idxbnd[ii] + iband].split()
+                        words = contents[0][idxbnd[ii] + iband].split()
                         energy[ikpoint, iband, ispin] = float(words[1])
                     ii += 1
 
@@ -501,7 +501,7 @@ class File(object):
 
         if level > 0:
             avec = []
-            prefix = content[0].split()[0]
+            prefix = contents[0][1].split()[0]
         if level > 1:
             idxkpt = []
         if level > 2:
@@ -610,8 +610,8 @@ class File(object):
             else:
                 raise ValueError(lattice)
 
-            self.prefix, self.aunit, self.alat, self.avec = (
-                    prefix, 'bohr', 1, avec)
+            self.prefix, self.aunit, self.alat, self.avec, self.kunit = (
+                    prefix, 'bohr', 1, avec, lapwkunit)
             self.calc_bvec()
             self.set_alat(apar)
 
@@ -620,11 +620,11 @@ class File(object):
 
             kpoint = numpy.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
-                words = content[idxkpt[ikpoint]].split()
+                words = contents[0][idxkpt[ikpoint]].split()
                 for jj in range(3):
                     kpoint[ikpoint, jj] = float(words[1 + jj])
 
-            self.kunit, self.kpoint = lapwkunit, kpoint
+            self.kpoint = kpoint
 
         if level > 2:
             nband = sys.maxsize
@@ -833,7 +833,7 @@ class File(object):
                 for ispin in range(nspin):
                     for iband in range(nband):
                         energy[ikpoint, iband, ispin] = float(
-                                content[idxkpt[ikpoint * nspin + ispin
+                                contents[0][idxkpt[ikpoint * nspin + ispin
                                 ] + 3 + iband].split()[eindex])
 
             self.eunit, self.energy = 'ev', energy
