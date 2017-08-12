@@ -1,8 +1,9 @@
 """This is the BRAVE package.
 
 BRAVE stands for Bloch Representation Analysis and Visualization Environment.
-It parses the output of various electronic structure codes, generates the input
-files for subsequent calculations, and helps to analyse and plot the results.
+BRAVE is a Python package that includes several modules for parsing the output
+files of different electronic structure codes, generating the input files for
+subsequent calculations, and analyzing and plotting the calculation results.
 """
 
 from brave.cell import Cell

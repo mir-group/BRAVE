@@ -1,6 +1,27 @@
-# Bloch Representation Analysis and Visualization Environment
+# Bloch Representation Analysis and Visualization Environment (BRAVE)
 
-BRAVE parses the output of different electronic structure codes, generates the input files for subsequent calculations, and helps to analyse and plot the results.
+BRAVE is a Python package that includes several modules for parsing the output files of different electronic structure codes, generating the input files for subsequent calculations, and analyzing and plotting the calculation results. For details please refer to the documentation on individual modules.
+```python
+import brave
+help(brave)
+help(brave.cell)
+help(brave.kpoint)
+help(brave.energy)
+help(brave.dos)
+help(brave.epa)
+help(brave.transport)
+help(brave.plot)
+help(brave.diagram)
+```
+
+The following code parses the output file of [Quantum Espresso](https://www.quantum-espresso.org/) and generates the input files for [BoltzTraP](https://goo.gl/atsFQ8).
+```python
+import brave
+bnd = brave.Energy()
+bnd.read('pw-out', ['silicon.pw.out'])
+bnd.calc_efermi()
+bnd.write('boltztrap-in', ['silicon.def', 'silicon.intrans', 'silicon.struct', 'silicon.energy'])
+```
 
 ## Supported codes and the corresponding arguments used by BRAVE
 
@@ -36,7 +57,7 @@ BRAVE parses the output of different electronic structure codes, generates the i
 | [WIEN2k](https://susi.theochem.tuwien.ac.at/)         | **lapw1**       | r      | 'lapw-out'      | 'case.output1up', 'case.output1dn'                         |
 | [BoltzTraP](https://goo.gl/atsFQ8)                    | **BoltzTraP**   | w      | 'boltztrap-in'  | 'case.def', 'case.intrans', 'case.struct', 'case.energyso' |
 
-## Notes on different codes
+## Technical notes on different codes
 
 [Quantum Espresso](https://www.quantum-espresso.org/)
 
@@ -54,7 +75,7 @@ BRAVE parses the output of different electronic structure codes, generates the i
 
 * File 'case.struct' contains symmetry operations in cartesian coordinates. They can be read by BRAVE and converted to crystal coordinates. This is currently not implemented in BRAVE.
 * If **lapw1** is run in parallel file 'case.output1' can be gathered by running **spaghetti** or manually
-```
+```bash
 cat case.output1_? > case.output1
 cat case.output1_?? >> case.output1
 ```
