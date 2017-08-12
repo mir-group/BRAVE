@@ -42,17 +42,15 @@ BRAVE parses the output of different electronic structure codes, generates the i
 
 [Wannier90](https://www.wannier.org/)
 
-* Attribute kpoint of class Kpoint is not available from the input or output files of 'wannier90.x'. It can be constructed from attributes kpath and kindex read from file 'seedname.win' using methods calc_kindex and calc_kpoint.
+* Attribute kpoint of class Kpoint is not available from the input or output files of **wannier90.x**. It can be constructed from attributes kpath and kindex read from file 'seedname.win' using methods calc_kindex and calc_kpoint.
 
 [VASP](https://www.vasp.at/)
 
-* Symmetry operations are not available from the input or output files of **vasp**. They can be constructed from file 'POSCAR' using [ASE](https://wiki.fysik.dtu.dk/ase/) and [SPGLIB](https://atztogo.github.io/spglib/python-spglib.html) as done in [BoltzTraP](https://goo.gl/atsFQ8) 'vasp2boltz.py'. This is currently not implemented in BRAVE.
+* Symmetry operations are not available from the input or output files of **vasp**. They can be constructed from file 'POSCAR' using [ASE](https://wiki.fysik.dtu.dk/ase/) and [SPGLIB](https://atztogo.github.io/spglib/python-spglib.html) as done in [BoltzTraP](https://goo.gl/atsFQ8) **vasp2boltz.py**. This is currently not implemented in BRAVE.
 
 [WIEN2k](https://susi.theochem.tuwien.ac.at/)
 
 * File 'case.struct' contains symmetry operations in cartesian coordinates. They can be read by BRAVE and converted to crystal coordinates. This is currently not implemented in BRAVE.
-* If **lapw1** is run in parallel file 'case.output1' can be gathered by running 'spaghetti' or manually
-```
-cat case.output1_? > case.output1
-cat case.output1_?? >> case.output1
-```
+* If **lapw1** is run in parallel file 'case.output1' can be gathered by running **spaghetti** or manually
+    cat case.output1_? > case.output1
+    cat case.output1_?? >> case.output1
