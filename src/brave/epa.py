@@ -212,9 +212,9 @@ class EPA(DOS):
 
     fileformat         filenames
     ----------         ---------
-    'boltztrap-dos'    ['prefix.intrans', 'prefix.transdos']
+    'boltztrap-dos'    ['case.intrans', 'case.transdos']
     'matdyn-dos'       ['prefix.vdos']
-    'epa-out'          ['prefix.epa']
+    'epa-out'          ['epa.dat']
 
     Inherits fileformat and filenames from class DOS.
         """

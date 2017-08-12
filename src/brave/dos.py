@@ -93,7 +93,7 @@ class DOS(Cell):
 
     fileformat         filenames
     ----------         ---------
-    'boltztrap-dos'    ['prefix.intrans', 'prefix.transdos']
+    'boltztrap-dos'    ['case.intrans', 'case.transdos']
     'matdyn-dos'       ['prefix.vdos']
 
     Inherits fileformat and filenames from class Cell.

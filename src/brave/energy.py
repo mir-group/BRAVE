@@ -223,12 +223,11 @@ class Energy(Kpoint):
     'wannier-in'     ['seedname.win']
     'vasp-kpt'       ['KPOINTS']
     'lapw-kpt'       ['case.klist_band']
-    'boltztrap-in'   ['prefix.def', 'prefix.intrans',
-                             'prefix.struct', 'prefix.energy[so]']
+    'boltztrap-in'   ['case.def', 'case.intrans', 'case.struct',
+                             'case.energy[so]']
 
-    for 'boltztrap-in' use 'prefix.energy' for spin-unpolarized
-            case and 'prefix.energyso' for spin-polarized or
-            non-collinear case
+    for 'boltztrap-in' use 'case.energy' for spin-unpolarized
+            case and 'case.energyso' for spin-polarized case
 
     lapwkunit = 'cartesian'|'crystal' used for 'lapw-kpt',
             WIEN2k requires k-points in crystal coordinates

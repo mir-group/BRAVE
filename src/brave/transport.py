@@ -430,7 +430,7 @@ class Transport(Cell):
     Calculates numelec0, subtracts numelec0 from
     numelec, and returns numelec0. Here numelec0
     is interpolated from numelec, though it can
-    be extracted from file prefix.transdos.
+    be extracted from file case.transdos.
         """
         numelec = self.numelec
 
@@ -590,7 +590,7 @@ class Transport(Cell):
 
     fileformat       filenames
     ----------       ---------
-    'boltztrap-out'  ['prefix.intrans', 'prefix.trace']
+    'boltztrap-out'  ['case.intrans', 'case.trace']
 
     Inherits fileformat and filenames from class Cell.
 

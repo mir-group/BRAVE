@@ -14,7 +14,7 @@ class Cell(File):
     @property
     def prefix(self):
         """Name of the system, str, same as prefix in Quantum ESPRESSO,
-    SYSTEM in VASP, or case in WIEN2k.
+    seedname in Wannier90, SYSTEM in VASP, or case in WIEN2k.
         """
         return self._prefix
 
