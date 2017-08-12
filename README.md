@@ -36,7 +36,7 @@ BRAVE parses the output of different electronic structure codes, generates the i
 | [WIEN2k](https://susi.theochem.tuwien.ac.at/)         | **lapw1**       | r      | 'lapw-out'      | 'case.output1up', 'case.output1dn'                         |
 | [BoltzTraP](https://goo.gl/atsFQ8)                    | **BoltzTraP**   | w      | 'boltztrap-in'  | 'case.def', 'case.intrans', 'case.struct', 'case.energyso' |
 
-#### Notes on different codes
+## Notes on different codes
 
 [Quantum Espresso](https://www.quantum-espresso.org/)
 
