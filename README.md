@@ -1,8 +1,8 @@
-## Bloch Representation Analysis and Visualization Environment
+# Bloch Representation Analysis and Visualization Environment
 
 BRAVE parses the output of different electronic structure codes, generates the input files for subsequent calculations, and helps to analyse and plot the results.
 
-#### Supported codes and the corresponding arguments used by BRAVE
+## Supported codes and the corresponding arguments used by BRAVE
 
 | Code                                                  | Executable          | Access | fileformat      | filenames                                                |
 |-------------------------------------------------------|---------------------|--------|-----------------|----------------------------------------------------------|
@@ -25,7 +25,9 @@ BRAVE parses the output of different electronic structure codes, generates the i
 | [BoltzTraP](https://goo.gl/atsFQ8)                    | **BoltzTraP**       | r      | 'boltztrap-out' | 'case.intrans', 'case.trace'                             |
 | [BoltzTraP](https://goo.gl/atsFQ8)                    | **BoltzTraP**       | r      | 'boltztrap-dos' | 'case.intrans', 'case.transdos'                          |
 
-#### Some codes use separate files for different spin components
+**Access** indicates whether BRAVE can read and/or write the corresponding **filenames**.
+
+## Some codes use separate files for different spin components
 
 | Code                                                  | Executable      | Access | fileformat      | filenames                                                  |
 |-------------------------------------------------------|-----------------|--------|-----------------|------------------------------------------------------------|
