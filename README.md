@@ -54,5 +54,6 @@ BRAVE parses the output of different electronic structure codes, generates the i
 
 * File 'case.struct' contains symmetry operations in cartesian coordinates. They can be read by BRAVE and converted to crystal coordinates. This is currently not implemented in BRAVE.
 * If **lapw1** is run in parallel file 'case.output1' can be gathered by running **spaghetti** or manually
+
     cat case.output1_? > case.output1
     cat case.output1_?? >> case.output1
