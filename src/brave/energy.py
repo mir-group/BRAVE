@@ -110,17 +110,25 @@ class Energy(Kpoint):
                 self.vref *= common._escale[self.eunit] / common._escale[
                         oldeunit]
 
-    def calc_efermi(self):
+    def calc_efermi(self, soc=None):
         """Method for calculating efermi for insulators given the
     number of electrons, nelec. Places efermi in the
     middle of the band gap. Returns energies evbm and
     ecbm in units of eunit and k-points kvbm and kcbm
     in units of kunit at the vbm (valence band maximum)
-    and cbm (conduction band minimum).
+    and cbm (conduction band minimum). Set soc to True
+    if the calculation includes the spin-orbit coupling.
         """
-        if round(self.nelec) != self.nelec or int(round(self.nelec)) % 2 != 0:
-            raise ValueError(self.nelec)
-        nval = int(round(self.nelec)) // 2
+        if soc == None:
+            soc = False
+
+        nval = self.nelec
+        if not soc:
+            nval /= 2
+        if nval.is_integer():
+            nval = int(nval)
+        else:
+            raise ValueError(nval)
 
         nkpoint = self.nkpoint
         nband = self.nband
