@@ -207,7 +207,7 @@ class EPA(DOS):
     def invtau(self):
         del self._invtau
 
-    def read(self, fileformat, filenames):
+    def read(self, fileformat, filenames, soc=None):
         """Method for reading properties from file.
 
     fileformat         filenames
@@ -216,11 +216,14 @@ class EPA(DOS):
     'matdyn-dos'       ['prefix.vdos']
     'epa-out'          ['epa.dat']
 
-    Inherits fileformat and filenames from class DOS.
+    Inherits fileformat and filenames from class DOS. Set soc
+    to True if the calculation includes the spin-orbit coupling.
         """
+        if soc == None:
+            soc = False
 
         if fileformat.lower() == 'boltztrap-dos':
-            self._read_dos_boltztrap_dos(filenames)
+            self._read_dos_boltztrap_dos(filenames, soc)
         elif fileformat.lower() == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
         elif fileformat.lower() == 'epa-out':
