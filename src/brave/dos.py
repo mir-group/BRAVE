@@ -88,7 +88,7 @@ class DOS(Cell):
                         olddunit[1]]
                 self.dos = dummy
 
-    def read(self, fileformat, filenames):
+    def read(self, fileformat, filenames, soc=None):
         """Method for reading properties from file.
 
     fileformat         filenames
@@ -96,11 +96,14 @@ class DOS(Cell):
     'boltztrap-dos'    ['case.intrans', 'case.transdos']
     'matdyn-dos'       ['prefix.vdos']
 
-    Inherits fileformat and filenames from class Cell.
+    Inherits fileformat and filenames from class Cell. Set soc
+    to True if the calculation includes the spin-orbit coupling.
         """
+        if soc == None:
+            soc = False
 
         if fileformat.lower() == 'boltztrap-dos':
-            self._read_dos_boltztrap_dos(filenames)
+            self._read_dos_boltztrap_dos(filenames, soc)
         elif fileformat.lower() == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
         else:
@@ -114,10 +117,13 @@ class DOS(Cell):
         if dos != None:
             self.dos = dos
 
-    def _read_dos_boltztrap_dos(self, filenames):
+    def _read_dos_boltztrap_dos(self, filenames, soc):
         contents = common._read_file(filenames)
 
-        nspin = 2
+        if soc:
+            spin_degeneracy = 1
+        else:
+            spin_degeneracy = 2
         efermi = float(contents[0][2].split()[0])
 
         nn = len(contents[1]) - 1
@@ -125,7 +131,7 @@ class DOS(Cell):
         for ii in range(nn):
             tt = contents[1][ii + 1].split()
             dos[0, ii] = float(tt[0]) - efermi
-            dos[1, ii] = float(tt[1]) * nspin
+            dos[1, ii] = float(tt[1]) * spin_degeneracy
 
         self.dunit, self.dos = ['uc', 'rydberg'], dos
 
