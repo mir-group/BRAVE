@@ -22,6 +22,7 @@ bnd.read('pw-out', ['silicon.pw.out'])
 bnd.calc_efermi()
 bnd.write('boltztrap-in', ['silicon.def', 'silicon.intrans', 'silicon.struct', 'silicon.energy'])
 ```
+An extended version of this code is located in [test/silicon/6_boltz/qe2boltz.py](test/silicon/6_boltz/qe2boltz.py).
 
 ## Supported codes and the corresponding arguments used by BRAVE
 
