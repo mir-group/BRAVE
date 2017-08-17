@@ -135,9 +135,9 @@ class Energy(Kpoint):
         nspin = self.nspin
         energy = self.energy
         kpoint = self.kpoint
-        _ivbm = numpy.unravel_index(numpy.argmax(energy[:, :nval, :]), (
+        _ivbm = numpy.unravel_index(energy[:, :nval, :].argmax(), (
                 nkpoint, nval, nspin))
-        _icbm = numpy.unravel_index(numpy.argmin(energy[:, nval:, :]), (
+        _icbm = numpy.unravel_index(energy[:, nval:, :].argmin(), (
                 nkpoint, nband - nval, nspin))
         _evbm = energy[_ivbm[0], _ivbm[1], _ivbm[2]]
         _ecbm = energy[_icbm[0], _icbm[1] + nval, _icbm[2]]
