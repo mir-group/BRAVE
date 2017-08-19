@@ -61,9 +61,8 @@ def _read_file(filenames):
 
     contents = []
     for filename in filenames:
-        fileobj = open(filename, 'r')
-        content = fileobj.readlines()
-        fileobj.close()
+        with open(filename, 'r') as fileobj:
+            content = fileobj.readlines()
         contents.append(content)
     return contents
 
@@ -76,7 +75,6 @@ def _write_file(filenames, contents):
         raise ValueError("filenames and contents do not match")
 
     for ii in range(len(filenames)):
-        fileobj = open(filenames[ii], 'w')
-        fileobj.write(contents[ii])
-        fileobj.close()
+        with open(filenames[ii], 'w') as fileobj:
+            fileobj.write(contents[ii])
 
