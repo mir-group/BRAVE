@@ -29,20 +29,10 @@ _escale = {
         'cm-1': 1.0e-2 / PLANCK / LIGHT}
 
 def _int_pts(value, param):
-    idx1 = -1
-    dif1 = INF12
-    for ii in range(len(value)):
-        if abs(value[ii] - param) < dif1:
-            dif1 = abs(value[ii] - param)
-            idx1 = ii
-
-    idx2 = -1
-    dif2 = INF12
-    for ii in range(len(value)):
-        if ii != idx1:
-            if abs(value[ii] - param) < dif2:
-                dif2 = abs(value[ii] - param)
-                idx2 = ii
+    dummy = numpy.abs(value - param)
+    idx1 = dummy.argmin()
+    dummy[idx1] = INF12
+    idx2 = dummy.argmin()
 
     if (value[idx1] - param) * (value[idx2] - param) < 0.0:
         weight1 = abs(value[idx2] - param) / (

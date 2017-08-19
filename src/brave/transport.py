@@ -386,17 +386,12 @@ class Transport(Cell):
                         imu1, itemp] + weight2 * propvalue[imu2, itemp])
         elif paramtype.lower() == 'numelec':
             slice = numpy.zeros(self.ntemp, float)
-            dummy = numpy.zeros(self.nmu, float)
+            numelec = self.numelec
             for itemp in range(self.ntemp):
-                if type(paramvalue) == float:
-                    _paramvalue = paramvalue
-                else:
-                    _paramvalue = paramvalue[itemp]
-                dummy = self.numelec[:, itemp]
-                imu1, imu2, weight1, weight2 = common._int_pts(
-                        dummy, _paramvalue)
-                slice[itemp] = (weight1 * propvalue[
-                        imu1, itemp] + weight2 * propvalue[imu2, itemp])
+                _paramvalue = paramvalue if type(
+                        paramvalue) == float else paramvalue[itemp]
+                slice[itemp] = numpy.interp(_paramvalue, numelec[
+                        :, itemp], propvalue[:, itemp])
         else:
             raise ValueError(paramtype)
 
@@ -414,12 +409,9 @@ class Transport(Cell):
     'mu'          chemical potential in units of eV
         """
         if argtype.lower() == 'temp':
-            itemp1, itemp2, weight1, weight2 = common._int_pts(
-                    self.temp, argvalue)
-            value = weight1 * propunary[itemp1] + weight2 * propunary[itemp2]
+            value = numpy.interp(argvalue, self.temp, propunary)
         elif argtype.lower() == 'mu':
-            imu1, imu2, weight1, weight2 = common._int_pts(self.mu, argvalue)
-            value = weight1 * propunary[imu1] + weight2 * propunary[imu2]
+            value = numpy.interp(argvalue, self.mu, propunary)
         else:
             raise ValueError(argtype)
 
@@ -433,14 +425,8 @@ class Transport(Cell):
     be extracted from file case.transdos.
         """
         numelec = self.numelec
-
-        imu1, imu2, weight1, weight2 = common._int_pts(self.mu, 0.0)
-        itemp, _i, _x, _y = common._int_pts(self.temp, 0.0)
-        numelec0 = weight1 * numelec[imu1, itemp] + weight2 * numelec[
-                imu2, itemp]
-
+        numelec0 = numpy.interp(0.0, self.mu, numelec[:, 0])
         numelec -= numelec0
-
         self.numelec = numelec
 
         return numelec0
@@ -483,15 +469,10 @@ class Transport(Cell):
         """
         if outputtype.lower() == 'temp':
             slice = self.interpolate_binary('numelec', 'mu', inputvalues[0])
-            itemp1, itemp2, weight1, weight2 = common._int_pts(
-                    slice, inputvalues[1])
-            outputvalue = weight1 * self.temp[itemp1] + weight2 * self.temp[
-                    itemp2]
+            outputvalue = numpy.interp(inputvalues[1], slice, self.temp)
         elif outputtype.lower() == 'mu':
             slice = self.interpolate_binary('numelec', 'temp', inputvalues[0])
-            imu1, imu2, weight1, weight2 = common._int_pts(
-                    slice, inputvalues[1])
-            outputvalue = weight1 * self.mu[imu1] + weight2 * self.mu[imu2]
+            outputvalue = numpy.interp(inputvalues[1], slice, self.mu)
         elif outputtype.lower() == 'numelec':
             itemp1, itemp2, wtemp1, wtemp2 = common._int_pts(
                     self.temp, inputvalues[0])

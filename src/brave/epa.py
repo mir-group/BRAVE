@@ -268,12 +268,8 @@ class EPA(DOS):
                         ) + 1.0)
                 fe = 1.0 / (math.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]
                         ) + 1.0)
-                idx1, idx2, weight1, weight2 = common._int_pts(
-                        dos[0], en[nn] + ww[ll])
-                dosa = weight1 * dos[1, idx1] + weight2 * dos[1, idx2]
-                idx1, idx2, weight1, weight2 = common._int_pts(
-                        dos[0], en[nn] - ww[ll])
-                dose = weight1 * dos[1, idx1] + weight2 * dos[1, idx2]
+                dosa = numpy.interp(en[nn] + ww[ll], dos[0,:], dos[1,:])
+                dose = numpy.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
 
                 if (en[nn] < numpy.sum(ee) / nwin):
                     ii = 1
