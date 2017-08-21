@@ -110,14 +110,6 @@ class DOS(Cell):
         else:
             super().read(fileformat, filenames)
 
-    def __init__(self, dunit=None, dos=None, **kwargs):
-        super().__init__(**kwargs)
-
-        if dunit != None:
-            self.dunit = dunit
-        if dos != None:
-            self.dos = dos
-
     def _read_dos_boltztrap_dos(self, filenames, soc):
         contents = common._read_file(filenames)
 
@@ -147,4 +139,12 @@ class DOS(Cell):
             dos[1, ii] = float(tt[1])
 
         self.dunit, self.dos = ['uc', 'cm-1'], dos
+
+    def __init__(self, dunit=None, dos=None, **kwargs):
+        super().__init__(**kwargs)
+
+        if dunit != None:
+            self.dunit = dunit
+        if dos != None:
+            self.dos = dos
 

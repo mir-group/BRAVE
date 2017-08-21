@@ -168,7 +168,7 @@ class Energy(Kpoint):
 
         self.energy = _energy
 
-    def read(self, fileformat, filenames, etype=None, lapwkunit='cartesian'):
+    def read(self, fileformat, filenames, etype=None, lapwkunit=None):
         """Method for reading properties from file.
 
     fileformat       filenames
@@ -197,6 +197,8 @@ class Energy(Kpoint):
             for details, use 'cartesian' for fcc or bcc
             and 'crystal' for hcp
         """
+        if lapwkunit == None:
+            lapwkunit = 'cartesian'
 
         if fileformat.lower() == 'internal':
             self._read_file_internal(3, filenames)
@@ -225,9 +227,9 @@ class Energy(Kpoint):
             raise ValueError(fileformat)
 
     def write(
-            self, fileformat, filenames, lapwkunit='cartesian',
-            deltae=0.0005, ecut=0.6, lpfac=5, efcut=0.3, tmax=1200.0,
-            deltat=10.0, ecut2=-1.0, dosmethod='TETRA', nband_exclude=0):
+            self, fileformat, filenames, lapwkunit=None, deltae=None,
+            ecut=None, lpfac=None, efcut=None, tmax=None, deltat=None,
+            ecut2=None, dosmethod=None, nband_exclude=None):
         """Method for writing properties to file.
 
     fileformat       filenames
@@ -252,6 +254,26 @@ class Energy(Kpoint):
     deltae, ecut, lpfac, efcut, tmax, deltat, ecut2, dosmethod,
             nband_exclude used for 'boltztrap-in'
         """
+        if lapwkunit == None:
+            lapwkunit = 'cartesian'
+        if deltae == None:
+            deltae = 0.0005
+        if ecut == None:
+            ecut = 0.6
+        if lpfac == None:
+            lpfac = 5
+        if efcut == None:
+            efcut = 0.3
+        if tmax == None:
+            tmax = 1200.0
+        if deltat == None:
+            deltat = 10.0
+        if ecut2 == None:
+            ecut2 = -1.0
+        if dosmethod == None:
+            dosmethod = 'TETRA'
+        if nband_exclude == None:
+            nband_exclude = 0
 
         if fileformat.lower() == 'internal':
             self._write_file_internal(3, filenames)

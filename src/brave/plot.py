@@ -757,77 +757,6 @@ class Plot(object):
         else:
             raise ValueError(libraryname)
 
-    def __init__(
-            self, data=None, kind=None, style=None, color=None,
-            label=None, zorder=None, legend=None, xscale=None, yscale=None,
-            xlim=None, ylim=None, xdel=None, ydel=None, xtick=None,
-            ytick=None, xgrid=None, ygrid=None, xlabel=None,
-            ylabel=None, xlabpos=None, ylabpos=None,
-            note=None, title=None, pagesize=[8.0, 6.0],
-            fontsize=18.0, linewidth=1.5, markersize=8.0,
-            labelpad=[6.0, 6.0], tickpad=[6.0, 6.0, 6.0, 6.0],
-            ticksize=[6.0, 3.0, 6.0, 3.0], griddim=[1, 1],
-            gridpad=[0.5, 0.0, 0.0], gridpos=[[0, 1, 0, 1]],
-            frame=False):
-
-        if data != None:
-            self.data = data
-        if kind != None:
-            self.kind = kind
-        if style != None:
-            self.style = style
-        if color != None:
-            self.color = color
-        if label != None:
-            self.label = label
-        if zorder != None:
-            self.zorder = zorder
-        if legend != None:
-            self.legend = legend
-        if xscale != None:
-            self.xscale = xscale
-        if yscale != None:
-            self.yscale = yscale
-        if xlim != None:
-            self.xlim = xlim
-        if ylim != None:
-            self.ylim = ylim
-        if xdel != None:
-            self.xdel = xdel
-        if ydel != None:
-            self.ydel = ydel
-        if xtick != None:
-            self.xtick = xtick
-        if ytick != None:
-            self.ytick = ytick
-        if xgrid != None:
-            self.xgrid = xgrid
-        if ygrid != None:
-            self.ygrid = ygrid
-        if xlabel != None:
-            self.xlabel = xlabel
-        if ylabel != None:
-            self.ylabel = ylabel
-        if xlabpos != None:
-            self.xlabpos = xlabpos
-        if ylabpos != None:
-            self.ylabpos = ylabpos
-        if note != None:
-            self.note = note
-        if title != None:
-            self.title = title
-        self.pagesize = pagesize
-        self.fontsize = fontsize
-        self.linewidth = linewidth
-        self.markersize = markersize
-        self.labelpad = labelpad
-        self.tickpad = tickpad
-        self.ticksize = ticksize
-        self.griddim = griddim
-        self.gridpad = gridpad
-        self.gridpos = gridpos
-        self.frame = frame
-
     def _writep_matplotlib(self, fileformat, filename):
 
         _linestyle_dict = {
@@ -1302,4 +1231,105 @@ class Plot(object):
                 filename, format = fileformat, bbox_inches = 'tight',
                 bbox_extra_artists = _artist_list)
         matplotlib.pyplot.close()
+
+    def __init__(
+            self, data=None, kind=None, style=None, color=None, label=None,
+            zorder=None, legend=None, xscale=None, yscale=None, xlim=None,
+            ylim=None, xdel=None, ydel=None, xtick=None, ytick=None,
+            xgrid=None, ygrid=None, xlabel=None, ylabel=None, xlabpos=None,
+            ylabpos=None, note=None, title=None, pagesize=None, fontsize=None,
+            linewidth=None, markersize=None, labelpad=None, tickpad=None,
+            ticksize=None, griddim=None, gridpad=None, gridpos=None,
+            frame=False):
+
+        if data != None:
+            self.data = data
+        if kind != None:
+            self.kind = kind
+        if style != None:
+            self.style = style
+        if color != None:
+            self.color = color
+        if label != None:
+            self.label = label
+        if zorder != None:
+            self.zorder = zorder
+        if legend != None:
+            self.legend = legend
+        if xscale != None:
+            self.xscale = xscale
+        if yscale != None:
+            self.yscale = yscale
+        if xlim != None:
+            self.xlim = xlim
+        if ylim != None:
+            self.ylim = ylim
+        if xdel != None:
+            self.xdel = xdel
+        if ydel != None:
+            self.ydel = ydel
+        if xtick != None:
+            self.xtick = xtick
+        if ytick != None:
+            self.ytick = ytick
+        if xgrid != None:
+            self.xgrid = xgrid
+        if ygrid != None:
+            self.ygrid = ygrid
+        if xlabel != None:
+            self.xlabel = xlabel
+        if ylabel != None:
+            self.ylabel = ylabel
+        if xlabpos != None:
+            self.xlabpos = xlabpos
+        if ylabpos != None:
+            self.ylabpos = ylabpos
+        if note != None:
+            self.note = note
+        if title != None:
+            self.title = title
+        if pagesize == None:
+            self.pagesize = [8.0, 6.0]
+        else:
+            self.pagesize = pagesize
+        if fontsize == None:
+            self.fontsize = 18.0
+        else:
+            self.fontsize = fontsize
+        if linewidth == None:
+            self.linewidth = 1.5
+        else:
+            self.linewidth = linewidth
+        if markersize == None:
+            self.markersize = 8.0
+        else:
+            self.markersize = markersize
+        if labelpad == None:
+            self.labelpad = [6.0, 6.0]
+        else:
+            self.labelpad = labelpad
+        if tickpad == None:
+            self.tickpad = [6.0, 6.0, 6.0, 6.0]
+        else:
+            self.tickpad = tickpad
+        if ticksize == None:
+            self.ticksize = [6.0, 3.0, 6.0, 3.0]
+        else:
+            self.ticksize = ticksize
+        if griddim == None:
+            self.griddim = [1, 1]
+        else:
+            self.griddim = griddim
+        if gridpad == None:
+            self.gridpad = [0.5, 0.0, 0.0]
+        else:
+            self.gridpad = gridpad
+        if gridpos == None:
+            self.gridpos = [[0, 1, 0, 1]]
+        else:
+            self.gridpos = gridpos
+        if frame == None:
+            self.frame = False
+        else:
+            self.frame = frame
 

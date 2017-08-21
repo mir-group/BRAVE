@@ -564,7 +564,7 @@ class Transport(Cell):
             return mu_opt, numelec_opt, propvalue_max, [mu_min, mu_max], [
                     numelec_min, numelec_max]
 
-    def read(self, fileformat, filenames, tauvc=None, kappaelzeroj=False):
+    def read(self, fileformat, filenames, tauvc=None, kappaelzeroj=None):
         """Method for reading properties from file.
 
     fileformat       filenames
@@ -581,48 +581,13 @@ class Transport(Cell):
     current, kappael = kappa0 - sigma * seebeck^2 * temp,
     only for isotropic systems, used for 'boltztrap-out'
         """
+        if kappaelzeroj == None:
+            kappaelzeroj = False
 
         if fileformat.lower() == 'boltztrap-out':
             self._read_trn_boltztrap_out(filenames, tauvc, kappaelzeroj)
         else:
             super().read(fileformat, filenames)
-
-    def __init__(
-            self, mu=None, temp=None, numelec=None, convdos=None, seebeck=None,
-            sigma=None, hall=None, kappael=None, specheat=None, magsus=None,
-            kappalat=None, kappa=None, L=None, PF=None, ZT=None, **kwargs):
-        super().__init__(**kwargs)
-
-        if mu != None:
-            self.mu = mu
-        if temp != None:
-            self.temp = temp
-        if numelec != None:
-            self.numelec = numelec
-        if convdos != None:
-            self.convdos = convdos
-        if seebeck != None:
-            self.seebeck = seebeck
-        if sigma != None:
-            self.sigma = sigma
-        if hall != None:
-            self.hall = hall
-        if kappael != None:
-            self.kappael = kappael
-        if specheat != None:
-            self.specheat = specheat
-        if magsus != None:
-            self.magsus = magsus
-        if kappalat != None:
-            self.kappalat = kappalat
-        if kappa != None:
-            self.kappa = kappa
-        if L != None:
-            self.L = L
-        if PF != None:
-            self.PF = PF
-        if ZT != None:
-            self.ZT = ZT
 
     def _read_trn_boltztrap_out(self, filenames, tauvc, kappaelzeroj):
         contents = common._read_file(filenames)
@@ -704,4 +669,41 @@ class Transport(Cell):
         self.kappael = kappael
         self.specheat = specheat
         self.magsus = magsus
+
+    def __init__(
+            self, mu=None, temp=None, numelec=None, convdos=None, seebeck=None,
+            sigma=None, hall=None, kappael=None, specheat=None, magsus=None,
+            kappalat=None, kappa=None, L=None, PF=None, ZT=None, **kwargs):
+        super().__init__(**kwargs)
+
+        if mu != None:
+            self.mu = mu
+        if temp != None:
+            self.temp = temp
+        if numelec != None:
+            self.numelec = numelec
+        if convdos != None:
+            self.convdos = convdos
+        if seebeck != None:
+            self.seebeck = seebeck
+        if sigma != None:
+            self.sigma = sigma
+        if hall != None:
+            self.hall = hall
+        if kappael != None:
+            self.kappael = kappael
+        if specheat != None:
+            self.specheat = specheat
+        if magsus != None:
+            self.magsus = magsus
+        if kappalat != None:
+            self.kappalat = kappalat
+        if kappa != None:
+            self.kappa = kappa
+        if L != None:
+            self.L = L
+        if PF != None:
+            self.PF = PF
+        if ZT != None:
+            self.ZT = ZT
 

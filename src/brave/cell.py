@@ -224,18 +224,6 @@ class Cell(File):
         """Method for calculating bvol given bvec."""
         self.bvol = abs(self._calc_vol(self.bvec))
 
-    def _calc_vec(self, xvec):
-        yvec = numpy.empty((3, 3), float)
-        yvec[0] = numpy.cross(xvec[1], xvec[2])
-        yvec[1] = numpy.cross(xvec[2], xvec[0])
-        yvec[2] = numpy.cross(xvec[0], xvec[1])
-        yvec /= self._calc_vol(xvec)
-        return yvec
-
-    def _calc_vol(self, vec):
-        vol = numpy.dot(vec[0], numpy.cross(vec[1], vec[2]))
-        return vol
-
     def read(self, fileformat, filenames):
         """Method for reading properties from file.
 
@@ -280,6 +268,18 @@ class Cell(File):
             self._write_file_wannier_in(1, filenames)
         else:
             raise ValueError(fileformat)
+
+    def _calc_vec(self, xvec):
+        yvec = numpy.empty((3, 3), float)
+        yvec[0] = numpy.cross(xvec[1], xvec[2])
+        yvec[1] = numpy.cross(xvec[2], xvec[0])
+        yvec[2] = numpy.cross(xvec[0], xvec[1])
+        yvec /= self._calc_vol(xvec)
+        return yvec
+
+    def _calc_vol(self, vec):
+        vol = numpy.dot(vec[0], numpy.cross(vec[1], vec[2]))
+        return vol
 
     def __init__(
             self, prefix=None, aunit=None, alat=None, avec=None, bvec=None,

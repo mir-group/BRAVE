@@ -217,30 +217,6 @@ class EPA(DOS):
     def invtau(self):
         del self._invtau
 
-    def read(self, fileformat, filenames, soc=None):
-        """Method for reading properties from file.
-
-    fileformat         filenames
-    ----------         ---------
-    'boltztrap-dos'    ['case.intrans', 'case.transdos']
-    'matdyn-dos'       ['prefix.vdos']
-    'epa-out'          ['epa.dat']
-
-    Inherits fileformat and filenames from class DOS. Set soc
-    to True if the calculation includes the spin-orbit coupling.
-        """
-        if soc == None:
-            soc = False
-
-        if fileformat.lower() == 'boltztrap-dos':
-            self._read_dos_boltztrap_dos(filenames, soc)
-        elif fileformat.lower() == 'matdyn-dos':
-            self._read_dos_matdyn_dos(filenames)
-        elif fileformat.lower() == 'epa-out':
-            self._read_epa_epa_out(filenames)
-        else:
-            super().read(fileformat, filenames)
-
     def calc_invtau(self):
         """Method for calculating invtau given energy, mu, temp.
     dunit, dos are read using fileformat = 'boltztrap-dos'.
@@ -307,29 +283,29 @@ class EPA(DOS):
 
         self.invtau = invtau * math.pow(2.0 * math.pi, 2) / common.PLANCK
 
-    def __init__(
-            self, energy=None, mu=None, temp=None, ee=None, de=None, ne=None,
-            wavg=None, gavg=None, invtau=None, **kwargs):
-        super().__init__(**kwargs)
+    def read(self, fileformat, filenames, soc=None):
+        """Method for reading properties from file.
 
-        if energy != None:
-            self.energy = energy
-        if mu != None:
-            self.mu = mu
-        if temp != None:
-            self.temp = temp
-        if ee != None:
-            self.ee = ee
-        if de != None:
-            self.de = de
-        if ne != None:
-            self.ne = ne
-        if wavg != None:
-            self.wavg = wavg
-        if gavg != None:
-            self.gavg = gavg
-        if invtau != None:
-            self.invtau = invtau
+    fileformat         filenames
+    ----------         ---------
+    'boltztrap-dos'    ['case.intrans', 'case.transdos']
+    'matdyn-dos'       ['prefix.vdos']
+    'epa-out'          ['epa.dat']
+
+    Inherits fileformat and filenames from class DOS. Set soc
+    to True if the calculation includes the spin-orbit coupling.
+        """
+        if soc == None:
+            soc = False
+
+        if fileformat.lower() == 'boltztrap-dos':
+            self._read_dos_boltztrap_dos(filenames, soc)
+        elif fileformat.lower() == 'matdyn-dos':
+            self._read_dos_matdyn_dos(filenames)
+        elif fileformat.lower() == 'epa-out':
+            self._read_epa_epa_out(filenames)
+        else:
+            super().read(fileformat, filenames)
 
     def _read_epa_epa_out(self, filenames):
         contents = common._read_file(filenames)
@@ -368,4 +344,28 @@ class EPA(DOS):
 
         self.ee, self.de, self.ne = ee, de, ne
         self.wavg, self.gavg = wavg, gavg
+
+    def __init__(
+            self, energy=None, mu=None, temp=None, ee=None, de=None, ne=None,
+            wavg=None, gavg=None, invtau=None, **kwargs):
+        super().__init__(**kwargs)
+
+        if energy != None:
+            self.energy = energy
+        if mu != None:
+            self.mu = mu
+        if temp != None:
+            self.temp = temp
+        if ee != None:
+            self.ee = ee
+        if de != None:
+            self.de = de
+        if ne != None:
+            self.ne = ne
+        if wavg != None:
+            self.wavg = wavg
+        if gavg != None:
+            self.gavg = gavg
+        if invtau != None:
+            self.invtau = invtau
 

@@ -312,7 +312,7 @@ class Kpoint(Cell):
 
         self.set_kunit(oldkunit)
 
-    def read(self, fileformat, filenames, lapwkunit='cartesian'):
+    def read(self, fileformat, filenames, lapwkunit=None):
         """Method for reading properties from file.
 
     fileformat       filenames
@@ -339,6 +339,8 @@ class Kpoint(Cell):
             for details, use 'cartesian' for fcc or bcc and
             'crystal' for hcp
         """
+        if lapwkunit == None:
+            lapwkunit = 'cartesian'
 
         if fileformat.lower() == 'internal':
             self._read_file_internal(2, filenames)
@@ -368,7 +370,7 @@ class Kpoint(Cell):
         else:
             raise ValueError(fileformat)
 
-    def write(self, fileformat, filenames, lapwkunit='cartesian'):
+    def write(self, fileformat, filenames, lapwkunit=None):
         """Method for writing properties to file.
 
     fileformat       filenames
@@ -386,6 +388,8 @@ class Kpoint(Cell):
             for details, use 'cartesian' for fcc or bcc and
             'crystal' for hcp
         """
+        if lapwkunit == None:
+            lapwkunit = 'cartesian'
 
         if fileformat.lower() == 'internal':
             self._write_file_internal(2, filenames)
