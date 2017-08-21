@@ -100,7 +100,7 @@ class DOS(Cell):
     Inherits fileformat and filenames from class Cell. Set soc
     to True if the calculation includes the spin-orbit coupling.
         """
-        if soc == None:
+        if soc is None:
             soc = False
 
         if fileformat.lower() == 'boltztrap-dos':
@@ -143,8 +143,8 @@ class DOS(Cell):
     def __init__(self, dunit=None, dos=None, **kwargs):
         super().__init__(**kwargs)
 
-        if dunit != None:
+        if dunit is not None:
             self.dunit = dunit
-        if dos != None:
+        if dos is not None:
             self.dos = dos
 

@@ -746,7 +746,7 @@ class File(object):
             kscale = self.alat / (2.0 * math.pi)
 
         if level > 2:
-            if etype == None:
+            if etype is None:
                 eindex = 6
             else:
                 if etype.lower() == 'emf':
@@ -790,7 +790,7 @@ class File(object):
         contents = common._read_file(filenames)
 
         if level > 2:
-            if etype == None:
+            if etype is None:
                 eindex = 9
             else:
                 if etype.lower() == 'edft':

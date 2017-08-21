@@ -125,7 +125,7 @@ class Energy(Kpoint):
     and cbm (conduction band minimum). Set soc to True
     if the calculation includes the spin-orbit coupling.
         """
-        if soc == None:
+        if soc is None:
             soc = False
 
         nval = self.nelec
@@ -197,7 +197,7 @@ class Energy(Kpoint):
             for details, use 'cartesian' for fcc or bcc
             and 'crystal' for hcp
         """
-        if lapwkunit == None:
+        if lapwkunit is None:
             lapwkunit = 'cartesian'
 
         if fileformat.lower() == 'internal':
@@ -254,25 +254,25 @@ class Energy(Kpoint):
     deltae, ecut, lpfac, efcut, tmax, deltat, ecut2, dosmethod,
             nband_exclude used for 'boltztrap-in'
         """
-        if lapwkunit == None:
+        if lapwkunit is None:
             lapwkunit = 'cartesian'
-        if deltae == None:
+        if deltae is None:
             deltae = 0.0005
-        if ecut == None:
+        if ecut is None:
             ecut = 0.6
-        if lpfac == None:
+        if lpfac is None:
             lpfac = 5
-        if efcut == None:
+        if efcut is None:
             efcut = 0.3
-        if tmax == None:
+        if tmax is None:
             tmax = 1200.0
-        if deltat == None:
+        if deltat is None:
             deltat = 10.0
-        if ecut2 == None:
+        if ecut2 is None:
             ecut2 = -1.0
-        if dosmethod == None:
+        if dosmethod is None:
             dosmethod = 'TETRA'
-        if nband_exclude == None:
+        if nband_exclude is None:
             nband_exclude = 0
 
         if fileformat.lower() == 'internal':
@@ -296,12 +296,12 @@ class Energy(Kpoint):
             self, eunit=None, energy=None, efermi=None, vref=None, **kwargs):
         super().__init__(**kwargs)
 
-        if eunit != None:
+        if eunit is not None:
             self.eunit = eunit
-        if energy != None:
+        if energy is not None:
             self.energy = energy
-        if efermi != None:
+        if efermi is not None:
             self.efermi = efermi
-        if vref != None:
+        if vref is not None:
             self.vref = vref
 

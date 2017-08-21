@@ -387,7 +387,7 @@ class Transport(Cell):
             numelec = self.numelec
             for itemp in range(self.ntemp):
                 _paramvalue = paramvalue if type(
-                        paramvalue) == float else paramvalue[itemp]
+                        paramvalue) is float else paramvalue[itemp]
                 slice[itemp] = numpy.interp(_paramvalue, numelec[
                         :, itemp], propvalue[:, itemp])
         else:
@@ -532,7 +532,7 @@ class Transport(Cell):
             propvalue_max = aa * xx ** 2 + bb * xx + cc
 
         # find intervals by linear fit of propvalue[imu] around imu=kmu
-        if jmu == 0 or fraction == None:
+        if jmu == 0 or fraction is None:
             mu_min = mu_opt
             mu_max = mu_opt
             numelec_min = numelec_opt
@@ -558,7 +558,7 @@ class Transport(Cell):
             numelec_max = numelec[kmu - 1] + (
                     numelec[kmu] - numelec[kmu - 1]) * xx
 
-        if fraction == None:
+        if fraction is None:
             return mu_opt, numelec_opt, propvalue_max
         else:
             return mu_opt, numelec_opt, propvalue_max, [mu_min, mu_max], [
@@ -581,7 +581,7 @@ class Transport(Cell):
     current, kappael = kappa0 - sigma * seebeck^2 * temp,
     only for isotropic systems, used for 'boltztrap-out'
         """
-        if kappaelzeroj == None:
+        if kappaelzeroj is None:
             kappaelzeroj = False
 
         if fileformat.lower() == 'boltztrap-out':
@@ -643,7 +643,7 @@ class Transport(Cell):
                 specheat[imu, itemp] = float(line[8])
                 magsus[imu, itemp] = float(line[9])
 
-        if tauvc != None:
+        if tauvc is not None:
             for imu in range(nmu):
                 if mu[imu] < 0.0:
                     tau = tauvc[0]
@@ -676,34 +676,34 @@ class Transport(Cell):
             kappalat=None, kappa=None, L=None, PF=None, ZT=None, **kwargs):
         super().__init__(**kwargs)
 
-        if mu != None:
+        if mu is not None:
             self.mu = mu
-        if temp != None:
+        if temp is not None:
             self.temp = temp
-        if numelec != None:
+        if numelec is not None:
             self.numelec = numelec
-        if convdos != None:
+        if convdos is not None:
             self.convdos = convdos
-        if seebeck != None:
+        if seebeck is not None:
             self.seebeck = seebeck
-        if sigma != None:
+        if sigma is not None:
             self.sigma = sigma
-        if hall != None:
+        if hall is not None:
             self.hall = hall
-        if kappael != None:
+        if kappael is not None:
             self.kappael = kappael
-        if specheat != None:
+        if specheat is not None:
             self.specheat = specheat
-        if magsus != None:
+        if magsus is not None:
             self.magsus = magsus
-        if kappalat != None:
+        if kappalat is not None:
             self.kappalat = kappalat
-        if kappa != None:
+        if kappa is not None:
             self.kappa = kappa
-        if L != None:
+        if L is not None:
             self.L = L
-        if PF != None:
+        if PF is not None:
             self.PF = PF
-        if ZT != None:
+        if ZT is not None:
             self.ZT = ZT
 

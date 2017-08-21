@@ -169,7 +169,7 @@ class Kpoint(Cell):
     def klabel(self, klabel):
         self._klabel = klabel
 
-        if type(self._klabel) != list:
+        if type(self._klabel) is not list:
             raise ValueError(klabel)
 
     @klabel.deleter
@@ -339,7 +339,7 @@ class Kpoint(Cell):
             for details, use 'cartesian' for fcc or bcc and
             'crystal' for hcp
         """
-        if lapwkunit == None:
+        if lapwkunit is None:
             lapwkunit = 'cartesian'
 
         if fileformat.lower() == 'internal':
@@ -388,7 +388,7 @@ class Kpoint(Cell):
             for details, use 'cartesian' for fcc or bcc and
             'crystal' for hcp
         """
-        if lapwkunit == None:
+        if lapwkunit is None:
             lapwkunit = 'cartesian'
 
         if fileformat.lower() == 'internal':
@@ -409,18 +409,18 @@ class Kpoint(Cell):
             kpath=None, kindex=None, klabel=None, **kwargs):
         super().__init__(**kwargs)
 
-        if kunit != None:
+        if kunit is not None:
             self.kunit = kunit
-        if kpoint != None:
+        if kpoint is not None:
             self.kpoint = kpoint
-        if kline != None:
+        if kline is not None:
             self.kline = kline
-        if kweight != None:
+        if kweight is not None:
             self.kweight = kweight
-        if kpath != None:
+        if kpath is not None:
             self.kpath = kpath
-        if kindex != None:
+        if kindex is not None:
             self.kindex = kindex
-        if klabel != None:
+        if klabel is not None:
             self.klabel = klabel
 

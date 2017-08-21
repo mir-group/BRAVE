@@ -54,7 +54,7 @@ class Plot(object):
     def kind(self, kind):
         for group in kind:
             for item in group:
-                if type(item) != str:
+                if type(item) is not str:
                     raise ValueError(kind)
 
         self._kind = kind
@@ -82,8 +82,8 @@ class Plot(object):
         for group in style:
             for subgroup in group:
                 for item in subgroup:
-                    if type(item) != str and type(
-                            item) != tuple and item != 'None':
+                    if type(item) is not str and type(
+                            item) is not tuple and item != 'None':
                         raise ValueError(style)
 
         self._style = style
@@ -140,7 +140,7 @@ class Plot(object):
     def label(self, label):
         for group in label:
             for item in group:
-                if type(item) != str and item != None:
+                if type(item) is not str and item is not None:
                     raise ValueError(label)
 
         self._label = label
@@ -161,7 +161,7 @@ class Plot(object):
     def zorder(self, zorder):
         for group in zorder:
             for item in group:
-                if type(item) != int and type(item) != float and item != None:
+                if type(item) is not int and type(item) is not float and item is not None:
                     raise ValueError(zorder)
 
         self._zorder = zorder
@@ -183,7 +183,7 @@ class Plot(object):
     @legend.setter
     def legend(self, legend):
         for item in legend:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(legend)
 
         self._legend = legend
@@ -204,7 +204,7 @@ class Plot(object):
     @xscale.setter
     def xscale(self, xscale):
         for item in xscale:
-            if type(item) != str and item != None:
+            if type(item) is not str and item is not None:
                 raise ValueError(xscale)
 
         self._xscale = xscale
@@ -225,7 +225,7 @@ class Plot(object):
     @yscale.setter
     def yscale(self, yscale):
         for item in yscale:
-            if type(item) != str and item != None:
+            if type(item) is not str and item is not None:
                 raise ValueError(yscale)
 
         self._yscale = yscale
@@ -246,7 +246,7 @@ class Plot(object):
     @xlim.setter
     def xlim(self, xlim):
         for item in xlim:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(xlim)
 
         self._xlim = xlim
@@ -267,7 +267,7 @@ class Plot(object):
     @ylim.setter
     def ylim(self, ylim):
         for item in ylim:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(ylim)
 
         self._ylim = ylim
@@ -288,7 +288,7 @@ class Plot(object):
     @xdel.setter
     def xdel(self, xdel):
         for item in xdel:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(xdel)
 
         self._xdel = xdel
@@ -309,7 +309,7 @@ class Plot(object):
     @ydel.setter
     def ydel(self, ydel):
         for item in ydel:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(ydel)
 
         self._ydel = ydel
@@ -331,9 +331,9 @@ class Plot(object):
     @xtick.setter
     def xtick(self, xtick):
         for group in xtick:
-            if group != None:
+            if group is not None:
                 for item in group:
-                    if type(item) != list:
+                    if type(item) is not list:
                         raise ValueError(xtick)
 
         self._xtick = xtick
@@ -355,9 +355,9 @@ class Plot(object):
     @ytick.setter
     def ytick(self, ytick):
         for group in ytick:
-            if group != None:
+            if group is not None:
                 for item in group:
-                    if type(item) != list:
+                    if type(item) is not list:
                         raise ValueError(ytick)
 
         self._ytick = ytick
@@ -380,7 +380,7 @@ class Plot(object):
     def xgrid(self, xgrid):
         for group in xgrid:
             for item in group:
-                if type(item) != list and item != None:
+                if type(item) is not list and item is not None:
                     raise ValueError(xgrid)
 
         self._xgrid = xgrid
@@ -403,7 +403,7 @@ class Plot(object):
     def ygrid(self, ygrid):
         for group in ygrid:
             for item in group:
-                if type(item) != list and item != None:
+                if type(item) is not list and item is not None:
                     raise ValueError(ygrid)
 
         self._ygrid = ygrid
@@ -423,7 +423,7 @@ class Plot(object):
     @xlabel.setter
     def xlabel(self, xlabel):
         for item in xlabel:
-            if type(item) != str:
+            if type(item) is not str:
                 raise ValueError(xlabel)
 
         self._xlabel = xlabel
@@ -443,7 +443,7 @@ class Plot(object):
     @ylabel.setter
     def ylabel(self, ylabel):
         for item in ylabel:
-            if type(item) != str:
+            if type(item) is not str:
                 raise ValueError(ylabel)
 
         self._ylabel = ylabel
@@ -466,7 +466,7 @@ class Plot(object):
     @xlabpos.setter
     def xlabpos(self, xlabpos):
         for item in xlabpos:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(xlabpos)
 
         self._xlabpos = xlabpos
@@ -489,7 +489,7 @@ class Plot(object):
     @ylabpos.setter
     def ylabpos(self, ylabpos):
         for item in ylabpos:
-            if type(item) != list and item != None:
+            if type(item) is not list and item is not None:
                 raise ValueError(ylabpos)
 
         self._ylabpos = ylabpos
@@ -516,7 +516,7 @@ class Plot(object):
     def note(self, note):
         for group in note:
             for item in group:
-                if type(item) != list:
+                if type(item) is not list:
                     raise ValueError(note)
 
         self._note = note
@@ -542,7 +542,7 @@ class Plot(object):
     @title.setter
     def title(self, title):
         for item in title:
-            if type(item) != list:
+            if type(item) is not list:
                 raise ValueError(title)
 
         self._title = title
@@ -560,7 +560,7 @@ class Plot(object):
 
     @pagesize.setter
     def pagesize(self, pagesize):
-        if type(pagesize) != list:
+        if type(pagesize) is not list:
             raise ValueError(pagesize)
 
         self._pagesize = pagesize
@@ -620,7 +620,7 @@ class Plot(object):
 
     @labelpad.setter
     def labelpad(self, labelpad):
-        if type(labelpad) != list:
+        if type(labelpad) is not list:
             raise ValueError(labelpad)
 
         self._labelpad = labelpad
@@ -639,7 +639,7 @@ class Plot(object):
 
     @tickpad.setter
     def tickpad(self, tickpad):
-        if type(tickpad) != list:
+        if type(tickpad) is not list:
             raise ValueError(tickpad)
 
         self._tickpad = tickpad
@@ -658,7 +658,7 @@ class Plot(object):
 
     @ticksize.setter
     def ticksize(self, ticksize):
-        if type(ticksize) != list:
+        if type(ticksize) is not list:
             raise ValueError(ticksize)
 
         self._ticksize = ticksize
@@ -677,7 +677,7 @@ class Plot(object):
 
     @griddim.setter
     def griddim(self, griddim):
-        if type(griddim) != list:
+        if type(griddim) is not list:
             raise ValueError(griddim)
 
         self._griddim = griddim
@@ -696,7 +696,7 @@ class Plot(object):
 
     @gridpad.setter
     def gridpad(self, gridpad):
-        if type(gridpad) != list:
+        if type(gridpad) is not list:
             raise ValueError(gridpad)
 
         self._gridpad = gridpad
@@ -717,7 +717,7 @@ class Plot(object):
     @gridpos.setter
     def gridpos(self, gridpos):
         for item in gridpos:
-            if type(item) != list:
+            if type(item) is not list:
                 raise ValueError(gridpos)
 
         self._gridpos = gridpos
@@ -735,7 +735,7 @@ class Plot(object):
 
     @frame.setter
     def frame(self, frame):
-        if type(frame) != bool:
+        if type(frame) is not bool:
             raise ValueError(frame)
 
         self._frame = frame
@@ -866,7 +866,7 @@ class Plot(object):
 
                 if hasattr(self, 'label'):
                     _label = self.label[iplot][idata]
-                    if _label != '' and _label != None:
+                    if _label != '' and _label is not None:
                         _is_legend = True
                 else:
                     _label = ''
@@ -880,7 +880,7 @@ class Plot(object):
                 for _ii in range(2):
                     _aa = _style[_ii]
                     _bb = _aa
-                    if type(_aa) == str:
+                    if type(_aa) is str:
                         if _ii == 0:
                             if _aa.lower() in _linestyle_dict:
                                 _bb = _linestyle_dict[_aa.lower()]
@@ -892,7 +892,7 @@ class Plot(object):
                 _color_matplotlib = []
                 for _cc in _color:
                     _dd = _cc
-                    if type(_cc) == str:
+                    if type(_cc) is str:
                         if _cc.lower() in _color_dict:
                             _dd = _color_dict[_cc.lower()]
                     _color_matplotlib.append(_dd)
@@ -975,16 +975,16 @@ class Plot(object):
 
             if _is_legend:
                 if hasattr(self, 'legend'):
-                    if self.legend[iplot] != None:
-                        if type(self.legend[iplot][0]) == str:
+                    if self.legend[iplot] is not None:
+                        if type(self.legend[iplot][0]) is str:
                             _loc = self.legend[iplot][0]
                         else:
                             _loc = 'best'
-                        if type(self.legend[iplot][1]) == int:
+                        if type(self.legend[iplot][1]) is int:
                             _ncol = self.legend[iplot][1]
                         else:
                             _ncol = 1
-                        if type(self.legend[iplot][2]) == list:
+                        if type(self.legend[iplot][2]) is list:
                             _borderaxespad = 0.0
                             _bbox_to_anchor = self.legend[iplot][2]
                             _bbox_transform = _figure.transFigure
@@ -1021,17 +1021,17 @@ class Plot(object):
             _plot.autoscale(enable = True, axis = 'both', tight = False)
 
             if hasattr(self, 'xlim'):
-                if self.xlim[iplot] != None:
+                if self.xlim[iplot] is not None:
                     _plot.set_xlim(self.xlim[iplot][0], self.xlim[iplot][1])
 
             if hasattr(self, 'ylim'):
-                if self.ylim[iplot] != None:
+                if self.ylim[iplot] is not None:
                     _plot.set_ylim(self.ylim[iplot][0], self.ylim[iplot][1])
 
             _xmin, _xmax, _ymin, _ymax = _plot.axis()
 
             if hasattr(self, 'xdel'):
-                if self.xdel[iplot] != None:
+                if self.xdel[iplot] is not None:
                     _plot.xaxis.set_major_locator(
                             matplotlib.ticker.MultipleLocator(
                             self.xdel[iplot][0]))
@@ -1040,7 +1040,7 @@ class Plot(object):
                             self.xdel[iplot][1]))
 
             if hasattr(self, 'ydel'):
-                if self.ydel[iplot] != None:
+                if self.ydel[iplot] is not None:
                     _plot.yaxis.set_major_locator(
                             matplotlib.ticker.MultipleLocator(
                             self.ydel[iplot][0]))
@@ -1049,7 +1049,7 @@ class Plot(object):
                             self.ydel[iplot][1]))
 
             if hasattr(self, 'xtick'):
-                if self.xtick[iplot] != None:
+                if self.xtick[iplot] is not None:
                     _xtickposition = []
                     _xticklabel = []
                     for item in self.xtick[iplot]:
@@ -1059,7 +1059,7 @@ class Plot(object):
                     _plot.set_xticklabels(_xticklabel)
 
             if hasattr(self, 'ytick'):
-                if self.ytick[iplot] != None:
+                if self.ytick[iplot] is not None:
                     _ytickposition = []
                     _yticklabel = []
                     for item in self.ytick[iplot]:
@@ -1069,18 +1069,18 @@ class Plot(object):
                     _plot.set_yticklabels(_yticklabel)
 
             if hasattr(self, 'xgrid'):
-                if self.xgrid[iplot][0] != None:
+                if self.xgrid[iplot][0] is not None:
                     _style = self.xgrid[iplot][0][0]
                     _color = self.xgrid[iplot][0][1]
                     _width = self.xgrid[iplot][0][2]
-                    if _style != None and _color != None and _width != None:
+                    if _style is not None and _color is not None and _width is not None:
                         _style_matplotlib = _style
-                        if type(_style) == str:
+                        if type(_style) is str:
                             if _style.lower() in _linestyle_dict:
                                 _style_matplotlib = _linestyle_dict[
                                         _style.lower()]
                         _color_matplotlib = _color
-                        if type(_color) == str:
+                        if type(_color) is str:
                             if _color.lower() in _color_dict:
                                 _color_matplotlib = _color_dict[_color.lower()]
                         _plot.grid(
@@ -1089,18 +1089,18 @@ class Plot(object):
                                 color = _color_matplotlib,
                                 linewidth = _width)
 
-                if self.xgrid[iplot][1] != None:
+                if self.xgrid[iplot][1] is not None:
                     _style = self.xgrid[iplot][1][0]
                     _color = self.xgrid[iplot][1][1]
                     _width = self.xgrid[iplot][1][2]
-                    if _style != None and _color != None and _width != None:
+                    if _style is not None and _color is not None and _width is not None:
                         _style_matplotlib = _style
-                        if type(_style) == str:
+                        if type(_style) is str:
                             if _style.lower() in _linestyle_dict:
                                 _style_matplotlib = _linestyle_dict[
                                         _style.lower()]
                         _color_matplotlib = _color
-                        if type(_color) == str:
+                        if type(_color) is str:
                             if _color.lower() in _color_dict:
                                 _color_matplotlib = _color_dict[_color.lower()]
                         _plot.grid(
@@ -1110,18 +1110,18 @@ class Plot(object):
                                 linewidth = _width)
 
             if hasattr(self, 'ygrid'):
-                if self.ygrid[iplot][0] != None:
+                if self.ygrid[iplot][0] is not None:
                     _style = self.ygrid[iplot][0][0]
                     _color = self.ygrid[iplot][0][1]
                     _width = self.ygrid[iplot][0][2]
-                    if _style != None and _color != None and _width != None:
+                    if _style is not None and _color is not None and _width is not None:
                         _style_matplotlib = _style
-                        if type(_style) == str:
+                        if type(_style) is str:
                             if _style.lower() in _linestyle_dict:
                                 _style_matplotlib = _linestyle_dict[
                                         _style.lower()]
                         _color_matplotlib = _color
-                        if type(_color) == str:
+                        if type(_color) is str:
                             if _color.lower() in _color_dict:
                                 _color_matplotlib = _color_dict[_color.lower()]
                         _plot.grid(
@@ -1130,18 +1130,18 @@ class Plot(object):
                                 color = _color_matplotlib,
                                 linewidth = _width)
 
-                if self.ygrid[iplot][1] != None:
+                if self.ygrid[iplot][1] is not None:
                     _style = self.ygrid[iplot][1][0]
                     _color = self.ygrid[iplot][1][1]
                     _width = self.ygrid[iplot][1][2]
-                    if _style != None and _color != None and _width != None:
+                    if _style is not None and _color is not None and _width is not None:
                         _style_matplotlib = _style
-                        if type(_style) == str:
+                        if type(_style) is str:
                             if _style.lower() in _linestyle_dict:
                                 _style_matplotlib = _linestyle_dict[
                                         _style.lower()]
                         _color_matplotlib = _color
-                        if type(_color) == str:
+                        if type(_color) is str:
                             if _color.lower() in _color_dict:
                                 _color_matplotlib = _color_dict[_color.lower()]
                         _plot.grid(
@@ -1160,7 +1160,7 @@ class Plot(object):
                     _xposition = 0.5
                     _xalign = 'center'
                     if hasattr(self, 'xlabpos'):
-                        if self.xlabpos[iplot] != None:
+                        if self.xlabpos[iplot] is not None:
                             _xposition = self.xlabpos[iplot][0]
                             _xalign = self.xlabpos[iplot][1]
                     _xlabel = _plot.set_xlabel(
@@ -1179,7 +1179,7 @@ class Plot(object):
                     _yposition = 0.5
                     _yalign = 'center'
                     if hasattr(self, 'ylabpos'):
-                        if self.ylabpos[iplot] != None:
+                        if self.ylabpos[iplot] is not None:
                             _yposition = self.ylabpos[iplot][0]
                             _yalign = self.ylabpos[iplot][1]
                     _ylabel = _plot.set_ylabel(
@@ -1242,93 +1242,93 @@ class Plot(object):
             ticksize=None, griddim=None, gridpad=None, gridpos=None,
             frame=False):
 
-        if data != None:
+        if data is not None:
             self.data = data
-        if kind != None:
+        if kind is not None:
             self.kind = kind
-        if style != None:
+        if style is not None:
             self.style = style
-        if color != None:
+        if color is not None:
             self.color = color
-        if label != None:
+        if label is not None:
             self.label = label
-        if zorder != None:
+        if zorder is not None:
             self.zorder = zorder
-        if legend != None:
+        if legend is not None:
             self.legend = legend
-        if xscale != None:
+        if xscale is not None:
             self.xscale = xscale
-        if yscale != None:
+        if yscale is not None:
             self.yscale = yscale
-        if xlim != None:
+        if xlim is not None:
             self.xlim = xlim
-        if ylim != None:
+        if ylim is not None:
             self.ylim = ylim
-        if xdel != None:
+        if xdel is not None:
             self.xdel = xdel
-        if ydel != None:
+        if ydel is not None:
             self.ydel = ydel
-        if xtick != None:
+        if xtick is not None:
             self.xtick = xtick
-        if ytick != None:
+        if ytick is not None:
             self.ytick = ytick
-        if xgrid != None:
+        if xgrid is not None:
             self.xgrid = xgrid
-        if ygrid != None:
+        if ygrid is not None:
             self.ygrid = ygrid
-        if xlabel != None:
+        if xlabel is not None:
             self.xlabel = xlabel
-        if ylabel != None:
+        if ylabel is not None:
             self.ylabel = ylabel
-        if xlabpos != None:
+        if xlabpos is not None:
             self.xlabpos = xlabpos
-        if ylabpos != None:
+        if ylabpos is not None:
             self.ylabpos = ylabpos
-        if note != None:
+        if note is not None:
             self.note = note
-        if title != None:
+        if title is not None:
             self.title = title
-        if pagesize == None:
+        if pagesize is None:
             self.pagesize = [8.0, 6.0]
         else:
             self.pagesize = pagesize
-        if fontsize == None:
+        if fontsize is None:
             self.fontsize = 18.0
         else:
             self.fontsize = fontsize
-        if linewidth == None:
+        if linewidth is None:
             self.linewidth = 1.5
         else:
             self.linewidth = linewidth
-        if markersize == None:
+        if markersize is None:
             self.markersize = 8.0
         else:
             self.markersize = markersize
-        if labelpad == None:
+        if labelpad is None:
             self.labelpad = [6.0, 6.0]
         else:
             self.labelpad = labelpad
-        if tickpad == None:
+        if tickpad is None:
             self.tickpad = [6.0, 6.0, 6.0, 6.0]
         else:
             self.tickpad = tickpad
-        if ticksize == None:
+        if ticksize is None:
             self.ticksize = [6.0, 3.0, 6.0, 3.0]
         else:
             self.ticksize = ticksize
-        if griddim == None:
+        if griddim is None:
             self.griddim = [1, 1]
         else:
             self.griddim = griddim
-        if gridpad == None:
+        if gridpad is None:
             self.gridpad = [0.5, 0.0, 0.0]
         else:
             self.gridpad = gridpad
-        if gridpos == None:
+        if gridpos is None:
             self.gridpos = [[0, 1, 0, 1]]
         else:
             self.gridpos = gridpos
-        if frame == None:
+        if frame is None:
             self.frame = False
         else:
             self.frame = frame

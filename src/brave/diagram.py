@@ -96,7 +96,7 @@ class Diagram(DOS, Energy):
         else:
             raise ValueError(plotformat)
 
-        if filename == None:
+        if filename is None:
             if hasattr(self, 'prefix'):
                 filename = '{0:s}.{1:s}'.format(self.prefix, fileformat.lower(
                         ))
@@ -120,7 +120,7 @@ class Diagram(DOS, Energy):
         if i_e > -1:
             self.calc_kline()
 
-            if fillgap != None:
+            if fillgap is not None:
                 curve = numpy.empty((2, self.nkpoint * 2 + 1), float)
                 iband = fillgap[0]
                 ispin = fillgap[1]

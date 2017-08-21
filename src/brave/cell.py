@@ -285,25 +285,25 @@ class Cell(File):
             self, prefix=None, aunit=None, alat=None, avec=None, bvec=None,
             avol=None, bvol=None, natom=None, nelec=None, rot=None):
 
-        if prefix != None:
+        if prefix is not None:
             self.prefix = prefix
-        if aunit != None:
+        if aunit is not None:
             self.aunit = aunit
-        if alat != None:
+        if alat is not None:
             self.alat = alat
-        if avec != None:
+        if avec is not None:
             self.avec = avec
-        if bvec != None:
+        if bvec is not None:
             self.bvec = bvec
-        if avol != None:
+        if avol is not None:
             self.avol = avol
-        if bvol != None:
+        if bvol is not None:
             self.bvol = bvol
-        if natom != None:
+        if natom is not None:
             self.natom = natom
-        if nelec != None:
+        if nelec is not None:
             self.nelec = nelec
-        if rot == None:
+        if rot is None:
             self.rot = numpy.array([numpy.identity(3, float)])
         else:
             self.rot = rot

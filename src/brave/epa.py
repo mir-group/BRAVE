@@ -295,7 +295,7 @@ class EPA(DOS):
     Inherits fileformat and filenames from class DOS. Set soc
     to True if the calculation includes the spin-orbit coupling.
         """
-        if soc == None:
+        if soc is None:
             soc = False
 
         if fileformat.lower() == 'boltztrap-dos':
@@ -350,22 +350,22 @@ class EPA(DOS):
             wavg=None, gavg=None, invtau=None, **kwargs):
         super().__init__(**kwargs)
 
-        if energy != None:
+        if energy is not None:
             self.energy = energy
-        if mu != None:
+        if mu is not None:
             self.mu = mu
-        if temp != None:
+        if temp is not None:
             self.temp = temp
-        if ee != None:
+        if ee is not None:
             self.ee = ee
-        if de != None:
+        if de is not None:
             self.de = de
-        if ne != None:
+        if ne is not None:
             self.ne = ne
-        if wavg != None:
+        if wavg is not None:
             self.wavg = wavg
-        if gavg != None:
+        if gavg is not None:
             self.gavg = gavg
-        if invtau != None:
+        if invtau is not None:
             self.invtau = invtau
 
