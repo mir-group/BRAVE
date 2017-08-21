@@ -6,22 +6,22 @@ import brave.common as common
 from brave.cell import Cell
 
 class Transport(Cell):
-    """Class for representing electronic and lattice transport
-    coefficients as functions of chemical potential of
-    electrons and temperature.
+    """Class for representing the transport coefficients.
+
+    Class Transport defines the electronic transport coefficients as a function
+    of the chemical potential of electrons or the Fermi level and temperature.
     """
 
     @property
     def nmu(self):
-        """Number of chemical potentials of electrons, or Fermi
-    levels, int.
+        """An integer holding the number of grid points for mu.
         """
         return self._mu.shape[0]
 
     @property
     def mu(self):
-        """Values of chemical potentials of electrons, or Fermi
-    levels, array of nmu floats, in units of eV.
+        """A length-nmu ndarray of floats holding the chemical potentials of
+    electrons or the Fermi levels, in units of eV.
         """
         return self._mu
 
@@ -35,13 +35,13 @@ class Transport(Cell):
 
     @property
     def ntemp(self):
-        """Number of temperatures, int."""
+        """An integer holding the number of grid points for temp."""
         return self._temp.shape[0]
 
     @property
     def temp(self):
-        """Values of temperatures, array of ntemp floats,
-    in units of K.
+        """A length-ntemp ndarray of floats holding the temperatures, in units
+    of K.
         """
         return self._temp
 
@@ -55,11 +55,10 @@ class Transport(Cell):
 
     @property
     def numelec(self):
-        """Number of electrons relative to intrinsic material,
-    or excess charge carrier concentration, positive
-    for electron doping and negative for hole doping,
-    array of nmu by ntemp floats, in units of el/uc
-    (electrons per unit cell).
+        """A nmu by ntemp ndarray of floats holding the number of electrons
+    relative to intrinsic material or the excess charge carrier concentration,
+    in units of el/uc (electrons per unit cell). Positive for electron doping
+    and negative for hole doping.
         """
         return self._numelec
 
@@ -77,9 +76,8 @@ class Transport(Cell):
 
     @property
     def convdos(self):
-        """Convolution of DOS and [-df/de], array of nmu by
-    ntemp floats, in units of el/(uc eV)
-    (electrons per unit cell per eV).
+        """A nmu by ntemp ndarray of floats holding the convolution of DOS and
+    [-df/de], in units of el/(uc eV) (electrons per unit cell per eV).
         """
         return self._convdos
 
@@ -97,8 +95,8 @@ class Transport(Cell):
 
     @property
     def seebeck(self):
-        """One third of trace of Seebeck tensor, array of nmu by
-    ntemp floats, in units of V/K.
+        """A nmu by ntemp ndarray of floats holding one third of the trace of
+    the Seebeck tensor, in units of V/K.
         """
         return self._seebeck
 
@@ -116,8 +114,8 @@ class Transport(Cell):
 
     @property
     def sigma(self):
-        """One third of trace of electrical conductivity tensor,
-    array of nmu by ntemp floats, in units of 1/(ohm m).
+        """A nmu by ntemp ndarray of floats holding one third of the trace of
+    the electrical conductivity tensor, in units of 1/(ohm m).
         """
         return self._sigma
 
@@ -135,8 +133,8 @@ class Transport(Cell):
 
     @property
     def hall(self):
-        """One third of trace of Hall tensor, array of nmu by
-    ntemp floats, in units of m^3/C.
+        """A nmu by ntemp ndarray of floats holding one third of the trace of
+    the Hall tensor, in units of m^3/C.
         """
         return self._hall
 
@@ -154,9 +152,9 @@ class Transport(Cell):
 
     @property
     def kappael(self):
-        """One third of trace of electronic part of thermal
-    conductivity tensor, array of nmu by ntemp floats,
-    in units of W/(m K).
+        """A nmu by ntemp ndarray of floats holding one third of the trace of
+    the electronic part of the thermal conductivity tensor, in units of
+    W/(m K).
         """
         return self._kappael
 
@@ -174,8 +172,8 @@ class Transport(Cell):
 
     @property
     def specheat(self):
-        """Electronic specific heat, array of nmu by
-    ntemp floats, in units of J/(mol K).
+        """A nmu by ntemp ndarray of floats holding the electronic specific
+    heat, in units of J/(mol K).
         """
         return self._specheat
 
@@ -193,8 +191,8 @@ class Transport(Cell):
 
     @property
     def magsus(self):
-        """Pauli magnetic susceptibility, array of nmu
-    by ntemp floats, in units of m^3/mol.
+        """A nmu by ntemp ndarray of floats holding the Pauli magnetic
+    susceptibility, in units of m^3/mol.
         """
         return self._magsus
 
@@ -212,9 +210,8 @@ class Transport(Cell):
 
     @property
     def kappalat(self):
-        """One third of trace of lattice part of thermal
-    conductivity tensor, array of nmu by ntemp floats,
-    in units of W/(m K).
+        """A nmu by ntemp ndarray of floats holding one third of the trace of
+    the lattice part of the thermal conductivity tensor, in units of W/(m K).
         """
         return self._kappalat
 
@@ -232,8 +229,8 @@ class Transport(Cell):
 
     @property
     def kappa(self):
-        """One third of trace of thermal conductivity tensor,
-    array of nmu by ntemp floats, in units of W/(m K).
+        """A nmu by ntemp ndarray of floats holding one third of the trace of
+    the thermal conductivity tensor, in units of W/(m K).
         """
         return self._kappa
 
@@ -251,8 +248,8 @@ class Transport(Cell):
 
     @property
     def L(self):
-        """Lorenz number, array of nmu by ntemp floats,
-    in units of (W ohm)/K^2.
+        """A nmu by ntemp ndarray of floats holding the Lorenz number, in units
+    of (W ohm)/K^2.
         """
         return self._L
 
@@ -270,8 +267,8 @@ class Transport(Cell):
 
     @property
     def PF(self):
-        """Power factor, array of nmu by ntemp floats,
-    in units of W/(m K^2).
+        """A nmu by ntemp ndarray of floats holding the power factor, in units
+    of W/(m K^2).
         """
         return self._PF
 
@@ -289,7 +286,8 @@ class Transport(Cell):
 
     @property
     def ZT(self):
-        """Figure of merit, array of nmu by ntemp floats.
+        """A nmu by ntemp ndarray of floats holding the thermoelectric figure
+    of merit ZT.
         """
         return self._ZT
 

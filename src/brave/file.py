@@ -10,8 +10,18 @@ import numpy
 import brave.common as common
 
 class File(object):
-    """Class providing common input and output methods for classes
-    Cell, Kpoint, and Energy.
+    """Class providing common I/O methods.
+
+    Class File contains common input and output methods for classes Cell,
+    Kpoint, and Energy.
+
+    Args:
+        level (int): Indicates whether to read/write the attributes of each
+            class.
+
+    level > 0: read/write the attributes of class Cell.
+    level > 1: read/write the attributes of class Kpoint.
+    level > 2: read/write the attributes of class Energy.
     """
 
     def _read_file_internal(self, level, filenames):

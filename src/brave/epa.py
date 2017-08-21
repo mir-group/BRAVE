@@ -8,15 +8,17 @@ import brave.common as common
 from brave.dos import DOS
 
 class EPA(DOS):
-    """Class for representing parameters of the
-    EPA (electron-phonon-averaged) approximation.
+    """Class for representing the EPA electron relaxation time.
+
+    Class EPA computes the electron relaxation time using the
+    electron-phonon-averaged approximation.
     """
 
     @property
     def nepa(self):
-        """Number of points for the grid of energy|mu|temp|invtau,
-    int.
-    """
+        """An integer holding the number of grid points for energy, mu, temp
+    and invtau.
+        """
         _list = []
         if hasattr(self, 'energy'):
             _list.append(self._energy.shape[0])
@@ -34,7 +36,7 @@ class EPA(DOS):
 
     @property
     def nwin(self):
-        """Number of energy windows, int."""
+        """An integer holding the number of energy windows."""
         _list = []
         if hasattr(self, 'ee'):
             _list.append(self._ee.shape[0])
@@ -52,7 +54,7 @@ class EPA(DOS):
 
     @property
     def nmode(self):
-        """Number of phonon modes, int."""
+        """An integer holding the number of phonon modes."""
         _list = []
         if hasattr(self, 'wavg'):
             _list.append(self._wavg.shape[0])
@@ -66,7 +68,9 @@ class EPA(DOS):
 
     @property
     def nemax(self):
-        """Maximum number of energy bins in all energy windows, int."""
+        """An integer holding the maximum number of energy bins in all energy
+    windows.
+        """
         _list = []
         if hasattr(self, 'gavg'):
             _list.append(self._gavg.shape[1])
@@ -79,8 +83,8 @@ class EPA(DOS):
 
     @property
     def energy(self):
-        """Values of electron energies, array of nepa floats,
-    in units of eV.
+        """A length-nepa ndarray of floats holding the electron energies, in
+    units of eV.
         """
         return self._energy
 
@@ -94,8 +98,8 @@ class EPA(DOS):
 
     @property
     def mu(self):
-        """Values of chemical potentials of electrons, or Fermi
-    levels, array of nepa floats, in units of eV.
+        """A length-nepa ndarray of floats holding the chemical potentials of
+    electrons or the Fermi levels, in units of eV.
         """
         return self._mu
 
@@ -109,8 +113,8 @@ class EPA(DOS):
 
     @property
     def temp(self):
-        """Values of temperatures, array of nepa floats,
-    in units of K.
+        """A length-nepa ndarray of floats holding the temperatures, in units
+    of K.
         """
         return self._temp
 
@@ -124,7 +128,9 @@ class EPA(DOS):
 
     @property
     def ee(self):
-        """Edges of the energy windows, array of nwin floats, eV."""
+        """A length-nwin ndarray of floats holding the edges of the energy
+    windows, in units of eV.
+        """
         return self._ee
 
     @ee.setter
@@ -137,7 +143,9 @@ class EPA(DOS):
 
     @property
     def de(self):
-        """Widths of the energy bins, array of nwin floats, eV."""
+        """A length-nwin ndarray of floats holding the widths of the energy
+    bins, in units of eV.
+        """
         return self._de
 
     @de.setter
@@ -150,7 +158,9 @@ class EPA(DOS):
 
     @property
     def ne(self):
-        """Numbers of energy bins, array of nwin ints."""
+        """A length-nwin ndarray of integers holding the numbers of energy
+    bins.
+        """
         return self._ne
 
     @ne.setter
@@ -163,8 +173,8 @@ class EPA(DOS):
 
     @property
     def wavg(self):
-        """Averaged phonon frequencies, array of nmode floats,
-    cm^-1.
+        """A length-nmode ndarray of floats holding the averaged phonon
+    frequencies, in units of cm^-1.
         """
         return self._wavg
 
@@ -178,9 +188,9 @@ class EPA(DOS):
 
     @property
     def gavg(self):
-        """Averaged squared absolute electron-phonon coupling
-    matrix elements, array of nmode by nemax by
-    nemax by nwin floats, eV^2.
+        """A nmode by nemax by nemax by nwin ndarray of floats holding the
+    averaged squared absolute electron-phonon coupling matrix elements, in
+    units of eV^2.
         """
         return self._gavg
 
@@ -194,8 +204,8 @@ class EPA(DOS):
 
     @property
     def invtau(self):
-        """Values of inverse electron relaxation times,
-    array of nepa floats, in units of s^-1.
+        """A length-nepa ndarray of floats holding the inverse electron
+    relaxation times, in units of s^-1.
         """
         return self._invtau
 

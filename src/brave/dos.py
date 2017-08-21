@@ -6,14 +6,17 @@ import brave.common as common
 from brave.cell import Cell
 
 class DOS(Cell):
-    """Class for representing electron and phonon density of states
-    (DOS) as functions of electron and phonon energy.
+    """Class for representing the density of states.
+
+    Class DOS defines the electron or phonon density of states as a function of
+    the electron or phonon energy.
     """
 
     @property
     def dunit(self):
-        """Unit for dos, list of two strs, ['uc'|'bohr3'|'angstrom3'
-    |'nm3', 'ev'|'rydberg'|'hartree'|'thz'|'cm-1'].
+        """A list of 2 strings holding the units of dos. Possible values of the
+    first string are 'uc', 'bohr3', 'angstrom3' and 'nm3'. Possible values of
+    the second string are 'ev', 'rydberg', 'hartree', 'thz' and 'cm-1'.
         """
         return self._dunit
 
@@ -32,16 +35,14 @@ class DOS(Cell):
 
     @property
     def ndos(self):
-        """Number of points for the energy grid, int."""
+        """An integer holding the number of points in the energy grid."""
         return self._dos.shape[1]
 
     @property
     def dos(self):
-        """Density of states, array of 2 by ndos floats,
-    in units of dunit[1] and el/(dunit[0] dunit[1])
-    (electrons per dunit[0] per dunit[1]) or
-    ph/(dunit[0] dunit[1]) (phonons per dunit[0]
-    per dunit[1]).
+        """A 2 by ndos ndarray of floats holding the density of states. The
+    first column is in units of dunit[1], the second column is in units of
+    1/(dunit[0] dunit[1]).
         """
         return self._dos
 

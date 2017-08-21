@@ -6,15 +6,17 @@ import brave.common as common
 from brave.kpoint import Kpoint
 
 class Energy(Kpoint):
-    """Class for representing single-particle energies of electrons
-    and phonons. Used for converting electron and phonon dispersion
-    relations to formats suitable for various post-processing codes.
+    """Class for representing the energy bands.
+
+    Class Energy defines the electron or phonon energy bands. It is used for
+    plotting the energy band diagrams in class Diagram and for generating the
+    input files for calculating the electronic transport coefficients.
     """
 
     @property
     def eunit(self):
-        """Unit for energy, str, 'ev'|'rydberg'|'hartree'|'thz'
-    |'cm-1'.
+        """A string holding the units of energy. Possible values are 'ev',
+        'rydberg', 'hartree', 'thz' and 'cm-1'.
         """
         return self._eunit
 
@@ -31,18 +33,22 @@ class Energy(Kpoint):
 
     @property
     def nband(self):
-        """Number of electron bands or phonon modes, int."""
+        """An integer holding the number of electron energy bands or phonon
+    modes.
+        """
         return self._energy.shape[1]
 
     @property
     def nspin(self):
-        """Number of electron spins or 1 for phonons, int."""
+        """An integer holding the number of spin components for electrons or 1
+    for phonons.
+        """
         return self._energy.shape[2]
 
     @property
     def energy(self):
-        """Energy values, array of nkpoint by nband by nspin floats,
-    in units of eunit.
+        """A nkpoint by nband by nspin ndarray of floats holding the electron
+    or phonon energies, in units of eunit.
         """
         return self._energy
 
@@ -63,7 +69,8 @@ class Energy(Kpoint):
 
     @property
     def efermi(self):
-        """Fermi level, float, in units of eunit.
+        """A float holding the chemical potential of electrons or the Fermi
+    level, in units of eunit.
         """
         return self._efermi
 
@@ -77,8 +84,7 @@ class Energy(Kpoint):
 
     @property
     def vref(self):
-        """Reference potential, float, in units of eunit.
-        """
+        """A float holding the reference potential, in units of eunit."""
         return self._vref
 
     @vref.setter

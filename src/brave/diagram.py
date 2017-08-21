@@ -8,14 +8,16 @@ from brave.dos import DOS
 from brave.plot import Plot
 
 class Diagram(DOS, Energy):
-    """Class for plotting electron and phonon dispersion
-    relations and/or density of states diagrams.
+    """Class for plotting the band diagrams.
+
+    Class Diagram helps to sketch with the proper labeling the electron or
+    phonon energy band diagram and/or the electron or phonon density of states.
     """
 
     @property
     def plot(self):
-        """Instance of class Plot containing electron and phonon
-    dispersion relations and/or density of states diagrams.
+        """An instance of class Plot holding a sketch of the energy band
+    diagram and/or the density of states.
         """
         return self._plot
 

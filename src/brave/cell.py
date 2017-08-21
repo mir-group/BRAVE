@@ -6,15 +6,18 @@ import brave.common as common
 from brave.file import File
 
 class Cell(File):
-    """Class for representing direct and reciprocal lattice vectors
-    and symmetry operations. Used for converting between Cartesian
-    and crystal coordinates in class Kpoint.
+    """Class for representing the lattice structure.
+
+    Class Cell defines the direct and reciprocal lattice vectors and the
+    symmetry operations. It is used for converting between Cartesian and
+    crystal coordinates in class Kpoint and between different units in classes
+    DOS and Transport.
     """
 
     @property
     def prefix(self):
-        """Name of the system, str, same as prefix in Quantum ESPRESSO,
-    seedname in Wannier90, SYSTEM in VASP, or case in WIEN2k.
+        """A string holding the name of the system, same as prefix in Quantum
+    ESPRESSO, seedname in Wannier90, SYSTEM in VASP, or case in WIEN2k.
         """
         return self._prefix
 
@@ -28,7 +31,9 @@ class Cell(File):
 
     @property
     def aunit(self):
-        """Unit for alat, str, 'bohr'|'angstrom'|'nm'."""
+        """A string holding the units of alat. Possible values are 'bohr',
+    'angstrom' and 'nm'.
+        """
         return self._aunit
 
     @aunit.setter
@@ -44,7 +49,7 @@ class Cell(File):
 
     @property
     def alat(self):
-        """Direct lattice constant, float, in units of aunit."""
+        """A float holding the direct lattice constant, in units of aunit."""
         return self._alat
 
     @alat.setter
@@ -57,8 +62,8 @@ class Cell(File):
 
     @property
     def avec(self):
-        """Direct lattice vectors, array of 3 by 3 floats,
-    in units of alat.
+        """A 3 by 3 ndarray of floats holding the direct lattice vectors, in
+    units of alat.
         """
         return self._avec
 
@@ -75,7 +80,7 @@ class Cell(File):
 
     @property
     def bvec(self):
-        """Reciprocal lattice vectors, array of 3 by 3 floats,
+        """A 3 by 3 ndarray of floats holding the reciprocal lattice vectors,
     in units of 2*pi/alat.
         """
         return self._bvec
@@ -93,8 +98,8 @@ class Cell(File):
 
     @property
     def avol(self):
-        """Volume of direct lattice primitive cell, float,
-    in units of alat^3.
+        """A float holding the volume of the direct lattice primitive cell, in
+    units of alat^3.
         """
         return self._avol
 
@@ -108,7 +113,7 @@ class Cell(File):
 
     @property
     def bvol(self):
-        """Volume of reciprocal lattice primitive cell, float,
+        """A float holding the volume of the reciprocal lattice primitive cell,
     in units of (2*pi/alat)^3.
         """
         return self._bvol
@@ -123,7 +128,7 @@ class Cell(File):
 
     @property
     def natom(self):
-        """Number of atoms, int."""
+        """An integer holding the number of atoms per primitive cell."""
         return self._natom
 
     @natom.setter
@@ -136,7 +141,7 @@ class Cell(File):
 
     @property
     def nelec(self):
-        """Number of electrons, float."""
+        """A float holding the number of electrons per primitive cell."""
         return self._nelec
 
     @nelec.setter
@@ -149,13 +154,13 @@ class Cell(File):
 
     @property
     def nsym(self):
-        """Number of symmetry operations, int."""
+        """An integer holding the number of symmetry operations."""
         return self._rot.shape[0]
 
     @property
     def rot(self):
-        """Rotational matrices in crystal coordinates, array of
-    nsym by 3 by 3 ints.
+        """An nsym by 3 by 3 ndarray of integers holding the rotation matrices
+    operating on crystal coordinates.
         """
         return self._rot
 

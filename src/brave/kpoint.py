@@ -6,17 +6,18 @@ import brave.common as common
 from brave.cell import Cell
 
 class Kpoint(Cell):
-    """Class for representing grids and lines of k- and q-points
-    in reciprocal space. Used for constructing electron and phonon
-    dispersion relations in class Energy, and for generating a path
-    along high symmetry lines in reciprocal space for plotting band
-    structures.
+    """Class for representing the k-points.
+
+    Class Kpoint defines the grid of k- or q-points in reciprocal space and the
+    path along high symmetry lines in reciprocal space. It is used for
+    constructing the electron or phonon energy bands in class Energy.
     """
 
     @property
     def kunit(self):
-        """Unit for kpoint and kvertex, str, 'cartesian'|'crystal',
-    indicating units of 2*pi/alat or bvec.
+        """A string holding the units of kpoint and kpath. Possible values are
+    'cartesian' and 'crystal', indicating units of 2*pi/alat and bvec,
+    respectively.
         """
         return self._kunit
 
@@ -33,7 +34,7 @@ class Kpoint(Cell):
 
     @property
     def nkpoint(self):
-        """Number of k-points, int."""
+        """An integer holding the number of k-points."""
         _list = []
         if hasattr(self, 'kpoint'):
             _list.append(self._kpoint.shape[0])
@@ -49,8 +50,8 @@ class Kpoint(Cell):
 
     @property
     def kpoint(self):
-        """Coordinates of k-points, array of nkpoint by 3 floats,
-    in units of kunit.
+        """An nkpoint by 3 ndarray of floats holding the coordinates of
+    k-points, in units of kunit.
         """
         return self._kpoint
 
@@ -67,8 +68,8 @@ class Kpoint(Cell):
 
     @property
     def kline(self):
-        """Cartesian coordinate along the path in reciprocal space,
-    array of nkpoint floats.
+        """A length-nkpoint ndarray of floats holding the Cartesian coordinate
+    along the path in reciprocal space, in units of 2*pi/alat.
         """
         return self._kline
 
@@ -85,7 +86,7 @@ class Kpoint(Cell):
 
     @property
     def kweight(self):
-        """Weights of k-points, array of nkpoint floats,
+        """A length-nkpoint ndarray of floats holding the weights of k-points,
     normalized to 1.
         """
         return self._kweight
@@ -103,8 +104,8 @@ class Kpoint(Cell):
 
     @property
     def nkpath(self):
-        """Number of vertices of the path in reciprocal space,
-    int.
+        """An integer holding the number of vertices of the path in reciprocal
+    space.
         """
         _list = []
         if hasattr(self, 'kpath'):
@@ -123,8 +124,8 @@ class Kpoint(Cell):
 
     @property
     def kpath(self):
-        """Coordinates of vertices of the path in reciprocal space,
-    array of nkpath by 3 floats, in units of kunit.
+        """An nkpath by 3 ndarray of floats holding the coordinates of
+    vertices of the path in reciprocal space, in units of kunit.
         """
         return self._kpath
 
@@ -141,8 +142,8 @@ class Kpoint(Cell):
 
     @property
     def kindex(self):
-        """Indices of k-points along the path in reciprocal space
-    corresponding to vertices, array of nkpath ints.
+        """A length-nkpath ndarray of integers holding the indices of k-points
+    along the path in reciprocal space corresponding to vertices.
         """
         return self._kindex
 
@@ -159,8 +160,8 @@ class Kpoint(Cell):
 
     @property
     def klabel(self):
-        """Labels of vertices of the path in reciprocal space,
-    array of nkpath strs.
+        """A length-nkpath list of strings holding the labels of vertices of
+    the path in reciprocal space.
         """
         return self._klabel
 

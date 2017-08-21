@@ -11,23 +11,22 @@ if not 'matplotlib.pyplot' in sys.modules:
 import brave.common as common
 
 class Plot(object):
-    """Class for producing two-dimensional plots using
-    external libraries such as matplotlib.
-    """
+    """Class for producing 2D figures."""
 
     @property
     def data(self):
-        """2D list of data curves (first dimension is plot
-    number, second dimension is curve number),
-    each data curve is an array of m by n floats.
-    m = 2 for x, y (kind = 'plot'|'fill');
-    m = 3 for x, y, s (kind = 'scatter');
-    m = 4 for x, y, yerr, xerr (kind = 'errorbar');
-    m = 6 for left, height, width, bottom,
-    yerrdn, yerrup (kind = 'bar').
-    n is number of data points (could be different
-    for each data curve).
-    """
+        """A 2D list of m by n ndarrays of floats holding the data points. The
+    first dimension is each plot, the second dimension is each curve, n is the
+    number of data points.
+
+    kind        |  m  |  columns of m by n ndarray
+    ------------|-----|---------------------------
+    'plot'      |  2  |  x and y
+    'scatter'   |  3  |  x, y and s
+    'bar'       |  6  |  left, height, width, bottom, yerrdn and yerrup
+    'errorbar'  |  4  |  x, y, yerr and xerr
+    'fill'      |  2  |  x and y
+        """
         return self._data
 
     @data.setter
@@ -45,10 +44,10 @@ class Plot(object):
 
     @property
     def kind(self):
-        """Kinds of data curves, 2D list of strs.
-    Each kind = 'plot', 'scatter', 'bar', 'errorbar',
-    or 'fill'. The default is 'plot'.
-    """
+        """A 2D list of strings indicating different types of plots. The first
+    dimension is each plot, the second dimension is each curve. Possible values
+    are 'plot', 'scatter', 'bar', 'errorbar' and 'fill'. The default is 'plot'.
+        """
         return self._kind
 
     @kind.setter
@@ -66,18 +65,16 @@ class Plot(object):
 
     @property
     def style(self):
-        """Styles of data curves, 2D list of lists.
-    Each list contains styles for different elements:
-    line, marker. Each linestyle = 'solid', 'dash',
-    'dot', 'dashdot', (offset, on-off-dash-seq),
-    or any str recognized by external library.
-    Each markerstyle = 'circle', 'square', 'diamond',
-    'triangle_up', 'triangle_down', 'triangle_left',
-    'triangle_right', 'star', 'cross', 'plus',
-    or any str recognized by external library.
-    Can be set to 'None' if not used.
-    The default is ['solid', 'None'].
-    """
+        """A 2D list of length-2 lists of strings holding the line and marker
+    styles. The first dimension is each plot, the second dimension is each
+    curve, the third dimension is line and marker. Possible values of the line
+    style are 'solid', 'dash', 'dot', 'dashdot' and (offset, on-off-dash-seq).
+    Possible values of the marker style are 'circle', 'square', 'diamond',
+    'triangle_up', 'triangle_down', 'triangle_left', 'triangle_right', 'star',
+    'cross' and 'plus'. Each style can be set to any string recognized by
+    external library. Each style can be set to 'None' if not used. The default
+    is ['solid', 'None'].
+        """
         return self._style
 
     @style.setter
@@ -97,19 +94,22 @@ class Plot(object):
 
     @property
     def color(self):
-        """Colors of data curves, 2D list of lists.
-    Each list contains colors for different elements:
-    line, markeredge, markerface (kind = 'plot');
-    markeredge, markerface (kind = 'scatter');
-    barface, baredge, errorbar (kind = 'bar');
-    line, markeredge, markerface, errorbar (kind = 'errorbar');
-    patchface, patchedge (kind = 'fill').
-    Each color = 'black', 'red', 'green', 'blue',
-    'magenta', 'yellow', 'cyan', 'white', or any
-    str, float, or tuple recognized by external
-    library. Can be set to 'none' if not used.
-    The default is ['black', 'none', 'none'].
-    """
+        """A 2D list of length-m lists of strings holding the colors of
+    different elements. The first dimension is each plot, the second dimension
+    is each curve, the third dimension is a particular element. Possible values
+    of the element color are 'black', 'red', 'green', 'blue', 'magenta',
+    'yellow', 'cyan' and 'white'. Each color can be set to any string, float or
+    tuple recognized by external library. Each color can be set to 'none' if
+    not used. The default is ['black', 'none', 'none'].
+
+    kind        |  m  |  elements of length-m list
+    ------------|-----|-----------------------------------
+    'plot'      |  3  |  line, markeredge and markerface
+    'scatter'   |  2  |  markeredge and markerface
+    'bar'       |  3  |  barface, baredge and errorbar
+    'errorbar'  |  4  |  line, markeredge, markerface and errorbar
+    'fill'      |  2  |  patchface and patchedge
+        """
         return self._color
 
     @color.setter
@@ -129,12 +129,11 @@ class Plot(object):
 
     @property
     def label(self):
-        """Labels of data curves, 2D list of strs.
-    Used for displaying legends on the plots.
-    A label can be set to an empty string to
-    hide it from the legend. The default is
-    None.
-    """
+        """A 2D list of strings holding the labels of the curves displayed in
+    the plot legends. The first dimension is each plot, the second dimension is
+    each curve. A label can be set to an empty string to hide it from the
+    legend. The default is None.
+        """
         return self._label
 
     @label.setter
@@ -152,11 +151,10 @@ class Plot(object):
 
     @property
     def zorder(self):
-        """Drawing order of data curves, 2D list of ints.
-    Higher drawing order curves are drawn above
-    lower drawing order curves. The default is
-    the order of property data.
-    """
+        """A 2D list of integers holding the drawing orders of the curves. The
+    first dimension is each plot, the second dimension is each curve. The
+    curves with lower zorder values are drawn first. The default is 2.
+        """
         return self._zorder
 
     @zorder.setter
@@ -174,12 +172,12 @@ class Plot(object):
 
     @property
     def legend(self):
-        """Legend location, list of lists.
-    Each list = [loc, ncol, bbox_to_anchor] where loc
-    = str is location, ncol = int is number of columns,
-    bbox_to_anchor = [left, bottom, width, height] is
-    position. The default is ['best', 1, None].
-    """
+        """A list of [string, integer, [float, float, float, float]] specifying
+    the parameters of the plot legends. The first dimension is each plot, the
+    string is the location of the legend, the integer is the number of columns
+    in the legend, the floats are the left and bottom positions and the width
+    and height of the legend. The default is ['best', 1, None].
+        """
         return self._legend
 
     @legend.setter
@@ -196,10 +194,11 @@ class Plot(object):
 
     @property
     def xscale(self):
-        """Scaling of x-axes, list of strs. Each scaling
-    = 'linear', 'log', or any string recongized
-    by external library. The default is 'linear'.
-    """
+        """A list of strings holding the scalings of the x-axes. The first
+    dimension is each plot. The possible values are 'linear' and 'log'. Each
+    scaling can be set to any string recongized by external library. The
+    default is 'linear'.
+        """
         return self._xscale
 
     @xscale.setter
@@ -216,10 +215,11 @@ class Plot(object):
 
     @property
     def yscale(self):
-        """Scaling of y-axes, list of strs. Each scaling
-    = 'linear', 'log', or any string recongized
-    by external library. The default is 'linear'.
-    """
+        """A list of strings holding the scalings of the y-axes. The first
+    dimension is each plot. The possible values are 'linear' and 'log'. Each
+    scaling can be set to any string recongized by external library. The
+    default is 'linear'.
+        """
         return self._yscale
 
     @yscale.setter
@@ -236,11 +236,11 @@ class Plot(object):
 
     @property
     def xlim(self):
-        """Starting and ending values of x-axes, list of
-    [xmin, xmax] where xmin and xmax are floats.
-    Set to None to autoscale x-axis. The default
-    is to autoscale.
-    """
+        """A list of length-2 lists of floats holding the limits of the x-axes.
+    The first dimension is each plot, the floats are the starting and ending
+    values on the x-axis. Can be set to None to autoscale the x-axis. The
+    default is None.
+        """
         return self._xlim
 
     @xlim.setter
@@ -257,11 +257,11 @@ class Plot(object):
 
     @property
     def ylim(self):
-        """Starting and ending values of y-axes, list of
-    [ymin, ymax] where ymin and ymax are floats.
-    Set to None to autoscale y-axis. The default
-    is to autoscale.
-    """
+        """A list of length-2 lists of floats holding the limits of the y-axes.
+    The first dimension is each plot, the floats are the starting and ending
+    values on the y-axis. Can be set to None to autoscale the y-axis. The
+    default is None.
+        """
         return self._ylim
 
     @ylim.setter
@@ -278,11 +278,11 @@ class Plot(object):
 
     @property
     def xdel(self):
-        """Major and minor ticks on x-axes, list of
-    [xmajor, xminor] where xmajor and xminor
-    are floats. Set to None to use auto ticks
-    on x-axis. The default is to use auto ticks.
-    """
+        """A list of length-2 lists of floats holding the intervals for the
+    ticks on the x-axes. The first dimension is each plot, the floats are the
+    intervals for the major and minor ticks on the x-axis. Can be set to None
+    to use automatic ticks on the x-axis. The default is None.
+        """
         return self._xdel
 
     @xdel.setter
@@ -299,11 +299,11 @@ class Plot(object):
 
     @property
     def ydel(self):
-        """Major and minor ticks on y-axes, list of
-    [ymajor, yminor] where ymajor and yminor
-    are floats. Set to None to use auto ticks
-    on y-axis. The default is to use auto ticks.
-    """
+        """A list of length-2 lists of floats holding the intervals for the
+    ticks on the y-axes. The first dimension is each plot, the floats are the
+    intervals for the major and minor ticks on the y-axis. Can be set to None
+    to use automatic ticks on the y-axis. The default is None.
+        """
         return self._ydel
 
     @ydel.setter
@@ -320,12 +320,12 @@ class Plot(object):
 
     @property
     def xtick(self):
-        """Custom ticks on x-axes, list of lists of
-    [xposition, xtext] where xposition is float
-    and xtext is str. Set to None to use auto
-    ticks on x-axis. The default is to use auto
-    ticks.
-    """
+        """A 2D list of [float, string] holding the custom ticks on the x-axes.
+    The first dimension is each plot, the second dimension is each tick on the
+    x-axis, the float and the string are the position and the label of the
+    tick. Set to None to use automatic ticks on the x-axis. The default is
+    None.
+        """
         return self._xtick
 
     @xtick.setter
@@ -344,12 +344,12 @@ class Plot(object):
 
     @property
     def ytick(self):
-        """Custom ticks on y-axes, list of lists of
-    [yposition, ytext] where yposition is float
-    and ytext is str. Set to None to use auto
-    ticks on y-axis. The default is to use auto
-    ticks.
-    """
+        """A 2D list of [float, string] holding the custom ticks on the y-axes.
+    The first dimension is each plot, the second dimension is each tick on the
+    y-axis, the float and the string are the position and the label of the
+    tick. Set to None to use automatic ticks on the y-axis. The default is
+    None.
+        """
         return self._ytick
 
     @ytick.setter
@@ -368,18 +368,20 @@ class Plot(object):
 
     @property
     def xgrid(self):
-        """Grids on x-axes, list of [xgridmajorstyle,
-    xgridmajorcolor, xgridmajorwidth, xgridminorstyle,
-    xgridminorcolor, xgridmajorwidth], major or minor
-    grids can be set to None.
-    """
+        """A 2D list of [string, string, float] holding the vertical grid
+    lines. The first dimension is each plot, the second dimension is the major
+    and minor grids, the strings and the float are the style, the color, and
+    the width of the grid lines. Set to None to disable the vertical grid
+    lines. The default is None.
+        """
         return self._xgrid
 
     @xgrid.setter
     def xgrid(self, xgrid):
-        for item in xgrid:
-            if type(item) != list and item != None:
-                raise ValueError(xgrid)
+        for group in xgrid:
+            for item in group:
+                if type(item) != list and item != None:
+                    raise ValueError(xgrid)
 
         self._xgrid = xgrid
 
@@ -389,18 +391,20 @@ class Plot(object):
 
     @property
     def ygrid(self):
-        """Grids on y-axes, list of [ygridmajorstyle,
-    ygridmajorcolor, ygridmajorwidth, ygridminorstyle,
-    ygridminorcolor, ygridmajorwidth], major or minor
-    grids can be set to None.
-    """
+        """A 2D list of [string, string, float] holding the horizontal grid
+    lines. The first dimension is each plot, the second dimension is the major
+    and minor grids, the strings and the float are the style, the color, and
+    the width of the grid lines. Set to None to disable the horizontal grid
+    lines. The default is None.
+        """
         return self._ygrid
 
     @ygrid.setter
     def ygrid(self, ygrid):
-        for item in ygrid:
-            if type(item) != list and item != None:
-                raise ValueError(ygrid)
+        for group in ygrid:
+            for item in group:
+                if type(item) != list and item != None:
+                    raise ValueError(ygrid)
 
         self._ygrid = ygrid
 
@@ -410,10 +414,10 @@ class Plot(object):
 
     @property
     def xlabel(self):
-        """Labels of x-axes, list of strs. A label can be
-    set to an empty string to hide it from the
-    plot. The default is None.
-    """
+        """A list of strings holding the labels of the x-axes. The first
+    dimension is each plot. A label can be set to an empty string to hide it
+    from the plot. The default is None.
+        """
         return self._xlabel
 
     @xlabel.setter
@@ -430,10 +434,10 @@ class Plot(object):
 
     @property
     def ylabel(self):
-        """Labels of y-axes, list of strs. A label can be
-    set to an empty string to hide it from the
-    plot. The default is None.
-    """
+        """A list of strings holding the labels of the y-axes. The first
+    dimension is each plot. A label can be set to an empty string to hide it
+    from the plot. The default is None.
+        """
         return self._ylabel
 
     @ylabel.setter
@@ -450,12 +454,13 @@ class Plot(object):
 
     @property
     def xlabpos(self):
-        """Positions of x-axis labels, list of lists.
-    Each list = [xposition, xalign] where
-    xposition is float from 0.0 to 1.0 and
-    xalign = 'center'|'right'|'left'.
-    The default is None.
-    """
+        """A list of [float, string] holding the positions of the labels for
+    the x-axes. The first dimension is each plot, the float and the string are
+    the locations and the alignments of the label for the x-axis. Possible
+    values of the location are from 0 to 1, of the alignment are 'center',
+    'left' and 'right'. Set to None to automatically place the label on the
+    x-axis. The default is None.
+        """
         return self._xlabpos
 
     @xlabpos.setter
@@ -472,12 +477,13 @@ class Plot(object):
 
     @property
     def ylabpos(self):
-        """Positions of y-axis labels, list of lists.
-    Each list = [yposition, yalign] where
-    yposition is float from 0.0 to 1.0 and
-    yalign = 'center'|'right'|'left'.
-    The default is None.
-    """
+        """A list of [float, string] holding the positions of the labels for
+    the y-axes. The first dimension is each plot, the float and the string are
+    the locations and the alignments of the label for the y-axis. Possible
+    values of the location are from 0 to 1, of the alignment are 'center',
+    'left' and 'right'. Set to None to automatically place the label on the
+    y-axis. The default is None.
+        """
         return self._ylabpos
 
     @ylabpos.setter
@@ -494,18 +500,16 @@ class Plot(object):
 
     @property
     def note(self):
-        """Notes on the plots, list of lists of
-    [xposition, yposition, xalign, yalign, text,
-    color, fontscale] where xposition and yposition
-    are floats, xalign, yalign, text, and color are
-    strs, fontscale is float in units of fontsize.
-    Positions are given in scaled coordinates
-    which run from 0 to 1 from left to right
-    and from bottom to top of the plot, xalign =
-    'left'|'right' and yalign = 'bottom'|'top'.
-    Set to an empty list to hide it from the plot.
-    The default is None.
-    """
+        """A 2D list of [float, float, string, string, string, string, float]
+    holding the custom labels on the plots. The first dimension is each plot,
+    the second dimension is each label, the floats are the locations along the
+    x-axis and the y-axis and the font size scaling factor, the strings are the
+    horizontal and vertical alignments, the text and the color. Locations
+    (0, 0) and (1, 1) correspond to the bottom left and the top right corners
+    of the plot. Possible values of the horizontal alignment are 'left' and
+    'right', of the vertical alignment are 'bottom' and 'top'. Set to an empty
+    list to hide it from the plot. The default is None.
+        """
         return self._note
 
     @note.setter
@@ -523,18 +527,16 @@ class Plot(object):
 
     @property
     def title(self):
-        """Notes on the page, list of
-    [xposition, yposition, xalign, yalign, text,
-    color, fontscale] where xposition and yposition
-    are floats, xalign, yalign, text, and color are
-    strs, fontscale is float in units of fontsize.
-    Positions are given in scaled coordinates
-    which run from 0 to 1 from left to right
-    and from bottom to top of the page, xalign =
-    'left'|'right' and yalign = 'bottom'|'top'.
-    Set to an empty list to hide it from the page.
-    The default is None.
-    """
+        """A list of [float, float, string, string, string, string, float]
+    holding the custom labels on the figure. The first dimension is each label,
+    the floats are the locations along the x-axis and the y-axis and the font
+    size scaling factor, the strings are the horizontal and vertical
+    alignments, the text and the color. Locations (0, 0) and (1, 1) correspond
+    to the bottom left and the top right corners of the figure. Possible values
+    of the horizontal alignment are 'left' and 'right', of the vertical
+    alignment are 'bottom' and 'top'. Set to an empty list to hide it from the
+    figure. The default is None.
+        """
         return self._title
 
     @title.setter
@@ -551,10 +553,9 @@ class Plot(object):
 
     @property
     def pagesize(self):
-        """Size of the page in inches, [width, height]
-    where width and height are floats.
-    The default is [8.0, 6.0].
-    """
+        """A length-2 list of floats holding the width and the height of the
+    figure in inches. The default is [8, 6].
+        """
         return self._pagesize
 
     @pagesize.setter
@@ -570,9 +571,8 @@ class Plot(object):
 
     @property
     def fontsize(self):
-        """Size of the font in points, float.
-    The default is 18.0.
-    """
+        """A float holding the size of the font in points. The default is 18.
+        """
         return self._fontsize
 
     @fontsize.setter
@@ -585,9 +585,8 @@ class Plot(object):
 
     @property
     def linewidth(self):
-        """Width of the line in points, float.
-    The default is 1.5.
-    """
+        """A float holding the width of the line in points. The default is 1.5.
+        """
         return self._linewidth
 
     @linewidth.setter
@@ -600,9 +599,8 @@ class Plot(object):
 
     @property
     def markersize(self):
-        """Size of the marker in points, float.
-    The default is 8.0.
-    """
+        """A float holding the size of the marker in points. The default is 8.
+        """
         return self._markersize
 
     @markersize.setter
@@ -615,11 +613,9 @@ class Plot(object):
 
     @property
     def labelpad(self):
-        """Amount of padding for labels in points,
-    [xlabelpad, ylabelpad] where xlabelpad
-    and ylabelpad are floats. The default
-    is [6.0, 6.0].
-    """
+        """A length-2 list of floats holding the amount of padding for the
+    labels on the x-axis and the y-axis in points. The default is [6, 6].
+        """
         return self._labelpad
 
     @labelpad.setter
@@ -635,12 +631,10 @@ class Plot(object):
 
     @property
     def tickpad(self):
-        """Amount of padding for ticks in points,
-    [xtickmajorpad, xtickminorpad, ytickmajorpad,
-    ytickminorpad] where xtickmajorpad, xtickminorpad,
-    ytickmajorpad, and ytickminorpad are floats.
-    The default is [6.0, 6.0, 6.0, 6.0].
-    """
+        """A length-4 list of floats holding the amount of padding for the
+    major and minor ticks on the x-axis and the major and minor ticks on the
+    y-axis in points. The default is [6, 6, 6, 6].
+        """
         return self._tickpad
 
     @tickpad.setter
@@ -656,12 +650,10 @@ class Plot(object):
 
     @property
     def ticksize(self):
-        """Size of the ticks in points,
-    [xtickmajorsize, xtickminorsize, ytickmajorsize,
-    ytickminorsize] where xtickmajorsize, xtickminorsize,
-    ytickmajorsize, and ytickminorsize are floats.
-    The default is [6.0, 3.0, 6.0, 3.0].
-    """
+        """A length-4 list of floats holding the size of the major and minor
+    ticks on the x-axis and the major and minor ticks on the y-axis in points.
+    The default is [6, 3, 6, 3].
+        """
         return self._ticksize
 
     @ticksize.setter
@@ -677,10 +669,10 @@ class Plot(object):
 
     @property
     def griddim(self):
-        """Geometry of the grid that plots will be placed,
-    [nrow, ncol] where nrow and ncol are ints.
-    The default is [1, 1].
-    """
+        """A length-2 list of integers holding the number of rows and columns
+    in the grid whose cells hold the plots. The cells are numbered from the top
+    left corner starting from zero. The default is [1, 1].
+        """
         return self._griddim
 
     @griddim.setter
@@ -696,11 +688,9 @@ class Plot(object):
 
     @property
     def gridpad(self):
-        """Spacing between the figure edges and the plot edges
-    and height and width spacing between the plots in
-    units of fontsize, [pad, h_pad, w_pad] where pad,
-    h_pad, and w_pad are floats. The default is
-    [0.5, 0.0, 0.0].
+        """A length-3 list of floats holding the padding of the figure and the
+    vertical and horizontal padding of the plots in units of fontsize. The
+    default is [0.5, 0, 0].
     """
         return self._gridpad
 
@@ -717,12 +707,11 @@ class Plot(object):
 
     @property
     def gridpos(self):
-        """Layout of the plots on the grid, list of
-    [top, bottom, left, right] where top
-    and bottom are ints in 0:nrow range,
-    left and right are ints in 0:ncol
-    range. The default is [[0, 1, 0, 1]].
-    """
+        """A list of length-4 lists of integers holding the positions of the
+    plots in the grid. The first dimension is each plot, the integers are the
+    top, bottom, left and right borders of the plot in the grid. The default is
+    [[0, 1, 0, 1]].
+        """
         return self._gridpos
 
     @gridpos.setter
@@ -739,9 +728,9 @@ class Plot(object):
 
     @property
     def frame(self):
-        """Display legend frame, bool.
-    The default is False.
-    """
+        """A boolean indicating whether to display the legend frame. The
+    default is False.
+        """
         return self._frame
 
     @frame.setter
@@ -1151,10 +1140,10 @@ class Plot(object):
                     _plot.set_yticklabels(_yticklabel)
 
             if hasattr(self, 'xgrid'):
-                if self.xgrid[iplot] != None:
-                    _style = self.xgrid[iplot][0]
-                    _color = self.xgrid[iplot][1]
-                    _width = self.xgrid[iplot][2]
+                if self.xgrid[iplot][0] != None:
+                    _style = self.xgrid[iplot][0][0]
+                    _color = self.xgrid[iplot][0][1]
+                    _width = self.xgrid[iplot][0][2]
                     if _style != None and _color != None and _width != None:
                         _style_matplotlib = _style
                         if type(_style) == str:
@@ -1171,9 +1160,10 @@ class Plot(object):
                                 color = _color_matplotlib,
                                 linewidth = _width)
 
-                    _style = self.xgrid[iplot][3]
-                    _color = self.xgrid[iplot][4]
-                    _width = self.xgrid[iplot][5]
+                if self.xgrid[iplot][1] != None:
+                    _style = self.xgrid[iplot][1][0]
+                    _color = self.xgrid[iplot][1][1]
+                    _width = self.xgrid[iplot][1][2]
                     if _style != None and _color != None and _width != None:
                         _style_matplotlib = _style
                         if type(_style) == str:
@@ -1191,10 +1181,10 @@ class Plot(object):
                                 linewidth = _width)
 
             if hasattr(self, 'ygrid'):
-                if self.ygrid[iplot] != None:
-                    _style = self.ygrid[iplot][0]
-                    _color = self.ygrid[iplot][1]
-                    _width = self.ygrid[iplot][2]
+                if self.ygrid[iplot][0] != None:
+                    _style = self.ygrid[iplot][0][0]
+                    _color = self.ygrid[iplot][0][1]
+                    _width = self.ygrid[iplot][0][2]
                     if _style != None and _color != None and _width != None:
                         _style_matplotlib = _style
                         if type(_style) == str:
@@ -1211,9 +1201,10 @@ class Plot(object):
                                 color = _color_matplotlib,
                                 linewidth = _width)
 
-                    _style = self.ygrid[iplot][3]
-                    _color = self.ygrid[iplot][4]
-                    _width = self.ygrid[iplot][5]
+                if self.ygrid[iplot][1] != None:
+                    _style = self.ygrid[iplot][1][0]
+                    _color = self.ygrid[iplot][1][1]
+                    _width = self.ygrid[iplot][1][2]
                     if _style != None and _color != None and _width != None:
                         _style_matplotlib = _style
                         if type(_style) == str:
