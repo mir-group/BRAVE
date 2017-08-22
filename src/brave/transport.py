@@ -467,10 +467,10 @@ class Transport(Cell):
         """
         if outputtype.lower() == 'temp':
             slice = self.interpolate_binary('numelec', 'mu', inputvalues[0])
-            outputvalue = numpy.interp(inputvalues[1], slice, self.temp)
+            outputvalue = numpy.interp(inputvalues[1], self.temp, slice)
         elif outputtype.lower() == 'mu':
             slice = self.interpolate_binary('numelec', 'temp', inputvalues[0])
-            outputvalue = numpy.interp(inputvalues[1], slice, self.mu)
+            outputvalue = numpy.interp(inputvalues[1], self.mu, slice)
         elif outputtype.lower() == 'numelec':
             itemp1, itemp2, wtemp1, wtemp2 = common._int_pts(
                     self.temp, inputvalues[0])

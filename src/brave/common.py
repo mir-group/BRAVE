@@ -1,5 +1,7 @@
 """This module defines common parameters and functions."""
 
+import numpy
+
 # These are the "2014 CODATA recommended values" taken from
 # "The NIST Reference on Constants, Units, and Uncertainty"
 # http://physics.nist.gov/cuu/
