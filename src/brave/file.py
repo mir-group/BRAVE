@@ -1108,7 +1108,6 @@ class File(object):
 
                 oldkunit = self.kunit
                 self.set_kunit(lapwkunit)
-
                 nline = self.nkpath - 1
                 nstep = []
                 line = numpy.empty((nline, 3), float)
@@ -1118,6 +1117,7 @@ class File(object):
                     line[ii] = self.kpath[ii + 1] - self.kpath[ii]
                     step[ii] = line[ii] / float(nstep[ii])
                 origin = self.kpath[0] - step[0]
+                self.set_kunit(oldkunit)
 
                 ngridmax = 8192
                 ngrid = []
@@ -1172,8 +1172,6 @@ class File(object):
                             ).format(labels[ii], kpoints[ii], ngrids[
                             ii], weights[ii])
                 content += 'END\n'
-
-                self.set_kunit(oldkunit)
 
         common._write_file(filenames, [content])
 

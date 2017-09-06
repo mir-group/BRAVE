@@ -181,42 +181,35 @@ class Kpoint(Cell):
     and recalculating properties of class Cell,
     kpoint, kline, and kpath.
         """
-        oldalat = self.alat
-        super().set_alat(alat)
-
-        if abs(self.alat - oldalat) > common.EPS12:
+        if abs(alat - self.alat) > common.EPS12:
             if hasattr(self, 'kline'):
-                self.kline *= self.alat / oldalat
-
+                self.kline *= alat / self.alat
             if self.kunit == 'cartesian':
                 if hasattr(self, 'kpoint'):
-                    self.kpoint *= self.alat / oldalat
-
+                    self.kpoint *= alat / self.alat
                 if hasattr(self, 'kpath'):
-                    self.kpath *= self.alat / oldalat
+                    self.kpath *= alat / self.alat
+        super().set_alat(alat)
 
     def set_kunit(self, kunit):
         """Method for setting the new value of kunit =
     'cartesian'|'crystal' and recalculating
     kpoint and kpath.
         """
-        if not hasattr(self, 'avec') or not hasattr(self, 'bvec'):
-            raise ValueError("initialize avec and bvec")
-
-        oldkunit = self.kunit
-        self.kunit = kunit
-
-        if self.kunit != oldkunit:
-            if self.kunit == 'cartesian':
+        if kunit != self.kunit:
+            if kunit == 'cartesian':
+                if not hasattr(self, 'bvec'):
+                    self.calc_bvec()
                 mtrx = self.bvec
             else:
+                if not hasattr(self, 'avec'):
+                    self.calc_avec()
                 mtrx = self.avec.transpose()
-
             if hasattr(self, 'kpoint'):
                 self.kpoint = numpy.dot(self.kpoint, mtrx)
-
             if hasattr(self, 'kpath'):
                 self.kpath = numpy.dot(self.kpath, mtrx)
+            self.kunit = kunit
 
     def calc_kindex(self, mode):
         """Method for calculating numbers of k-points along
@@ -226,7 +219,6 @@ class Kpoint(Cell):
     Other sections will have the same number (mode = 'number')
     or density (mode = 'density') of k-points.
         """
-        kpath = self.kpath
         nkpath = self.nkpath
         nkfirst = self.kindex[1]
         nksect = nkpath - 1
@@ -239,19 +231,16 @@ class Kpoint(Cell):
         elif mode == 'density':
             oldkunit = self.kunit
             self.set_kunit('cartesian')
-
             klen = numpy.zeros(nksect, float)
             for ii in range(nksect):
-                klen[ii] = numpy.linalg.norm(kpath[ii + 1] - kpath[ii])
-
+                klen[ii] = numpy.linalg.norm(self.kpath[
+                        ii + 1, :] - self.kpath[ii, :])
+            self.set_kunit(oldkunit)
             knum = [nkfirst]
             for ii in range(1, nksect):
                 knum.append(int(round(float(nkfirst) * klen[ii] / klen[0])))
-
             for ii in range(2, nkpath):
                 kindex[ii] = sum(knum[:ii])
-
-            self.set_kunit(oldkunit)
 
         else:
             raise ValueError(mode)
@@ -304,13 +293,11 @@ class Kpoint(Cell):
         """Method for calculating kline given kpoint."""
         oldkunit = self.kunit
         self.set_kunit('cartesian')
-
         kdiff = numpy.diff(self.kpoint, axis=0)
+        self.set_kunit(oldkunit)
         knorm = numpy.linalg.norm(kdiff, axis=1)
         kcumsum = numpy.cumsum(knorm)
         self.kline = numpy.insert(kcumsum, 0, 0.0)
-
-        self.set_kunit(oldkunit)
 
     def read(self, fileformat, filenames, lapwkunit=None):
         """Method for reading properties from file.

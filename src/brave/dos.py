@@ -62,10 +62,7 @@ class DOS(Cell):
     |'angstrom3'|'nm3', 'ev'|'rydberg'|'hartree'|'thz'|'cm-1']
     and recalculating dos.
         """
-        olddunit = self.dunit
-        self.dunit = dunit
-
-        if self.dunit[0] != olddunit[0]:
+        if dunit[0] != self.dunit[0]:
             oldaunit = self.aunit
             self.set_aunit('angstrom')
             _dscale = {
@@ -77,17 +74,20 @@ class DOS(Cell):
 
             if hasattr(self, 'dos'):
                 dummy = self.dos
-                dummy[1] *= _dscale[olddunit[0]] / _dscale[self.dunit[0]]
+                dummy[1] *= _dscale[self.dunit[0]] / _dscale[dunit[0]]
                 self.dos = dummy
 
-        if self.dunit[1] != olddunit[1]:
+        if dunit[1] != self.dunit[1]:
             if hasattr(self, 'dos'):
                 dummy = self.dos
-                dummy[0] *= common._escale[self.dunit[1]] / common._escale[
-                        olddunit[1]]
-                dummy[1] /= common._escale[self.dunit[1]] / common._escale[
-                        olddunit[1]]
+                dummy[0] *= common._escale[dunit[1]] / common._escale[
+                        self.dunit[1]]
+                dummy[1] /= common._escale[dunit[1]] / common._escale[
+                        self.dunit[1]]
                 self.dos = dummy
+
+        if dunit != self.dunit:
+            self.dunit = dunit
 
     def read(self, fileformat, filenames, soc=None):
         """Method for reading properties from file.

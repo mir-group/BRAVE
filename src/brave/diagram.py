@@ -96,13 +96,6 @@ class Diagram(DOS, Energy):
         else:
             raise ValueError(plotformat)
 
-        if filename is None:
-            if hasattr(self, 'prefix'):
-                filename = '{0:s}.{1:s}'.format(self.prefix, fileformat.lower(
-                        ))
-            else:
-                raise ValueError(filename)
-
         pagesize = _pagesize_list[ii]
         griddim = _griddim_list[ii]
         gridpos = _gridpos_list[ii]

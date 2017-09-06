@@ -180,33 +180,25 @@ class Cell(File):
         """Method for setting the new value of aunit =
     'bohr'|'angstrom'|'nm' and recalculating alat.
         """
-        oldaunit = self.aunit
-        self.aunit = aunit
-
-        if self.aunit != oldaunit:
+        if aunit != self.aunit:
             if hasattr(self, 'alat'):
-                self.alat *= common._ascale[
-                        self.aunit] / common._ascale[oldaunit]
+                self.alat *= common._ascale[aunit] / common._ascale[self.aunit]
+            self.aunit = aunit
 
     def set_alat(self, alat):
         """Method for setting the new value of alat = float
     and recalculating avec, bvec, avol, and bvol.
         """
-        oldalat = self.alat
-        self.alat = alat
-
-        if abs(self.alat - oldalat) > common.EPS12:
+        if abs(alat - self.alat) > common.EPS12:
             if hasattr(self, 'avec'):
-                self.avec *= oldalat / self.alat
-
+                self.avec *= self.alat / alat
             if hasattr(self, 'bvec'):
-                self.bvec *= self.alat / oldalat
-
+                self.bvec *= alat / self.alat
             if hasattr(self, 'avol'):
-                self.avol *= (oldalat / self.alat) ** 3
-
+                self.avol *= (self.alat / alat) ** 3
             if hasattr(self, 'bvol'):
-                self.bvol *= (self.alat / oldalat) ** 3
+                self.bvol *= (alat / self.alat) ** 3
+            self.alat = alat
 
     def calc_avec(self):
         """Method for calculating avec given bvec."""

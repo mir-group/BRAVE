@@ -100,21 +100,16 @@ class Energy(Kpoint):
     'ev'|'rydberg'|'hartree'|'thz'|'cm-1' and
     recalculating energy, efermi and vref.
         """
-        oldeunit = self.eunit
-        self.eunit = eunit
-
-        if self.eunit != oldeunit:
+        if eunit != self.eunit:
             if hasattr(self, 'energy'):
-                self.energy *= common._escale[self.eunit] / common._escale[
-                        oldeunit]
-
+                self.energy *= common._escale[eunit] / common._escale[
+                        self.eunit]
             if hasattr(self, 'efermi'):
-                self.efermi *= common._escale[self.eunit] / common._escale[
-                        oldeunit]
-
+                self.efermi *= common._escale[eunit] / common._escale[
+                        self.eunit]
             if hasattr(self, 'vref'):
-                self.vref *= common._escale[self.eunit] / common._escale[
-                        oldeunit]
+                self.vref *= common._escale[eunit] / common._escale[self.eunit]
+            self.eunit = eunit
 
     def calc_efermi(self, soc=None):
         """Method for calculating efermi for insulators given the
