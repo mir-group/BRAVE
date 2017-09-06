@@ -89,8 +89,8 @@ class Diagram(DOS, Energy):
         _gridpos_list = [
                 [[0, 1, 0, 1]], [[0, 1, 0, 1]], [[0, 1, 0, 4], [0, 1, 4, 5]]]
 
-        if plotformat.lower() in _plotformat_list:
-            ii = _plotformat_list.index(plotformat.lower())
+        if plotformat in _plotformat_list:
+            ii = _plotformat_list.index(plotformat)
             i_e = ii % -2
             i_d = ii - 1
         else:

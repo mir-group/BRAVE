@@ -38,7 +38,7 @@ class Cell(File):
 
     @aunit.setter
     def aunit(self, aunit):
-        self._aunit = aunit.lower()
+        self._aunit = aunit
 
         if self._aunit not in ['bohr', 'angstrom', 'nm']:
             raise ValueError(aunit)
@@ -229,15 +229,15 @@ class Cell(File):
                  or ['case.output1up', 'case.output1dn']
         """
 
-        if fileformat.lower() == 'internal':
+        if fileformat == 'internal':
             self._read_file_internal(1, filenames)
-        elif fileformat.lower() == 'pw-out':
+        elif fileformat == 'pw-out':
             self._read_file_pw_out(1, filenames)
-        elif fileformat.lower() == 'wannier-in':
+        elif fileformat == 'wannier-in':
             self._read_file_wannier_in(1, filenames)
-        elif fileformat.lower() == 'vasp-out':
+        elif fileformat == 'vasp-out':
             self._read_file_vasp_out(1, filenames)
-        elif fileformat.lower() == 'lapw-out':
+        elif fileformat == 'lapw-out':
             self._read_file_lapw_out(1, filenames, None)
         else:
             raise ValueError(fileformat)
@@ -252,11 +252,11 @@ class Cell(File):
     'wannier-in'    ['seedname.win']
         """
 
-        if fileformat.lower() == 'internal':
+        if fileformat == 'internal':
             self._write_file_internal(1, filenames)
-        elif fileformat.lower() == 'pw-in':
+        elif fileformat == 'pw-in':
             self._write_file_pw_in(1, filenames)
-        elif fileformat.lower() == 'wannier-in':
+        elif fileformat == 'wannier-in':
             self._write_file_wannier_in(1, filenames)
         else:
             raise ValueError(fileformat)

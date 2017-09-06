@@ -22,7 +22,7 @@ class Energy(Kpoint):
 
     @eunit.setter
     def eunit(self, eunit):
-        self._eunit = eunit.lower()
+        self._eunit = eunit
 
         if self._eunit not in ['ev', 'rydberg', 'hartree', 'thz', 'cm-1']:
             raise ValueError(eunit)
@@ -195,28 +195,28 @@ class Energy(Kpoint):
         if lapwkunit is None:
             lapwkunit = 'cartesian'
 
-        if fileformat.lower() == 'internal':
+        if fileformat == 'internal':
             self._read_file_internal(3, filenames)
-        elif fileformat.lower() == 'pw-out':
+        elif fileformat == 'pw-out':
             self._read_file_pw_out(3, filenames)
-        elif fileformat.lower() == 'bands-out':
+        elif fileformat == 'bands-out':
             self._read_file_pw_out(1, [filenames[0]])
             self._read_file_bands_out(3, filenames[1:])
-        elif fileformat.lower() == 'matdyn-out':
+        elif fileformat == 'matdyn-out':
             self._read_file_pw_out(1, [filenames[0]])
             self._read_file_matdyn_out(3, [filenames[1]])
-        elif fileformat.lower() == 'inteqp-out':
+        elif fileformat == 'inteqp-out':
             self._read_file_pw_out(1, [filenames[0]])
             self._read_file_inteqp_out(3, [filenames[1]], etype)
-        elif fileformat.lower() == 'sigma-out':
+        elif fileformat == 'sigma-out':
             self._read_file_pw_out(1, [filenames[0]])
             self._read_file_sigma_out(3, [filenames[1]], etype)
-        elif fileformat.lower() == 'wannier-out':
+        elif fileformat == 'wannier-out':
             self._read_file_wannier_in(1, [filenames[0]])
             self._read_file_wannier_out(3, filenames[1:])
-        elif fileformat.lower() == 'vasp-out':
+        elif fileformat == 'vasp-out':
             self._read_file_vasp_out(3, filenames)
-        elif fileformat.lower() == 'lapw-out':
+        elif fileformat == 'lapw-out':
             self._read_file_lapw_out(3, filenames, lapwkunit)
         else:
             raise ValueError(fileformat)
@@ -270,17 +270,17 @@ class Energy(Kpoint):
         if nband_exclude is None:
             nband_exclude = 0
 
-        if fileformat.lower() == 'internal':
+        if fileformat == 'internal':
             self._write_file_internal(3, filenames)
-        elif fileformat.lower() == 'pw-in':
+        elif fileformat == 'pw-in':
             self._write_file_pw_in(2, filenames)
-        elif fileformat.lower() == 'wannier-in':
+        elif fileformat == 'wannier-in':
             self._write_file_wannier_in(2, filenames)
-        elif fileformat.lower() == 'vasp-kpt':
+        elif fileformat == 'vasp-kpt':
             self._write_file_vasp_kpt(2, filenames)
-        elif fileformat.lower() == 'lapw-kpt':
+        elif fileformat == 'lapw-kpt':
             self._write_file_lapw_kpt(2, filenames, lapwkunit) 
-        elif fileformat.lower() == 'boltztrap-in':
+        elif fileformat == 'boltztrap-in':
             self._write_file_boltztrap_in(
                     3, filenames, deltae, ecut, lpfac, efcut, tmax, deltat,
                     ecut2, dosmethod, nband_exclude)

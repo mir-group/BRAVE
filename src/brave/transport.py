@@ -361,28 +361,26 @@ class Transport(Cell):
     'numelec'       number of electrons in units of el/uc
                     (electrons per unit cell)
         """
-        if propname.lower() == 'nmu' or propname.lower(
-                ) == 'mu' or propname.lower() == 'ntemp' or propname.lower(
-                ) == 'temp':
+        if propname in ('nmu', 'mu', 'ntemp', 'temp'):
             raise ValueError(propname)
 
         propvalue = getattr(self, propname)
 
-        if paramtype.lower() == 'temp':
+        if paramtype == 'temp':
             slice = numpy.zeros(self.nmu, float)
             itemp1, itemp2, weight1, weight2 = common._int_pts(
                     self.temp, paramvalue)
             for imu in range(self.nmu):
                 slice[imu] = (weight1 * propvalue[
                         imu, itemp1] + weight2 * propvalue[imu, itemp2])
-        elif paramtype.lower() == 'mu':
+        elif paramtype == 'mu':
             slice = numpy.zeros(self.ntemp, float)
             imu1, imu2, weight1, weight2 = common._int_pts(
                     self.mu, paramvalue)
             for itemp in range(self.ntemp):
                 slice[itemp] = (weight1 * propvalue[
                         imu1, itemp] + weight2 * propvalue[imu2, itemp])
-        elif paramtype.lower() == 'numelec':
+        elif paramtype == 'numelec':
             slice = numpy.zeros(self.ntemp, float)
             numelec = self.numelec
             for itemp in range(self.ntemp):
@@ -406,9 +404,9 @@ class Transport(Cell):
     'temp'        temperature in units of K
     'mu'          chemical potential in units of eV
         """
-        if argtype.lower() == 'temp':
+        if argtype == 'temp':
             value = numpy.interp(argvalue, self.temp, propunary)
-        elif argtype.lower() == 'mu':
+        elif argtype == 'mu':
             value = numpy.interp(argvalue, self.mu, propunary)
         else:
             raise ValueError(argtype)
@@ -436,16 +434,16 @@ class Transport(Cell):
     per unit cell).
         """
         _unit_list = ['cm^-3', 'el/uc']
-        if inputunit.lower() not in _unit_list:
+        if inputunit not in _unit_list:
             raise ValueError(inputunit)
-        if outputunit.lower() not in _unit_list:
+        if outputunit not in _unit_list:
             raise ValueError(outputunit)
         outputvalue = inputvalue
 
-        if outputunit.lower() != inputunit.lower():
+        if outputunit != inputunit:
             oldaunit = self.aunit
             self.set_aunit('angstrom')
-            if outputunit.lower() == _unit_list[0]:
+            if outputunit == _unit_list[0]:
                 outputvalue /= self.avol * self.alat ** 3 * 1.0e-24
             else:
                 outputvalue *= self.avol * self.alat ** 3 * 1.0e-24
@@ -465,13 +463,13 @@ class Transport(Cell):
     temp in K, mu in eV, numelec in el/uc
     (electrons per unit cell)
         """
-        if outputtype.lower() == 'temp':
+        if outputtype == 'temp':
             slice = self.interpolate_binary('numelec', 'mu', inputvalues[0])
             outputvalue = numpy.interp(inputvalues[1], self.temp, slice)
-        elif outputtype.lower() == 'mu':
+        elif outputtype == 'mu':
             slice = self.interpolate_binary('numelec', 'temp', inputvalues[0])
             outputvalue = numpy.interp(inputvalues[1], self.mu, slice)
-        elif outputtype.lower() == 'numelec':
+        elif outputtype == 'numelec':
             itemp1, itemp2, wtemp1, wtemp2 = common._int_pts(
                     self.temp, inputvalues[0])
             imu1, imu2, wmu1, wmu2 = common._int_pts(self.mu, inputvalues[1])
@@ -584,7 +582,7 @@ class Transport(Cell):
         if kappaelzeroj is None:
             kappaelzeroj = False
 
-        if fileformat.lower() == 'boltztrap-out':
+        if fileformat == 'boltztrap-out':
             self._read_trn_boltztrap_out(filenames, tauvc, kappaelzeroj)
         else:
             super().read(fileformat, filenames)

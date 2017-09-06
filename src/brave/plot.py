@@ -752,7 +752,7 @@ class Plot(object):
     'matplotlib'    'png'|'eps'|'pdf'    'plot.ext'
         """
 
-        if libraryname.lower() == 'matplotlib':
+        if libraryname == 'matplotlib':
             self._writep_matplotlib(fileformat, filename)
         else:
             raise ValueError(libraryname)
@@ -882,22 +882,22 @@ class Plot(object):
                     _bb = _aa
                     if type(_aa) is str:
                         if _ii == 0:
-                            if _aa.lower() in _linestyle_dict:
-                                _bb = _linestyle_dict[_aa.lower()]
+                            if _aa in _linestyle_dict:
+                                _bb = _linestyle_dict[_aa]
                         else:
-                            if _aa.lower() in _markerstyle_dict:
-                                _bb = _markerstyle_dict[_aa.lower()]
+                            if _aa in _markerstyle_dict:
+                                _bb = _markerstyle_dict[_aa]
                     _style_matplotlib.append(_bb)
 
                 _color_matplotlib = []
                 for _cc in _color:
                     _dd = _cc
                     if type(_cc) is str:
-                        if _cc.lower() in _color_dict:
-                            _dd = _color_dict[_cc.lower()]
+                        if _cc in _color_dict:
+                            _dd = _color_dict[_cc]
                     _color_matplotlib.append(_dd)
 
-                if _kind.lower() == 'plot':
+                if _kind == 'plot':
                     _curve = _plot.plot(
                             self.data[iplot][idata][0],
                             self.data[iplot][idata][1],
@@ -908,7 +908,7 @@ class Plot(object):
                             markerfacecolor = _color_matplotlib[2],
                             label = _label, zorder = _zorder)
 
-                elif _kind.lower() == 'scatter':
+                elif _kind == 'scatter':
                     _curve = _plot.scatter(
                             self.data[iplot][idata][0],
                             self.data[iplot][idata][1],
@@ -918,7 +918,7 @@ class Plot(object):
                             color = _color_matplotlib[1],
                             label = _label, zorder = _zorder)
 
-                elif _kind.lower() == 'bar':
+                elif _kind == 'bar':
                     if max(
                             numpy.amax(self.data[iplot][idata][4]),
                             numpy.amax(self.data[iplot][idata][5])
@@ -940,7 +940,7 @@ class Plot(object):
                             linewidth = self.linewidth,
                             label = _label, zorder = _zorder)
 
-                elif _kind.lower() == 'errorbar':
+                elif _kind == 'errorbar':
                     if numpy.amax(self.data[iplot][idata][2]) > common.EPS12:
                         yerr = self.data[iplot][idata][2]
                     else:
@@ -961,7 +961,7 @@ class Plot(object):
                             ecolor = _color_matplotlib[3],
                             label = _label, zorder = _zorder)
 
-                elif _kind.lower() == 'fill':
+                elif _kind == 'fill':
                     _curve = _plot.fill(
                             self.data[iplot][idata][0],
                             self.data[iplot][idata][1],
@@ -1073,16 +1073,15 @@ class Plot(object):
                     _style = self.xgrid[iplot][0][0]
                     _color = self.xgrid[iplot][0][1]
                     _width = self.xgrid[iplot][0][2]
-                    if _style is not None and _color is not None and _width is not None:
+                    if not None in (_style, _color, _width):
                         _style_matplotlib = _style
                         if type(_style) is str:
-                            if _style.lower() in _linestyle_dict:
-                                _style_matplotlib = _linestyle_dict[
-                                        _style.lower()]
+                            if _style in _linestyle_dict:
+                                _style_matplotlib = _linestyle_dict[_style]
                         _color_matplotlib = _color
                         if type(_color) is str:
-                            if _color.lower() in _color_dict:
-                                _color_matplotlib = _color_dict[_color.lower()]
+                            if _color in _color_dict:
+                                _color_matplotlib = _color_dict[_color]
                         _plot.grid(
                                 b = True, which = 'major', axis = 'x',
                                 linestyle = _style_matplotlib,
@@ -1093,16 +1092,15 @@ class Plot(object):
                     _style = self.xgrid[iplot][1][0]
                     _color = self.xgrid[iplot][1][1]
                     _width = self.xgrid[iplot][1][2]
-                    if _style is not None and _color is not None and _width is not None:
+                    if not None in (_style, _color, _width):
                         _style_matplotlib = _style
                         if type(_style) is str:
-                            if _style.lower() in _linestyle_dict:
-                                _style_matplotlib = _linestyle_dict[
-                                        _style.lower()]
+                            if _style in _linestyle_dict:
+                                _style_matplotlib = _linestyle_dict[_style]
                         _color_matplotlib = _color
                         if type(_color) is str:
-                            if _color.lower() in _color_dict:
-                                _color_matplotlib = _color_dict[_color.lower()]
+                            if _color in _color_dict:
+                                _color_matplotlib = _color_dict[_color]
                         _plot.grid(
                                 b = True, which = 'minor', axis = 'x',
                                 linestyle = _style_matplotlib,
@@ -1114,16 +1112,15 @@ class Plot(object):
                     _style = self.ygrid[iplot][0][0]
                     _color = self.ygrid[iplot][0][1]
                     _width = self.ygrid[iplot][0][2]
-                    if _style is not None and _color is not None and _width is not None:
+                    if not None in (_style, _color, _width):
                         _style_matplotlib = _style
                         if type(_style) is str:
-                            if _style.lower() in _linestyle_dict:
-                                _style_matplotlib = _linestyle_dict[
-                                        _style.lower()]
+                            if _style in _linestyle_dict:
+                                _style_matplotlib = _linestyle_dict[_style]
                         _color_matplotlib = _color
                         if type(_color) is str:
-                            if _color.lower() in _color_dict:
-                                _color_matplotlib = _color_dict[_color.lower()]
+                            if _color in _color_dict:
+                                _color_matplotlib = _color_dict[_color]
                         _plot.grid(
                                 b = True, which = 'major', axis = 'y',
                                 linestyle = _style_matplotlib,
@@ -1134,16 +1131,15 @@ class Plot(object):
                     _style = self.ygrid[iplot][1][0]
                     _color = self.ygrid[iplot][1][1]
                     _width = self.ygrid[iplot][1][2]
-                    if _style is not None and _color is not None and _width is not None:
+                    if not None in (_style, _color, _width):
                         _style_matplotlib = _style
                         if type(_style) is str:
-                            if _style.lower() in _linestyle_dict:
-                                _style_matplotlib = _linestyle_dict[
-                                        _style.lower()]
+                            if _style in _linestyle_dict:
+                                _style_matplotlib = _linestyle_dict[_style]
                         _color_matplotlib = _color
                         if type(_color) is str:
-                            if _color.lower() in _color_dict:
-                                _color_matplotlib = _color_dict[_color.lower()]
+                            if _color in _color_dict:
+                                _color_matplotlib = _color_dict[_color]
                         _plot.grid(
                                 b = True, which = 'minor', axis = 'y',
                                 linestyle = _style_matplotlib,

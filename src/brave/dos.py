@@ -22,7 +22,7 @@ class DOS(Cell):
 
     @dunit.setter
     def dunit(self, dunit):
-        self._dunit = [dunit[0].lower(), dunit[1].lower()]
+        self._dunit = dunit
 
         if self._dunit[0] not in [
                 'uc', 'bohr3', 'angstrom3', 'nm3'] or self._dunit[1] not in [
@@ -103,9 +103,9 @@ class DOS(Cell):
         if soc is None:
             soc = False
 
-        if fileformat.lower() == 'boltztrap-dos':
+        if fileformat == 'boltztrap-dos':
             self._read_dos_boltztrap_dos(filenames, soc)
-        elif fileformat.lower() == 'matdyn-dos':
+        elif fileformat == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
         else:
             super().read(fileformat, filenames)

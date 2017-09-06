@@ -55,49 +55,49 @@ class File(object):
             if line.lstrip()[0:1] == '#':
                 continue
             if level > 0:
-                if 'prefix' in line.lower():
+                if 'prefix' in line:
                     iprefix = ii
-                elif 'aunit' in line.lower():
+                elif 'aunit' in line:
                     iaunit = ii
-                elif 'alat' in line.lower():
+                elif 'alat' in line:
                     ialat = ii
-                elif 'avec' in line.lower():
+                elif 'avec' in line:
                     iavec = ii
-                elif 'bvec' in line.lower():
+                elif 'bvec' in line:
                     ibvec = ii
-                elif 'avol' in line.lower():
+                elif 'avol' in line:
                     iavol = ii
-                elif 'bvol' in line.lower():
+                elif 'bvol' in line:
                     ibvol = ii
-                elif 'natom' in line.lower():
+                elif 'natom' in line:
                     inatom = ii
-                elif 'nelec' in line.lower():
+                elif 'nelec' in line:
                     inelec = ii
-                elif 'sym' in line.lower():
+                elif 'sym' in line:
                     isym = ii
             if level > 1:
-                if 'kunit' in line.lower():
+                if 'kunit' in line:
                     ikunit = ii
-                elif 'kpoint' in line.lower():
+                elif 'kpoint' in line:
                     ikpt = ii
-                elif 'kline' in line.lower():
+                elif 'kline' in line:
                     ikline = ii
-                elif 'kweight' in line.lower():
+                elif 'kweight' in line:
                     ikweight = ii
-                elif 'kpath' in line.lower():
+                elif 'kpath' in line:
                     ikpath = ii
-                elif 'kindex' in line.lower():
+                elif 'kindex' in line:
                     ikindex = ii
-                elif 'klabel' in line.lower():
+                elif 'klabel' in line:
                     iklabel = ii
             if level > 2:
-                if 'eunit' in line.lower():
+                if 'eunit' in line:
                     ieunit = ii
-                elif 'energy' in line.lower():
+                elif 'energy' in line:
                     ienergy = ii
-                elif 'efermi' in line.lower():
+                elif 'efermi' in line:
                     iefrm = ii
-                elif 'vref' in line.lower():
+                elif 'vref' in line:
                     ivref = ii
 
         if level > 0:
@@ -375,16 +375,16 @@ class File(object):
         if level > 1:
             nkpersect = 100
         for ii, line in enumerate(contents[0]):
+            lline = line.lower()
             if level > 0:
-                if 'begin' in line.lower() and 'unit_cell_cart' in line.lower(
-                        ):
+                if 'begin' in lline and 'unit_cell_cart' in lline:
                     iaunit = ii + 1
             if level > 1:
-                if 'bands_num_points' in line.lower():
+                if 'bands_num_points' in lline:
                     nkpersect = int(line.split()[2])
-                elif 'begin' in line.lower() and 'kpoint_path' in line.lower():
+                elif 'begin' in lline and 'kpoint_path' in lline:
                     istart = ii
-                elif 'end' in line.lower() and 'kpoint_path' in line.lower():
+                elif 'end' in lline and 'kpoint_path' in lline:
                     iend = ii
 
         if level > 0:
@@ -706,10 +706,10 @@ class File(object):
         ii = 0
         for line in contents[0]:
             if level > 1:
-                if ' q =' in line.lower():
+                if ' q =' in line:
                     idxkpt.append(ii)
             if level > 2:
-                if 'freq' in line.lower() or 'omega' in line.lower():
+                if 'freq' in line or 'omega' in line:
                     idxbnd.append(ii)
 
         if level > 1:
@@ -747,14 +747,9 @@ class File(object):
 
         if level > 2:
             if etype is None:
-                eindex = 6
-            else:
-                if etype.lower() == 'emf':
-                    eindex = 5
-                elif etype.lower() == 'eqp':
-                    eindex = 6
-                else:
-                    raise ValueError(etype)
+                etype = 'eqp'
+            _dict = {'emf': 5, 'eqp': 6}
+            eindex = _dict[etype]
 
         if level > 1:
             nhead = 2
@@ -791,22 +786,11 @@ class File(object):
 
         if level > 2:
             if etype is None:
-                eindex = 9
-            else:
-                if etype.lower() == 'edft':
-                    eindex = 1
-                elif etype.lower() == 'ecor':
-                    eindex = 2
-                elif etype.lower() == 'eqp0':
-                    eindex = 8
-                elif etype.lower() == 'eqp1':
-                    eindex = 9
-                elif etype.lower() == 'eqp0p':
-                    eindex = 12
-                elif etype.lower() == 'eqp1p':
-                    eindex = 13
-                else:
-                    raise ValueError(etype)
+                etype = 'eqp1'
+            _dict = {
+                    'edft': 1, 'ecor': 2, 'eqp0': 8, 'eqp1': 9, 'eqp0p': 12,
+                    'eqp1p': 13}
+            eindex = _dict[etype]
 
         if level > 1:
             nkpoint = 0

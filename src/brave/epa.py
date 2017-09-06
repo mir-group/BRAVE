@@ -298,11 +298,11 @@ class EPA(DOS):
         if soc is None:
             soc = False
 
-        if fileformat.lower() == 'boltztrap-dos':
+        if fileformat == 'boltztrap-dos':
             self._read_dos_boltztrap_dos(filenames, soc)
-        elif fileformat.lower() == 'matdyn-dos':
+        elif fileformat == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
-        elif fileformat.lower() == 'epa-out':
+        elif fileformat == 'epa-out':
             self._read_epa_epa_out(filenames)
         else:
             super().read(fileformat, filenames)
