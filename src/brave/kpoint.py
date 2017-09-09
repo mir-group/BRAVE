@@ -22,11 +22,12 @@ class Kpoint(Cell):
         return self._kunit
 
     @kunit.setter
-    def kunit(self, kunit):
-        self._kunit = kunit
-
-        if self._kunit not in ['cartesian', 'crystal']:
-            raise ValueError(kunit)
+    def kunit(self, value):
+        if not isinstance(value, str):
+            raise TypeError('kunit {0!r}'.format(value))
+        if value not in common._kscale.keys():
+            raise ValueError('kunit {0!r}'.format(value))
+        self._kunit = value
 
     @kunit.deleter
     def kunit(self):
@@ -56,11 +57,13 @@ class Kpoint(Cell):
         return self._kpoint
 
     @kpoint.setter
-    def kpoint(self, kpoint):
-        self._kpoint = numpy.array(kpoint, float)
-
-        if len(self._kpoint.shape) != 2 or self._kpoint.shape[1] != 3:
-            raise ValueError(kpoint)
+    def kpoint(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kpoint {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(
+                value.shape) != 2 or value.shape[1] != 3:
+            raise ValueError('kpoint {0!r}'.format(value))
+        self._kpoint = value
 
     @kpoint.deleter
     def kpoint(self):
@@ -74,11 +77,12 @@ class Kpoint(Cell):
         return self._kline
 
     @kline.setter
-    def kline(self, kline):
-        self._kline = numpy.array(kline)
-
-        if len(self._kline.shape) != 1:
-            raise ValueError(kline)
+    def kline(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kline {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('kline {0!r}'.format(value))
+        self._kline = value
 
     @kline.deleter
     def kline(self):
@@ -92,11 +96,12 @@ class Kpoint(Cell):
         return self._kweight
 
     @kweight.setter
-    def kweight(self, kweight):
-        self._kweight = numpy.array(kweight, float)
-
-        if len(self._kweight.shape) != 1:
-            raise ValueError(kweight)
+    def kweight(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kweight {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('kweight {0!r}'.format(value))
+        self._kweight = value
 
     @kweight.deleter
     def kweight(self):
@@ -130,11 +135,13 @@ class Kpoint(Cell):
         return self._kpath
 
     @kpath.setter
-    def kpath(self, kpath):
-        self._kpath = numpy.array(kpath, float)
-
-        if len(self._kpath.shape) != 2 or self._kpath.shape[1] != 3:
-            raise ValueError(kpath)
+    def kpath(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kpath {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(
+                value.shape) != 2 or value.shape[1] != 3:
+            raise ValueError('kpath {0!r}'.format(value))
+        self._kpath = value
 
     @kpath.deleter
     def kpath(self):
@@ -148,11 +155,12 @@ class Kpoint(Cell):
         return self._kindex
 
     @kindex.setter
-    def kindex(self, kindex):
-        self._kindex = numpy.array(kindex, int)
-
-        if len(self._kindex.shape) != 1:
-            raise ValueError(kindex)
+    def kindex(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kindex {0!r}'.format(value))
+        if value.dtype != numpy.dtype('int') or len(value.shape) != 1:
+            raise ValueError('kindex {0!r}'.format(value))
+        self._kindex = value
 
     @kindex.deleter
     def kindex(self):
@@ -166,11 +174,12 @@ class Kpoint(Cell):
         return self._klabel
 
     @klabel.setter
-    def klabel(self, klabel):
-        self._klabel = klabel
-
-        if type(self._klabel) is not list:
-            raise ValueError(klabel)
+    def klabel(self, value):
+        if not isinstance(value, list):
+            raise TypeError('klabel {0!r}'.format(value))
+        if not all(isinstance(item, str) for item in value):
+            raise ValueError('klabel {0!r}'.format(value))
+        self._klabel = value
 
     @klabel.deleter
     def klabel(self):

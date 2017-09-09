@@ -30,13 +30,16 @@ class Plot(object):
         return self._data
 
     @data.setter
-    def data(self, data):
-        for group in data:
-            for item in group:
-                if len(item.shape) != 2 or not item.shape[0] in (2, 3, 4, 6):
-                    raise ValueError(data)
-
-        self._data = data
+    def data(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('data {0!r}'.format(value))
+        if not all(isinstance(
+                item, numpy.ndarray) and item.dtype == numpy.dtype(
+                'float') and len(item.shape) == 2 and item.shape[0] in (
+                2, 3, 4, 6) for group in value for item in group):
+            raise ValueError('data {0!r}'.format(value))
+        self._data = value
 
     @data.deleter
     def data(self):
@@ -51,13 +54,13 @@ class Plot(object):
         return self._kind
 
     @kind.setter
-    def kind(self, kind):
-        for group in kind:
-            for item in group:
-                if type(item) is not str:
-                    raise ValueError(kind)
-
-        self._kind = kind
+    def kind(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('kind {0!r}'.format(value))
+        if not all(isinstance(item, str) for group in value for item in group):
+            raise ValueError('kind {0!r}'.format(value))
+        self._kind = value
 
     @kind.deleter
     def kind(self):
@@ -78,15 +81,14 @@ class Plot(object):
         return self._style
 
     @style.setter
-    def style(self, style):
-        for group in style:
-            for subgroup in group:
-                for item in subgroup:
-                    if type(item) is not str and type(
-                            item) is not tuple and item != 'None':
-                        raise ValueError(style)
-
-        self._style = style
+    def style(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('style {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(
+                item) == 2 for group in value for item in group):
+            raise ValueError('style {0!r}'.format(value))
+        self._style = value
 
     @style.deleter
     def style(self):
@@ -113,15 +115,14 @@ class Plot(object):
         return self._color
 
     @color.setter
-    def color(self, color):
-        for group in color:
-            for subgroup in group:
-                for item in subgroup:
-                    if not matplotlib.colors.is_color_like(
-                            item) and item != 'none':
-                        raise ValueError(color)
-
-        self._color = color
+    def color(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('color {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(
+                item) in (2, 3, 4) for group in value for item in group):
+            raise ValueError('color {0!r}'.format(value))
+        self._color = value
 
     @color.deleter
     def color(self):
@@ -137,13 +138,13 @@ class Plot(object):
         return self._label
 
     @label.setter
-    def label(self, label):
-        for group in label:
-            for item in group:
-                if type(item) is not str and item is not None:
-                    raise ValueError(label)
-
-        self._label = label
+    def label(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('label {0!r}'.format(value))
+        if not all(isinstance(item, str) for group in value for item in group):
+            raise ValueError('label {0!r}'.format(value))
+        self._label = value
 
     @label.deleter
     def label(self):
@@ -158,13 +159,13 @@ class Plot(object):
         return self._zorder
 
     @zorder.setter
-    def zorder(self, zorder):
-        for group in zorder:
-            for item in group:
-                if type(item) is not int and type(item) is not float and item is not None:
-                    raise ValueError(zorder)
-
-        self._zorder = zorder
+    def zorder(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('zorder {0!r}'.format(value))
+        if not all(isinstance(item, int) for group in value for item in group):
+            raise ValueError('zorder {0!r}'.format(value))
+        self._zorder = value
 
     @zorder.deleter
     def zorder(self):
@@ -176,17 +177,19 @@ class Plot(object):
     the parameters of the plot legends. The first dimension is each plot, the
     string is the location of the legend, the integer is the number of columns
     in the legend, the floats are the left and bottom positions and the width
-    and height of the legend. The default is ['best', 1, None].
+    and height of the legend. Can be set to None to hide the legend. The
+    default is ['best', 1, None].
         """
         return self._legend
 
     @legend.setter
-    def legend(self, legend):
-        for item in legend:
-            if type(item) is not list and item is not None:
-                raise ValueError(legend)
-
-        self._legend = legend
+    def legend(self, value):
+        if not isinstance(value, list):
+            raise TypeError('legend {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 3) or item is None for item in value):
+            raise ValueError('legend {0!r}'.format(value))
+        self._legend = value
 
     @legend.deleter
     def legend(self):
@@ -196,18 +199,18 @@ class Plot(object):
     def xscale(self):
         """A list of strings holding the scalings of the x-axes. The first
     dimension is each plot. The possible values are 'linear' and 'log'. Each
-    scaling can be set to any string recongized by external library. The
-    default is 'linear'.
+    scaling can be set to any string recongized by external library. Can be set
+    to None to use the default. The default is 'linear'.
         """
         return self._xscale
 
     @xscale.setter
-    def xscale(self, xscale):
-        for item in xscale:
-            if type(item) is not str and item is not None:
-                raise ValueError(xscale)
-
-        self._xscale = xscale
+    def xscale(self, value):
+        if not isinstance(value, list):
+            raise TypeError('xscale {0!r}'.format(value))
+        if not all(isinstance(item, str) or item is None for item in value):
+            raise ValueError('xscale {0!r}'.format(value))
+        self._xscale = value
 
     @xscale.deleter
     def xscale(self):
@@ -217,18 +220,18 @@ class Plot(object):
     def yscale(self):
         """A list of strings holding the scalings of the y-axes. The first
     dimension is each plot. The possible values are 'linear' and 'log'. Each
-    scaling can be set to any string recongized by external library. The
-    default is 'linear'.
+    scaling can be set to any string recongized by external library. Can be set
+    to None to use the default. The default is 'linear'.
         """
         return self._yscale
 
     @yscale.setter
-    def yscale(self, yscale):
-        for item in yscale:
-            if type(item) is not str and item is not None:
-                raise ValueError(yscale)
-
-        self._yscale = yscale
+    def yscale(self, value):
+        if not isinstance(value, list):
+            raise TypeError('yscale {0!r}'.format(value))
+        if not all(isinstance(item, str) or item is None for item in value):
+            raise ValueError('yscale {0!r}'.format(value))
+        self._yscale = value
 
     @yscale.deleter
     def yscale(self):
@@ -244,12 +247,13 @@ class Plot(object):
         return self._xlim
 
     @xlim.setter
-    def xlim(self, xlim):
-        for item in xlim:
-            if type(item) is not list and item is not None:
-                raise ValueError(xlim)
-
-        self._xlim = xlim
+    def xlim(self, value):
+        if not isinstance(value, list):
+            raise TypeError('xlim {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 2) or item is None for item in value):
+            raise ValueError('xlim {0!r}'.format(value))
+        self._xlim = value
 
     @xlim.deleter
     def xlim(self):
@@ -265,12 +269,13 @@ class Plot(object):
         return self._ylim
 
     @ylim.setter
-    def ylim(self, ylim):
-        for item in ylim:
-            if type(item) is not list and item is not None:
-                raise ValueError(ylim)
-
-        self._ylim = ylim
+    def ylim(self, value):
+        if not isinstance(value, list):
+            raise TypeError('ylim {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 2) or item is None for item in value):
+            raise ValueError('ylim {0!r}'.format(value))
+        self._ylim = value
 
     @ylim.deleter
     def ylim(self):
@@ -286,12 +291,13 @@ class Plot(object):
         return self._xdel
 
     @xdel.setter
-    def xdel(self, xdel):
-        for item in xdel:
-            if type(item) is not list and item is not None:
-                raise ValueError(xdel)
-
-        self._xdel = xdel
+    def xdel(self, value):
+        if not isinstance(value, list):
+            raise TypeError('xdel {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 2) or item is None for item in value):
+            raise ValueError('xdel {0!r}'.format(value))
+        self._xdel = value
 
     @xdel.deleter
     def xdel(self):
@@ -307,12 +313,13 @@ class Plot(object):
         return self._ydel
 
     @ydel.setter
-    def ydel(self, ydel):
-        for item in ydel:
-            if type(item) is not list and item is not None:
-                raise ValueError(ydel)
-
-        self._ydel = ydel
+    def ydel(self, value):
+        if not isinstance(value, list):
+            raise TypeError('ydel {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 2) or item is None for item in value):
+            raise ValueError('ydel {0!r}'.format(value))
+        self._ydel = value
 
     @ydel.deleter
     def ydel(self):
@@ -329,14 +336,14 @@ class Plot(object):
         return self._xtick
 
     @xtick.setter
-    def xtick(self, xtick):
-        for group in xtick:
-            if group is not None:
-                for item in group:
-                    if type(item) is not list:
-                        raise ValueError(xtick)
-
-        self._xtick = xtick
+    def xtick(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) or item is None for item in value):
+            raise TypeError('xtick {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(item) == 2 for group in (
+                value) if group is not None for item in group):
+            raise ValueError('xtick {0!r}'.format(value))
+        self._xtick = value
 
     @xtick.deleter
     def xtick(self):
@@ -353,14 +360,14 @@ class Plot(object):
         return self._ytick
 
     @ytick.setter
-    def ytick(self, ytick):
-        for group in ytick:
-            if group is not None:
-                for item in group:
-                    if type(item) is not list:
-                        raise ValueError(ytick)
-
-        self._ytick = ytick
+    def ytick(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) or item is None for item in value):
+            raise TypeError('ytick {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(item) == 2 for group in (
+                value) if group is not None for item in group):
+            raise ValueError('ytick {0!r}'.format(value))
+        self._ytick = value
 
     @ytick.deleter
     def ytick(self):
@@ -377,13 +384,14 @@ class Plot(object):
         return self._xgrid
 
     @xgrid.setter
-    def xgrid(self, xgrid):
-        for group in xgrid:
-            for item in group:
-                if type(item) is not list and item is not None:
-                    raise ValueError(xgrid)
-
-        self._xgrid = xgrid
+    def xgrid(self, value):
+        if not isinstance(value, list):
+            raise TypeError('xgrid {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(item) == 2 and all((
+                isinstance(elem, list) and len(elem) == 3) or elem is (
+                None) for elem in item) for item in value):
+            raise ValueError('xgrid {0!r}'.format(value))
+        self._xgrid = value
 
     @xgrid.deleter
     def xgrid(self):
@@ -400,13 +408,14 @@ class Plot(object):
         return self._ygrid
 
     @ygrid.setter
-    def ygrid(self, ygrid):
-        for group in ygrid:
-            for item in group:
-                if type(item) is not list and item is not None:
-                    raise ValueError(ygrid)
-
-        self._ygrid = ygrid
+    def ygrid(self, value):
+        if not isinstance(value, list):
+            raise TypeError('ygrid {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(item) == 2 and all((
+                isinstance(elem, list) and len(elem) == 3) or elem is (
+                None) for elem in item) for item in value):
+            raise ValueError('ygrid {0!r}'.format(value))
+        self._ygrid = value
 
     @ygrid.deleter
     def ygrid(self):
@@ -421,12 +430,12 @@ class Plot(object):
         return self._xlabel
 
     @xlabel.setter
-    def xlabel(self, xlabel):
-        for item in xlabel:
-            if type(item) is not str:
-                raise ValueError(xlabel)
-
-        self._xlabel = xlabel
+    def xlabel(self, value):
+        if not isinstance(value, list):
+            raise TypeError('xlabel {0!r}'.format(value))
+        if not all(isinstance(item, str) for item in value):
+            raise ValueError('xlabel {0!r}'.format(value))
+        self._xlabel = value
 
     @xlabel.deleter
     def xlabel(self):
@@ -441,12 +450,12 @@ class Plot(object):
         return self._ylabel
 
     @ylabel.setter
-    def ylabel(self, ylabel):
-        for item in ylabel:
-            if type(item) is not str:
-                raise ValueError(ylabel)
-
-        self._ylabel = ylabel
+    def ylabel(self, value):
+        if not isinstance(value, list):
+            raise TypeError('ylabel {0!r}'.format(value))
+        if not all(isinstance(item, str) for item in value):
+            raise ValueError('ylabel {0!r}'.format(value))
+        self._ylabel = value
 
     @ylabel.deleter
     def ylabel(self):
@@ -464,12 +473,13 @@ class Plot(object):
         return self._xlabpos
 
     @xlabpos.setter
-    def xlabpos(self, xlabpos):
-        for item in xlabpos:
-            if type(item) is not list and item is not None:
-                raise ValueError(xlabpos)
-
-        self._xlabpos = xlabpos
+    def xlabpos(self, value):
+        if not isinstance(value, list):
+            raise TypeError('xlabpos {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 2) or item is None for item in value):
+            raise ValueError('xlabpos {0!r}'.format(value))
+        self._xlabpos = value
 
     @xlabpos.deleter
     def xlabpos(self):
@@ -487,12 +497,13 @@ class Plot(object):
         return self._ylabpos
 
     @ylabpos.setter
-    def ylabpos(self, ylabpos):
-        for item in ylabpos:
-            if type(item) is not list and item is not None:
-                raise ValueError(ylabpos)
-
-        self._ylabpos = ylabpos
+    def ylabpos(self, value):
+        if not isinstance(value, list):
+            raise TypeError('ylabpos {0!r}'.format(value))
+        if not all((isinstance(item, list) and len(
+                item) == 2) or item is None for item in value):
+            raise ValueError('ylabpos {0!r}'.format(value))
+        self._ylabpos = value
 
     @ylabpos.deleter
     def ylabpos(self):
@@ -513,13 +524,14 @@ class Plot(object):
         return self._note
 
     @note.setter
-    def note(self, note):
-        for group in note:
-            for item in group:
-                if type(item) is not list:
-                    raise ValueError(note)
-
-        self._note = note
+    def note(self, value):
+        if not isinstance(value, list) or not all(isinstance(
+                item, list) for item in value):
+            raise TypeError('note {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(
+                item) == 7 for group in value for item in group):
+            raise ValueError('note {0!r}'.format(value))
+        self._note = value
 
     @note.deleter
     def note(self):
@@ -540,12 +552,12 @@ class Plot(object):
         return self._title
 
     @title.setter
-    def title(self, title):
-        for item in title:
-            if type(item) is not list:
-                raise ValueError(title)
-
-        self._title = title
+    def title(self, value):
+        if not isinstance(value, list):
+            raise TypeError('title {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(item) == 7 for item in value):
+            raise ValueError('title {0!r}'.format(value))
+        self._title = value
 
     @title.deleter
     def title(self):
@@ -554,16 +566,18 @@ class Plot(object):
     @property
     def pagesize(self):
         """A length-2 list of floats holding the width and the height of the
-    figure in inches. The default is [8, 6].
+    figure in inches. The default is [8.0, 6.0].
         """
         return self._pagesize
 
     @pagesize.setter
-    def pagesize(self, pagesize):
-        if type(pagesize) is not list:
-            raise ValueError(pagesize)
-
-        self._pagesize = pagesize
+    def pagesize(self, value):
+        if not isinstance(value, list):
+            raise TypeError('pagesize {0!r}'.format(value))
+        if len(value) != 2 or not all(isinstance(
+                item, float) for item in value):
+            raise ValueError('pagesize {0!r}'.format(value))
+        self._pagesize = value
 
     @pagesize.deleter
     def pagesize(self):
@@ -571,13 +585,15 @@ class Plot(object):
 
     @property
     def fontsize(self):
-        """A float holding the size of the font in points. The default is 18.
+        """A float holding the size of the font in points. The default is 18.0.
         """
         return self._fontsize
 
     @fontsize.setter
-    def fontsize(self, fontsize):
-        self._fontsize = fontsize
+    def fontsize(self, value):
+        if not isinstance(value, float):
+            raise TypeError('fontsize {0!r}'.format(value))
+        self._fontsize = value
 
     @fontsize.deleter
     def fontsize(self):
@@ -590,8 +606,10 @@ class Plot(object):
         return self._linewidth
 
     @linewidth.setter
-    def linewidth(self, linewidth):
-        self._linewidth = linewidth
+    def linewidth(self, value):
+        if not isinstance(value, float):
+            raise TypeError('linewidth {0!r}'.format(value))
+        self._linewidth = value
 
     @linewidth.deleter
     def linewidth(self):
@@ -599,13 +617,15 @@ class Plot(object):
 
     @property
     def markersize(self):
-        """A float holding the size of the marker in points. The default is 8.
+        """A float holding the size of the marker in points. The default is 8.0.
         """
         return self._markersize
 
     @markersize.setter
-    def markersize(self, markersize):
-        self._markersize = markersize
+    def markersize(self, value):
+        if not isinstance(value, float):
+            raise TypeError('markersize {0!r}'.format(value))
+        self._markersize = value
 
     @markersize.deleter
     def markersize(self):
@@ -614,16 +634,18 @@ class Plot(object):
     @property
     def labelpad(self):
         """A length-2 list of floats holding the amount of padding for the
-    labels on the x-axis and the y-axis in points. The default is [6, 6].
+    labels on the x-axis and the y-axis in points. The default is [6.0, 6.0].
         """
         return self._labelpad
 
     @labelpad.setter
-    def labelpad(self, labelpad):
-        if type(labelpad) is not list:
-            raise ValueError(labelpad)
-
-        self._labelpad = labelpad
+    def labelpad(self, value):
+        if not isinstance(value, list):
+            raise TypeError('labelpad {0!r}'.format(value))
+        if len(value) != 2 or not all(isinstance(
+                item, float) for item in value):
+            raise ValueError('labelpad {0!r}'.format(value))
+        self._labelpad = value
 
     @labelpad.deleter
     def labelpad(self):
@@ -633,16 +655,18 @@ class Plot(object):
     def tickpad(self):
         """A length-4 list of floats holding the amount of padding for the
     major and minor ticks on the x-axis and the major and minor ticks on the
-    y-axis in points. The default is [6, 6, 6, 6].
+    y-axis in points. The default is [6.0, 6.0, 6.0, 6.0].
         """
         return self._tickpad
 
     @tickpad.setter
-    def tickpad(self, tickpad):
-        if type(tickpad) is not list:
-            raise ValueError(tickpad)
-
-        self._tickpad = tickpad
+    def tickpad(self, value):
+        if not isinstance(value, list):
+            raise TypeError('tickpad {0!r}'.format(value))
+        if len(value) != 4 or not all(isinstance(
+                item, float) for item in value):
+            raise ValueError('tickpad {0!r}'.format(value))
+        self._tickpad = value
 
     @tickpad.deleter
     def tickpad(self):
@@ -652,16 +676,18 @@ class Plot(object):
     def ticksize(self):
         """A length-4 list of floats holding the size of the major and minor
     ticks on the x-axis and the major and minor ticks on the y-axis in points.
-    The default is [6, 3, 6, 3].
+    The default is [6.0, 3.0, 6.0, 3.0].
         """
         return self._ticksize
 
     @ticksize.setter
-    def ticksize(self, ticksize):
-        if type(ticksize) is not list:
-            raise ValueError(ticksize)
-
-        self._ticksize = ticksize
+    def ticksize(self, value):
+        if not isinstance(value, list):
+            raise TypeError('ticksize {0!r}'.format(value))
+        if len(value) != 4 or not all(isinstance(
+                item, float) for item in value):
+            raise ValueError('ticksize {0!r}'.format(value))
+        self._ticksize = value
 
     @ticksize.deleter
     def ticksize(self):
@@ -676,11 +702,12 @@ class Plot(object):
         return self._griddim
 
     @griddim.setter
-    def griddim(self, griddim):
-        if type(griddim) is not list:
-            raise ValueError(griddim)
-
-        self._griddim = griddim
+    def griddim(self, value):
+        if not isinstance(value, list):
+            raise TypeError('griddim {0!r}'.format(value))
+        if len(value) != 2 or not all(isinstance(item, int) for item in value):
+            raise ValueError('griddim {0!r}'.format(value))
+        self._griddim = value
 
     @griddim.deleter
     def griddim(self):
@@ -690,16 +717,18 @@ class Plot(object):
     def gridpad(self):
         """A length-3 list of floats holding the padding of the figure and the
     vertical and horizontal padding of the plots in units of fontsize. The
-    default is [0.5, 0, 0].
+    default is [0.5, 0.0, 0.0].
     """
         return self._gridpad
 
     @gridpad.setter
-    def gridpad(self, gridpad):
-        if type(gridpad) is not list:
-            raise ValueError(gridpad)
-
-        self._gridpad = gridpad
+    def gridpad(self, value):
+        if not isinstance(value, list):
+            raise TypeError('gridpad {0!r}'.format(value))
+        if len(value) != 3 or not all(isinstance(
+                item, float) for item in value):
+            raise ValueError('gridpad {0!r}'.format(value))
+        self._gridpad = value
 
     @gridpad.deleter
     def gridpad(self):
@@ -715,12 +744,13 @@ class Plot(object):
         return self._gridpos
 
     @gridpos.setter
-    def gridpos(self, gridpos):
-        for item in gridpos:
-            if type(item) is not list:
-                raise ValueError(gridpos)
-
-        self._gridpos = gridpos
+    def gridpos(self, value):
+        if not isinstance(value, list):
+            raise TypeError('gridpos {0!r}'.format(value))
+        if not all(isinstance(item, list) and len(item) == 4 and all(
+                isinstance(elem, int) for elem in item) for item in value):
+            raise ValueError('gridpos {0!r}'.format(value))
+        self._gridpos = value
 
     @gridpos.deleter
     def gridpos(self):
@@ -734,11 +764,10 @@ class Plot(object):
         return self._frame
 
     @frame.setter
-    def frame(self, frame):
-        if type(frame) is not bool:
-            raise ValueError(frame)
-
-        self._frame = frame
+    def frame(self, value):
+        if not isinstance(value, bool):
+            raise TypeError('frame {0!r}'.format(value))
+        self._frame = value
 
     @frame.deleter
     def frame(self):

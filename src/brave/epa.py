@@ -89,8 +89,12 @@ class EPA(DOS):
         return self._energy
 
     @energy.setter
-    def energy(self, energy):
-        self._energy = numpy.array(energy, float)
+    def energy(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('energy {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('energy {0!r}'.format(value))
+        self._energy = value
 
     @energy.deleter
     def energy(self):
@@ -104,8 +108,12 @@ class EPA(DOS):
         return self._mu
 
     @mu.setter
-    def mu(self, mu):
-        self._mu = numpy.array(mu, float)
+    def mu(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('mu {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('mu {0!r}'.format(value))
+        self._mu = value
 
     @mu.deleter
     def mu(self):
@@ -119,8 +127,12 @@ class EPA(DOS):
         return self._temp
 
     @temp.setter
-    def temp(self, temp):
-        self._temp = numpy.array(temp, float)
+    def temp(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('temp {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('temp {0!r}'.format(value))
+        self._temp = value
 
     @temp.deleter
     def temp(self):
@@ -134,8 +146,12 @@ class EPA(DOS):
         return self._ee
 
     @ee.setter
-    def ee(self, ee):
-        self._ee = numpy.array(ee, float)
+    def ee(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('ee {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('ee {0!r}'.format(value))
+        self._ee = value
 
     @ee.deleter
     def ee(self):
@@ -149,8 +165,12 @@ class EPA(DOS):
         return self._de
 
     @de.setter
-    def de(self, de):
-        self._de = numpy.array(de, float)
+    def de(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('de {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('de {0!r}'.format(value))
+        self._de = value
 
     @de.deleter
     def de(self):
@@ -164,8 +184,12 @@ class EPA(DOS):
         return self._ne
 
     @ne.setter
-    def ne(self, ne):
-        self._ne = numpy.array(ne, int)
+    def ne(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('ne {0!r}'.format(value))
+        if value.dtype != numpy.dtype('int') or len(value.shape) != 1:
+            raise ValueError('ne {0!r}'.format(value))
+        self._ne = value
 
     @ne.deleter
     def ne(self):
@@ -179,8 +203,12 @@ class EPA(DOS):
         return self._wavg
 
     @wavg.setter
-    def wavg(self, wavg):
-        self._wavg = numpy.array(wavg, float)
+    def wavg(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('wavg {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('wavg {0!r}'.format(value))
+        self._wavg = value
 
     @wavg.deleter
     def wavg(self):
@@ -195,8 +223,12 @@ class EPA(DOS):
         return self._gavg
 
     @gavg.setter
-    def gavg(self, gavg):
-        self._gavg = numpy.array(gavg, float)
+    def gavg(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('gavg {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 4:
+            raise ValueError('gavg {0!r}'.format(value))
+        self._gavg = value
 
     @gavg.deleter
     def gavg(self):
@@ -210,8 +242,12 @@ class EPA(DOS):
         return self._invtau
 
     @invtau.setter
-    def invtau(self, invtau):
-        self._invtau = numpy.array(invtau, float)
+    def invtau(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('invtau {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('invtau {0!r}'.format(value))
+        self._invtau = value
 
     @invtau.deleter
     def invtau(self):

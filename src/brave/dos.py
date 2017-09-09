@@ -21,13 +21,13 @@ class DOS(Cell):
         return self._dunit
 
     @dunit.setter
-    def dunit(self, dunit):
-        self._dunit = dunit
-
-        if self._dunit[0] not in [
-                'uc', 'bohr3', 'angstrom3', 'nm3'] or self._dunit[1] not in [
-                'ev', 'rydberg', 'hartree', 'thz', 'cm-1']:
-            raise ValueError(dunit)
+    def dunit(self, value):
+        if not isinstance(value, list):
+            raise TypeError('dunit {0!r}'.format(value))
+        if len(value) != 2 or value[0] not in common._a3scale.keys() or value[
+                1] not in common._escale.keys():
+            raise ValueError('dunit {0!r}'.format(value))
+        self._dunit = value
 
     @dunit.deleter
     def dunit(self):
@@ -47,11 +47,13 @@ class DOS(Cell):
         return self._dos
 
     @dos.setter
-    def dos(self, dos):
-        self._dos = numpy.array(dos, float)
-
-        if len(self._dos.shape) != 2 or self._dos.shape[0] != 2:
-            raise ValueError(dos)
+    def dos(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('dos {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(
+                value.shape) != 2 or value.shape[0] != 2:
+            raise ValueError('dos {0!r}'.format(value))
+        self._dos = value
 
     @dos.deleter
     def dos(self):
@@ -65,16 +67,13 @@ class DOS(Cell):
         if dunit[0] != self.dunit[0]:
             oldaunit = self.aunit
             self.set_aunit('angstrom')
-            _dscale = {
-                    'uc': 1.0 / (self.avol * self.alat ** 3),
-                    'bohr3': common._ascale['bohr'] ** 3,
-                    'angstrom3': common._ascale['angstrom'] ** 3,
-                    'nm3': common._ascale['nm'] ** 3}
+            common._a3scale['uc'] = 1.0 / (self.avol * self.alat ** 3)
             self.set_aunit(oldaunit)
 
             if hasattr(self, 'dos'):
                 dummy = self.dos
-                dummy[1] *= _dscale[self.dunit[0]] / _dscale[dunit[0]]
+                dummy[1] *= common._a3scale[self.dunit[0]] / common._a3scale[
+                    dunit[0]]
                 self.dos = dummy
 
         if dunit[1] != self.dunit[1]:

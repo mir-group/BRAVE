@@ -22,8 +22,10 @@ class Diagram(DOS, Energy):
         return self._plot
 
     @plot.setter
-    def plot(self, plot):
-        self._plot = plot
+    def plot(self, value):
+        if not isinstance(value, Plot):
+            raise TypeError('plot {0!r}'.format(value))
+        self._plot = value
 
     @plot.deleter
     def plot(self):

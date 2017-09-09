@@ -22,8 +22,10 @@ class Cell(File):
         return self._prefix
 
     @prefix.setter
-    def prefix(self, prefix):
-        self._prefix = str(prefix)
+    def prefix(self, value):
+        if not isinstance(value, str):
+            raise TypeError('prefix {0!r}'.format(value))
+        self._prefix = value
 
     @prefix.deleter
     def prefix(self):
@@ -37,11 +39,12 @@ class Cell(File):
         return self._aunit
 
     @aunit.setter
-    def aunit(self, aunit):
-        self._aunit = aunit
-
-        if self._aunit not in ['bohr', 'angstrom', 'nm']:
-            raise ValueError(aunit)
+    def aunit(self, value):
+        if not isinstance(value, str):
+            raise TypeError('aunit {0!r}'.format(value))
+        if value not in common._ascale.keys():
+            raise ValueError('aunit {0!r}'.format(value))
+        self._aunit = value
 
     @aunit.deleter
     def aunit(self):
@@ -53,8 +56,10 @@ class Cell(File):
         return self._alat
 
     @alat.setter
-    def alat(self, alat):
-        self._alat = float(alat)
+    def alat(self, value):
+        if not isinstance(value, float):
+            raise TypeError('alat {0!r}'.format(value))
+        self._alat = value
 
     @alat.deleter
     def alat(self):
@@ -68,11 +73,12 @@ class Cell(File):
         return self._avec
 
     @avec.setter
-    def avec(self, avec):
-        self._avec = numpy.array(avec, float)
-
-        if self._avec.shape != (3, 3):
-            raise ValueError(avec)
+    def avec(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('avec {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (3, 3):
+            raise ValueError('avec {0!r}'.format(value))
+        self._avec = value
 
     @avec.deleter
     def avec(self):
@@ -86,11 +92,12 @@ class Cell(File):
         return self._bvec
 
     @bvec.setter
-    def bvec(self, bvec):
-        self._bvec = numpy.array(bvec, float)
-
-        if self._bvec.shape != (3, 3):
-            raise ValueError(bvec)
+    def bvec(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('bvec {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (3, 3):
+            raise ValueError('bvec {0!r}'.format(value))
+        self._bvec = value
 
     @bvec.deleter
     def bvec(self):
@@ -104,8 +111,10 @@ class Cell(File):
         return self._avol
 
     @avol.setter
-    def avol(self, avol):
-        self._avol = float(avol)
+    def avol(self, value):
+        if not isinstance(value, float):
+            raise TypeError('avol {0!r}'.format(value))
+        self._avol = value
 
     @avol.deleter
     def avol(self):
@@ -119,8 +128,10 @@ class Cell(File):
         return self._bvol
 
     @bvol.setter
-    def bvol(self, bvol):
-        self._bvol = float(bvol)
+    def bvol(self, value):
+        if not isinstance(value, float):
+            raise TypeError('bvol {0!r}'.format(value))
+        self._bvol = value
 
     @bvol.deleter
     def bvol(self):
@@ -132,8 +143,10 @@ class Cell(File):
         return self._natom
 
     @natom.setter
-    def natom(self, natom):
-        self._natom = int(natom)
+    def natom(self, value):
+        if not isinstance(value, int):
+            raise TypeError('natom {0!r}'.format(value))
+        self._natom = value
 
     @natom.deleter
     def natom(self):
@@ -145,8 +158,10 @@ class Cell(File):
         return self._nelec
 
     @nelec.setter
-    def nelec(self, nelec):
-        self._nelec = float(nelec)
+    def nelec(self, value):
+        if not isinstance(value, int):
+            raise TypeError('nelec {0!r}'.format(value))
+        self._nelec = value
 
     @nelec.deleter
     def nelec(self):
@@ -165,12 +180,13 @@ class Cell(File):
         return self._rot
 
     @rot.setter
-    def rot(self, rot):
-        self._rot = numpy.array(rot, int)
-
-        if len(self._rot.shape) != 3 or self._rot.shape[1] != 3 or (
-                self._rot.shape[2] != 3):
-            raise ValueError(rot)
+    def rot(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('rot {0!r}'.format(value))
+        if value.dtype != numpy.dtype('int') or len(
+                value.shape) != 3 or value.shape[1:3] != (3, 3):
+            raise ValueError('rot {0!r}'.format(value))
+        self._rot = value
 
     @rot.deleter
     def rot(self):
@@ -296,7 +312,7 @@ class Cell(File):
         if nelec is not None:
             self.nelec = nelec
         if rot is None:
-            self.rot = numpy.array([numpy.identity(3, float)])
+            self.rot = numpy.array([numpy.identity(3, int)])
         else:
             self.rot = rot
 

@@ -23,6 +23,16 @@ _ascale = {
         'angstrom': 1.0,
         'nm': 0.1}
 
+_a3scale = {
+        'uc': 0.0,
+        'bohr3': _ascale['bohr'] ** 3,
+        'angstrom3': _ascale['angstrom'] ** 3,
+        'nm3': _ascale['nm'] ** 3}
+
+_kscale = {
+        'cartesian': 0.0,
+        'crystal': 0.0}
+
 _escale = {
         'ev': 1.0,
         'rydberg': 1.0 / RYDBERG,

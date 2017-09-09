@@ -26,8 +26,12 @@ class Transport(Cell):
         return self._mu
 
     @mu.setter
-    def mu(self, mu):
-        self._mu = numpy.array(mu, float)
+    def mu(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('mu {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('mu {0!r}'.format(value))
+        self._mu = value
 
     @mu.deleter
     def mu(self):
@@ -46,8 +50,12 @@ class Transport(Cell):
         return self._temp
 
     @temp.setter
-    def temp(self, temp):
-        self._temp = numpy.array(temp, float)
+    def temp(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('temp {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+            raise ValueError('temp {0!r}'.format(value))
+        self._temp = value
 
     @temp.deleter
     def temp(self):
@@ -63,12 +71,13 @@ class Transport(Cell):
         return self._numelec
 
     @numelec.setter
-    def numelec(self, numelec):
-        self._numelec = numpy.array(numelec, float)
-
-        if len(self._numelec.shape) != 2 or self._numelec.shape[
-                0] != self.nmu or self._numelec.shape[1] != self.ntemp:
-            raise ValueError(numelec)
+    def numelec(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('numelec {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('numelec {0!r}'.format(value))
+        self._numelec = value
 
     @numelec.deleter
     def numelec(self):
@@ -82,12 +91,13 @@ class Transport(Cell):
         return self._convdos
 
     @convdos.setter
-    def convdos(self, convdos):
-        self._convdos = numpy.array(convdos, float)
-
-        if len(self._convdos.shape) != 2 or self._convdos.shape[
-                0] != self.nmu or self._convdos.shape[1] != self.ntemp:
-            raise ValueError(convdos)
+    def convdos(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('convdos {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('convdos {0!r}'.format(value))
+        self._convdos = value
 
     @convdos.deleter
     def convdos(self):
@@ -101,12 +111,13 @@ class Transport(Cell):
         return self._seebeck
 
     @seebeck.setter
-    def seebeck(self, seebeck):
-        self._seebeck = numpy.array(seebeck, float)
-
-        if len(self._seebeck.shape) != 2 or self._seebeck.shape[
-                0] != self.nmu or self._seebeck.shape[1] != self.ntemp:
-            raise ValueError(seebeck)
+    def seebeck(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('seebeck {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('seebeck {0!r}'.format(value))
+        self._seebeck = value
 
     @seebeck.deleter
     def seebeck(self):
@@ -120,12 +131,13 @@ class Transport(Cell):
         return self._sigma
 
     @sigma.setter
-    def sigma(self, sigma):
-        self._sigma = numpy.array(sigma, float)
-
-        if len(self._sigma.shape) != 2 or self._sigma.shape[
-                0] != self.nmu or self._sigma.shape[1] != self.ntemp:
-            raise ValueError(sigma)
+    def sigma(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('sigma {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('sigma {0!r}'.format(value))
+        self._sigma = value
 
     @sigma.deleter
     def sigma(self):
@@ -139,12 +151,13 @@ class Transport(Cell):
         return self._hall
 
     @hall.setter
-    def hall(self, hall):
-        self._hall = numpy.array(hall, float)
-
-        if len(self._hall.shape) != 2 or self._hall.shape[
-                0] != self.nmu or self._hall.shape[1] != self.ntemp:
-            raise ValueError(hall)
+    def hall(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('hall {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('hall {0!r}'.format(value))
+        self._hall = value
 
     @hall.deleter
     def hall(self):
@@ -159,12 +172,13 @@ class Transport(Cell):
         return self._kappael
 
     @kappael.setter
-    def kappael(self, kappael):
-        self._kappael = numpy.array(kappael, float)
-
-        if len(self._kappael.shape) != 2 or self._kappael.shape[
-                0] != self.nmu or self._kappael.shape[1] != self.ntemp:
-            raise ValueError(kappael)
+    def kappael(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kappael {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('kappael {0!r}'.format(value))
+        self._kappael = value
 
     @kappael.deleter
     def kappael(self):
@@ -178,12 +192,13 @@ class Transport(Cell):
         return self._specheat
 
     @specheat.setter
-    def specheat(self, specheat):
-        self._specheat = numpy.array(specheat, float)
-
-        if len(self._specheat.shape) != 2 or self._specheat.shape[
-                0] != self.nmu or self._specheat.shape[1] != self.ntemp:
-            raise ValueError(specheat)
+    def specheat(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('specheat {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('specheat {0!r}'.format(value))
+        self._specheat = value
 
     @specheat.deleter
     def specheat(self):
@@ -197,12 +212,13 @@ class Transport(Cell):
         return self._magsus
 
     @magsus.setter
-    def magsus(self, magsus):
-        self._magsus = numpy.array(magsus, float)
-
-        if len(self._magsus.shape) != 2 or self._magsus.shape[
-                0] != self.nmu or self._magsus.shape[1] != self.ntemp:
-            raise ValueError(magsus)
+    def magsus(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('magsus {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('magsus {0!r}'.format(value))
+        self._magsus = value
 
     @magsus.deleter
     def magsus(self):
@@ -216,12 +232,13 @@ class Transport(Cell):
         return self._kappalat
 
     @kappalat.setter
-    def kappalat(self, kappalat):
-        self._kappalat = numpy.array(kappalat, float)
-
-        if len(self._kappalat.shape) != 2 or self._kappalat.shape[
-                0] != self.nmu or self._kappalat.shape[1] != self.ntemp:
-            raise ValueError(kappalat)
+    def kappalat(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kappalat {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('kappalat {0!r}'.format(value))
+        self._kappalat = value
 
     @kappalat.deleter
     def kappalat(self):
@@ -235,12 +252,13 @@ class Transport(Cell):
         return self._kappa
 
     @kappa.setter
-    def kappa(self, kappa):
-        self._kappa = numpy.array(kappa, float)
-
-        if len(self._kappa.shape) != 2 or self._kappa.shape[
-                0] != self.nmu or self._kappa.shape[1] != self.ntemp:
-            raise ValueError(kappa)
+    def kappa(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('kappa {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('kappa {0!r}'.format(value))
+        self._kappa = value
 
     @kappa.deleter
     def kappa(self):
@@ -254,12 +272,13 @@ class Transport(Cell):
         return self._L
 
     @L.setter
-    def L(self, L):
-        self._L = numpy.array(L, float)
-
-        if len(self._L.shape) != 2 or self._L.shape[
-                0] != self.nmu or self._L.shape[1] != self.ntemp:
-            raise ValueError(L)
+    def L(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('L {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('L {0!r}'.format(value))
+        self._L = value
 
     @L.deleter
     def L(self):
@@ -273,12 +292,13 @@ class Transport(Cell):
         return self._PF
 
     @PF.setter
-    def PF(self, PF):
-        self._PF = numpy.array(PF, float)
-
-        if len(self._PF.shape) != 2 or self._PF.shape[
-                0] != self.nmu or self._PF.shape[1] != self.ntemp:
-            raise ValueError(PF)
+    def PF(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('PF {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('PF {0!r}'.format(value))
+        self._PF = value
 
     @PF.deleter
     def PF(self):
@@ -292,12 +312,13 @@ class Transport(Cell):
         return self._ZT
 
     @ZT.setter
-    def ZT(self, ZT):
-        self._ZT = numpy.array(ZT, float)
-
-        if len(self._ZT.shape) != 2 or self._ZT.shape[
-                0] != self.nmu or self._ZT.shape[1] != self.ntemp:
-            raise ValueError(ZT)
+    def ZT(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('ZT {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or value.shape != (
+                self.nmu, self.ntemp):
+            raise ValueError('ZT {0!r}'.format(value))
+        self._ZT = value
 
     @ZT.deleter
     def ZT(self):

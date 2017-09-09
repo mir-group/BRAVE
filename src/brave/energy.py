@@ -21,15 +21,31 @@ class Energy(Kpoint):
         return self._eunit
 
     @eunit.setter
-    def eunit(self, eunit):
+    def eunit(self, value):
+        if not isinstance(value, str):
+            raise TypeError('eunit {0!r}'.format(value))
+        if value not in common._escale.keys():
+            raise ValueError('eunit {0!r}'.format(value))
         self._eunit = eunit
-
-        if self._eunit not in ['ev', 'rydberg', 'hartree', 'thz', 'cm-1']:
-            raise ValueError(eunit)
 
     @eunit.deleter
     def eunit(self):
         del self._eunit
+
+    @property
+    def nkpoint(self):
+        """An integer holding the number of k-points."""
+        _list = []
+        if hasattr(self, 'energy'):
+            _list.append(self._energy.shape[0])
+        if hasattr(self, 'kpoint') or hasattr(self, 'kline') or hasattr(
+                self, 'kweight'):
+            _list.append(super().nkpoint)
+
+        if _list[1:] == _list[:-1] and len(_list) > 0:
+            return _list[0]
+        else:
+            raise AttributeError('nkpoint')
 
     @property
     def nband(self):
@@ -53,15 +69,12 @@ class Energy(Kpoint):
         return self._energy
 
     @energy.setter
-    def energy(self, energy):
-        self._energy = numpy.array(energy, float)
-
-        _nkpoint = -1
-        if hasattr(self, 'nkpoint'):
-            _nkpoint = self.nkpoint
-
-        if len(self._energy.shape) != 3 or self._energy.shape[0] != _nkpoint:
-            raise ValueError(energy)
+    def energy(self, value):
+        if not isinstance(value, numpy.ndarray):
+            raise TypeError('energy {0!r}'.format(value))
+        if value.dtype != numpy.dtype('float') or len(value.shape) != 3:
+            raise ValueError('energy {0!r}'.format(value))
+        self._energy = value
 
     @energy.deleter
     def energy(self):
@@ -75,8 +88,10 @@ class Energy(Kpoint):
         return self._efermi
 
     @efermi.setter
-    def efermi(self, efermi):
-        self._efermi = float(efermi)
+    def efermi(self, value):
+        if not isinstance(value, float):
+            raise TypeError('efermi {0!r}'.format(value))
+        self._efermi = value
 
     @efermi.deleter
     def efermi(self):
@@ -88,8 +103,10 @@ class Energy(Kpoint):
         return self._vref
 
     @vref.setter
-    def vref(self, vref):
-        self._vref = float(vref)
+    def vref(self, value):
+        if not isinstance(value, float):
+            raise TypeError('vref {0!r}'.format(value))
+        self._vref = value
 
     @vref.deleter
     def vref(self):
