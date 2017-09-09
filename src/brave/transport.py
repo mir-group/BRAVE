@@ -1,5 +1,6 @@
 """This module defines class Transport."""
 
+import linecache
 import numpy
 
 import brave.common as common
@@ -609,62 +610,25 @@ class Transport(Cell):
             super().read(fileformat, filenames)
 
     def _read_trn_boltztrap_out(self, filenames, tauvc, kappaelzeroj):
-        contents = []
-        for filename in filenames:
-            with open(filename) as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
 
-        efermi = float(contents[0][2].split()[0])
+        efermi = float(linecache.getline(filenames[0], 3).split()[0])
+        trace = numpy.loadtxt(filenames[
+            1], dtype = float, skiprows = 1).transpose()
 
-        nhead = 1
-        ntot = len(contents[1]) - nhead
-        for itemp in range(ntot):
-            ftemp = float(contents[1][nhead + itemp].split()[1])
-            if itemp > 0:
-                if ftemp < ftemp_prev:
-                    ntemp = itemp
-                    break
-            ftemp_prev = ftemp
-        nmu = ntot // ntemp
+        ntemp = numpy.where(trace[1, :] == trace[1, 0])[0][1]
+        nmu = trace.shape[1] // ntemp
 
-        if hasattr(self, 'mu'):
-            if nmu != self.nmu:
-                raise ValueError('nmu mismatch')
-
-        if hasattr(self, 'temp'):
-            if ntemp != self.ntemp:
-                raise ValueError('ntemp mismatch')
-
-        mu = numpy.zeros(nmu, float)
-        temp = numpy.zeros(ntemp, float)
-        numelec = numpy.zeros((nmu, ntemp), float)
-        convdos = numpy.zeros((nmu, ntemp), float)
-        seebeck = numpy.zeros((nmu, ntemp), float)
-        sigma = numpy.zeros((nmu, ntemp), float)
-        hall = numpy.zeros((nmu, ntemp), float)
-        kappael = numpy.zeros((nmu, ntemp), float)
-        specheat = numpy.zeros((nmu, ntemp), float)
-        magsus = numpy.zeros((nmu, ntemp), float)
-
-        for imu in range(nmu):
-            mu[imu] = (float(contents[1][nhead + imu * ntemp].split()[
-                    0]) - efermi) * common.RYDBERG
-
-        for itemp in range(ntemp):
-            temp[itemp] = float(contents[1][nhead + itemp].split()[1])
-
-        for imu in range(nmu):
-            for itemp in range(ntemp):
-                line = contents[1][nhead + imu * ntemp + itemp].split()
-                numelec[imu, itemp] = -float(line[2])
-                convdos[imu, itemp] = float(line[3]) / common.HARTREE
-                seebeck[imu, itemp] = float(line[4])
-                sigma[imu, itemp] = float(line[5])
-                hall[imu, itemp] = float(line[6])
-                kappael[imu, itemp] = float(line[7])
-                specheat[imu, itemp] = float(line[8])
-                magsus[imu, itemp] = float(line[9])
+        mu = (trace[0, ::ntemp] - efermi) * common.RYDBERG
+        temp = trace[1, 0:ntemp]
+        view = trace.reshape(trace.shape[0], nmu, ntemp)
+        numelec = -view[2, :, :]
+        convdos = view[3, :, :] / common.HARTREE
+        seebeck = view[4, :, :]
+        sigma = view[5, :, :]
+        hall = view[6, :, :]
+        kappael = view[7, :, :]
+        specheat = view[8, :, :]
+        magsus = view[9, :, :]
 
         if tauvc is not None:
             for imu in range(nmu):

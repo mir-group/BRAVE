@@ -344,46 +344,36 @@ class EPA(DOS):
             super().read(fileformat, filenames)
 
     def _read_epa_epa_out(self, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename) as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
 
-        nn = 0
-        tt = contents[0][nn].split()
-        nn += 1
-        nwin = int(tt[0])
-        nmode = int(tt[1])
+        with open(filenames[0]) as ff:
+            tt = ff.readline().split()
+            nwin = int(tt[0])
+            nmode = int(tt[1])
 
-        ee = numpy.empty(nwin, float)
-        de = numpy.empty(nwin, float)
-        ne = numpy.empty(nwin, int)
-        for ii in range(nwin):
-            tt = contents[0][nn].split()
-            nn += 1
-            ee[ii] = float(tt[0])
-            de[ii] = float(tt[1])
-            ne[ii] = int(tt[2])
+            ee = numpy.empty(nwin, float)
+            de = numpy.empty(nwin, float)
+            ne = numpy.empty(nwin, int)
+            for ii in range(nwin):
+                tt = ff.readline().split()
+                ee[ii] = float(tt[0])
+                de[ii] = float(tt[1])
+                ne[ii] = int(tt[2])
 
-        wavg = numpy.empty(nmode, float)
-        tt = contents[0][nn].split()
-        nn += 1
-        for ii in range(nmode):
-            wavg[ii] = float(tt[ii])
+            wavg = numpy.empty(nmode, float)
+            tt = ff.readline().split()
+            for ii in range(nmode):
+                wavg[ii] = float(tt[ii])
 
-        nemax = numpy.amax(ne)
-        gavg = numpy.zeros((nmode, nemax, nemax, nwin), float)
-        for ii in range(nwin):
-            for jj in range(ne[ii]):
-                for kk in range(ne[ii]):
-                    tt = contents[0][nn].split()
-                    nn += 1
-                    for ll in range(nmode):
-                        gavg[ll, kk, jj, ii] = float(tt[ll + 3])
+            nemax = numpy.amax(ne)
+            gavg = numpy.zeros((nmode, nemax, nemax, nwin), float)
+            for ii in range(nwin):
+                for jj in range(ne[ii]):
+                    for kk in range(ne[ii]):
+                        tt = ff.readline().split()
+                        for ll in range(nmode):
+                            gavg[ll, kk, jj, ii] = float(tt[ll + 3])
 
-        self.ee, self.de, self.ne = ee, de, ne
-        self.wavg, self.gavg = wavg, gavg
+        self.ee, self.de, self.ne, self.wavg, self.gavg = ee, de, ne, wavg, gavg
 
     def __init__(
             self, energy=None, mu=None, temp=None, ee=None, de=None, ne=None,

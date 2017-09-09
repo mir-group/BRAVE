@@ -1,5 +1,6 @@
 """This module defines class DOS."""
 
+import linecache
 import numpy
 
 import brave.common as common
@@ -110,40 +111,22 @@ class DOS(Cell):
             super().read(fileformat, filenames)
 
     def _read_dos_boltztrap_dos(self, filenames, soc):
-        contents = []
-        for filename in filenames:
-            with open(filename) as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
         if soc:
             spin_degeneracy = 1
         else:
             spin_degeneracy = 2
-        efermi = float(contents[0][2].split()[0])
 
-        nn = len(contents[1]) - 1
-        dos = numpy.empty((2, nn), float)
-        for ii in range(nn):
-            tt = contents[1][ii + 1].split()
-            dos[0, ii] = float(tt[0]) - efermi
-            dos[1, ii] = float(tt[1]) * spin_degeneracy
+        efermi = float(linecache.getline(filenames[0], 3).split()[0])
+        dos = numpy.loadtxt(filenames[
+            1], dtype = float, skiprows = 1, usecols = (0, 1)).transpose()
+        dos[0, :] -= efermi
+        dos[1, :] *= spin_degeneracy
 
         self.dunit, self.dos = ['uc', 'rydberg'], dos
 
     def _read_dos_matdyn_dos(self, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename) as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
 
-        nn = len(contents[0])
-        dos = numpy.empty((2, nn), float)
-        for ii in range(nn):
-            tt = contents[0][ii].split()
-            dos[0, ii] = float(tt[0])
-            dos[1, ii] = float(tt[1])
+        dos = numpy.loadtxt(filenames[0], dtype = float).transpose()
 
         self.dunit, self.dos = ['uc', 'cm-1'], dos
 
