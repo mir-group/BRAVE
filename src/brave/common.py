@@ -57,26 +57,3 @@ def _int_pts(value, param):
 
     return idx1, idx2, weight1, weight2
 
-def _read_file(filenames):
-    if type(filenames) is not list:
-        raise ValueError("specify list of filenames")
-
-    contents = []
-    for filename in filenames:
-        with open(filename, 'r') as fileobj:
-            content = fileobj.readlines()
-        contents.append(content)
-    return contents
-
-def _write_file(filenames, contents):
-    if type(filenames) is not list:
-        raise ValueError("specify list of filenames")
-    if type(contents) is not list:
-        raise ValueError("specify list of contents")
-    if len(filenames) != len(contents):
-        raise ValueError("filenames and contents do not match")
-
-    for ii in range(len(filenames)):
-        with open(filenames[ii], 'w') as fileobj:
-            fileobj.write(contents[ii])
-

@@ -344,7 +344,11 @@ class EPA(DOS):
             super().read(fileformat, filenames)
 
     def _read_epa_epa_out(self, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         nn = 0
         tt = contents[0][nn].split()

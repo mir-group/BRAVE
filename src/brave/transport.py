@@ -609,7 +609,11 @@ class Transport(Cell):
             super().read(fileformat, filenames)
 
     def _read_trn_boltztrap_out(self, filenames, tauvc, kappaelzeroj):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         efermi = float(contents[0][2].split()[0])
 

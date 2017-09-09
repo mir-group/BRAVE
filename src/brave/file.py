@@ -25,7 +25,11 @@ class File(object):
     """
 
     def _read_file_internal(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 0:
             iprefix = -1
@@ -245,7 +249,11 @@ class File(object):
                         )[2])
 
     def _read_file_pw_out(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 0:
             avec = []
@@ -370,7 +378,11 @@ class File(object):
                 self.efermi = efermi
 
     def _read_file_wannier_in(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 1:
             nkpersect = 100
@@ -431,7 +443,11 @@ class File(object):
                     'crystal', kpath, kindex, klabel)
 
     def _read_file_vasp_out(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 0:
             avec = []
@@ -507,7 +523,11 @@ class File(object):
                 self.efermi = efermi
 
     def _read_file_lapw_out(self, level, filenames, lapwkunit):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 0:
             avec = []
@@ -662,7 +682,11 @@ class File(object):
             self.eunit, self.energy = 'rydberg', energy
 
     def _read_file_bands_out(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 1:
             nkpoint = int(contents[0][0].split()[4])
@@ -697,7 +721,11 @@ class File(object):
             self.eunit, self.energy = 'ev', energy
 
     def _read_file_matdyn_out(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 1:
             idxkpt = []
@@ -738,7 +766,11 @@ class File(object):
             self.eunit, self.energy = 'cm-1', energy
 
     def _read_file_inteqp_out(self, level, filenames, etype):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 1:
             oldaunit = self.aunit
@@ -782,7 +814,11 @@ class File(object):
             self.eunit, self.energy = 'ev', energy
 
     def _read_file_sigma_out(self, level, filenames, etype):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 2:
             if etype is None:
@@ -833,7 +869,11 @@ class File(object):
             self.eunit, self.energy = 'ev', energy
 
     def _read_file_wannier_out(self, level, filenames):
-        contents = common._read_file(filenames)
+        contents = []
+        for filename in filenames:
+            with open(filename) as fileobj:
+                content = fileobj.readlines()
+            contents.append(content)
 
         if level > 1:
             oldaunit = self.aunit
@@ -969,7 +1009,10 @@ class File(object):
             if hasattr(self, 'vref'):
                 content += 'vref = {0:f}\n'.format(self.vref)
 
-        common._write_file(filenames, [content])
+        contents = [content]
+        for ii in range(len(filenames)):
+            with open(filenames[ii], 'w') as fileobj:
+                fileobj.write(contents[ii])
 
     def _write_file_pw_in(self, level, filenames):
         content = ''
@@ -1020,7 +1063,10 @@ class File(object):
                     content += '{0[0]:f} {0[1]:f} {0[2]:f} {1:f}\n'.format(
                             self.kpath[ikpoint], float(knum))
 
-        common._write_file(filenames, [content])
+        contents = [content]
+        for ii in range(len(filenames)):
+            with open(filenames[ii], 'w') as fileobj:
+                fileobj.write(contents[ii])
 
     def _write_file_wannier_in(self, level, filenames):
         content = ''
@@ -1054,7 +1100,10 @@ class File(object):
 
                 self.set_kunit(oldkunit)
 
-        common._write_file(filenames, [content])
+        contents = [content]
+        for ii in range(len(filenames)):
+            with open(filenames[ii], 'w') as fileobj:
+                fileobj.write(contents[ii])
 
     def _write_file_vasp_kpt(self, level, filenames):
         content = ''
@@ -1080,7 +1129,10 @@ class File(object):
                                 ).format(self.kpath[ikpoint + ii], self.klabel[
                                 ikpoint + ii])
 
-        common._write_file(filenames, [content])
+        contents = [content]
+        for ii in range(len(filenames)):
+            with open(filenames[ii], 'w') as fileobj:
+                fileobj.write(contents[ii])
 
     def _write_file_lapw_kpt(self, level, filenames, lapwkunit):
         content = ''
@@ -1157,7 +1209,10 @@ class File(object):
                             ii], weights[ii])
                 content += 'END\n'
 
-        common._write_file(filenames, [content])
+        contents = [content]
+        for ii in range(len(filenames)):
+            with open(filenames[ii], 'w') as fileobj:
+                fileobj.write(contents[ii])
 
     def _write_file_boltztrap_in(
             self, level, filenames, deltae, ecut, lpfac, efcut, tmax, deltat,
@@ -1256,5 +1311,7 @@ class File(object):
                         contents[3] += str(
                                 self.energy[ikpoint, iband, ispin]) + '\n'
 
-        common._write_file(filenames, contents)
+        for ii in range(len(filenames)):
+            with open(filenames[ii], 'w') as fileobj:
+                fileobj.write(contents[ii])
 
