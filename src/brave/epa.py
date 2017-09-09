@@ -366,12 +366,13 @@ class EPA(DOS):
 
             nemax = numpy.amax(ne)
             gavg = numpy.zeros((nmode, nemax, nemax, nwin), float)
-            for ii in range(nwin):
-                for jj in range(ne[ii]):
-                    for kk in range(ne[ii]):
-                        tt = ff.readline().split()
-                        for ll in range(nmode):
-                            gavg[ll, kk, jj, ii] = float(tt[ll + 3])
+            for line in ff:
+                tt = line.split()
+                ii = int(tt[0]) - 1
+                jj = int(tt[1]) - 1
+                kk = int(tt[2]) - 1
+                for ll in range(nmode):
+                    gavg[ll, kk, jj, ii] = float(tt[ll + 3])
 
         self.ee, self.de, self.ne, self.wavg, self.gavg = ee, de, ne, wavg, gavg
 
