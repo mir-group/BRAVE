@@ -118,7 +118,7 @@ class DOS(Cell):
 
         efermi = float(linecache.getline(filenames[0], 3).split()[0])
         dos = numpy.loadtxt(filenames[
-            1], dtype = float, skiprows = 1, usecols = (0, 1)).transpose()
+            1], dtype = float, skiprows = 1, usecols = (0, 1), unpack = True)
         dos[0, :] -= efermi
         dos[1, :] *= spin_degeneracy
 
@@ -126,7 +126,7 @@ class DOS(Cell):
 
     def _read_dos_matdyn_dos(self, filenames):
 
-        dos = numpy.loadtxt(filenames[0], dtype = float).transpose()
+        dos = numpy.loadtxt(filenames[0], dtype = float, unpack = True)
 
         self.dunit, self.dos = ['uc', 'cm-1'], dos
 

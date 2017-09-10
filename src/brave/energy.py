@@ -153,17 +153,17 @@ class Energy(Kpoint):
         nspin = self.nspin
         energy = self.energy
         kpoint = self.kpoint
-        _ivbm = numpy.unravel_index(energy[:, :nval, :].argmax(), (
+        ivbm = numpy.unravel_index(energy[:, :nval, :].argmax(), (
                 nkpoint, nval, nspin))
-        _icbm = numpy.unravel_index(energy[:, nval:, :].argmin(), (
+        icbm = numpy.unravel_index(energy[:, nval:, :].argmin(), (
                 nkpoint, nband - nval, nspin))
-        _evbm = energy[_ivbm[0], _ivbm[1], _ivbm[2]]
-        _ecbm = energy[_icbm[0], _icbm[1] + nval, _icbm[2]]
-        _kvbm = kpoint[_ivbm[0]]
-        _kcbm = kpoint[_icbm[0]]
+        evbm = energy[ivbm[0], ivbm[1], ivbm[2]]
+        ecbm = energy[icbm[0], icbm[1] + nval, icbm[2]]
+        kvbm = kpoint[ivbm[0], :]
+        kcbm = kpoint[icbm[0], :]
 
-        self.efermi = (_evbm + _ecbm) / 2.0
-        return _evbm, _ecbm, _kvbm, _kcbm
+        self.efermi = (evbm + ecbm) / 2.0
+        return evbm, ecbm, kvbm, kcbm
 
     def sort_energy(self):
         """Method for sorting energy in ascending order by band

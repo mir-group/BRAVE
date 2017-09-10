@@ -613,7 +613,7 @@ class Transport(Cell):
 
         efermi = float(linecache.getline(filenames[0], 3).split()[0])
         trace = numpy.loadtxt(filenames[
-            1], dtype = float, skiprows = 1).transpose()
+            1], dtype = float, skiprows = 1, unpack = True)
 
         ntemp = numpy.where(trace[1, :] == trace[1, 0])[0][1]
         nmu = trace.shape[1] // ntemp
