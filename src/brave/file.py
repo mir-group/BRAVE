@@ -1049,11 +1049,10 @@ class File(object):
                     ff.write('k-points along high symmetry lines\n')
                     ff.write('{0:d}\n'.format(self.kindex[1]))
                     ff.write('line-mode\n')
-                    ff.write('{0:s}\n'.format(d0[self.kunit]))
+                    ff.write('{0:s}'.format(d0[self.kunit]))
 
                     for ii in range(self.nkpath - 1):
-                        if ii > 0:
-                            ff.write('\n')
+                        ff.write('\n')
                         for jj in range(2):
                             self.kpath[ii + jj, :].tofile(ff, ' ')
                             ff.write(' ! {0:s}\n'.format(self.klabel[ii + jj]))
@@ -1145,8 +1144,7 @@ class File(object):
                 s2 = ", 'unknown', 'unformatted', 0\n"
 
                 ff.write("5, '{0:s}'{1:s}".format(filename_intrans, s0))
-                ff.write("6, '{0:s}.outputtrans'{1:s}".format(
-                    self.prefix, s1))
+                ff.write("6, '{0:s}.outputtrans'{1:s}".format(self.prefix, s1))
                 ff.write("20, '{0:s}'{1:s}".format(filename_struct, s0))
                 ff.write("10, '{0:s}'{1:s}".format(filename_energy, s0))
                 ff.write("48, '{0:s}.engre'{1:s}".format(self.prefix, s2))
@@ -1169,31 +1167,30 @@ class File(object):
             with open(filenames[1], 'w') as ff:
                 nelec = self.nelec - 2 * nband_exclude
 
-                s0 = ' # Format of DOS\n'
-                s1 = ' # iskip (not presently used) idebug setgap shiftgap\n'
-                s2 = ' # Fermilevel (Ry), energygrid, energy span around'
+                s0 = '# Format of DOS\n'
+                s1 = '# iskip (not presently used) idebug setgap shiftgap\n'
+                s2 = '# Fermilevel (Ry), energygrid, energy span around'
                 s2 += ' Fermilevel, number of electrons\n'
-                s3 = ' # CALC (calculate expansion coeff), NOCALC read from'
+                s3 = '# CALC (calculate expansion coeff), NOCALC read from'
                 s3 += ' file\n'
-                s4 = ' # lpfac, number of latt-points per k-point\n'
-                s5 = ' # run mode (only BOLTZ is supported)\n'
-                s6 = ' # (efcut) energy range of chemical potential\n'
-                s7 = ' # Tmax, temperature grid\n'
-                s8 = ' # energyrange of bands given individual DOS output'
+                s4 = '# lpfac, number of latt-points per k-point\n'
+                s5 = '# run mode (only BOLTZ is supported)\n'
+                s6 = '# (efcut) energy range of chemical potential\n'
+                s7 = '# Tmax, temperature grid\n'
+                s8 = '# energyrange of bands given individual DOS output'
                 s8 += ' sig_xxx and dos_xxx (xxx is band number)\n'
-                s9 = '\n'
 
-                ff.write('GENE     {s:0}'.format(s0))
-                ff.write('0 0 0 0.0{s:0}'.format(s1))
+                ff.write('GENE      {s:0}'.format(s0))
+                ff.write('0 0 0 0.0 {s:0}'.format(s1))
                 ff.write('{0:f} {1:f} {2:f} {3:f} {4:s}'.format(
                     self.efermi, deltae, ecut, nelec, s2))
-                ff.write('CALC{0:s}'.format(s3))
-                ff.write('{0:d}{1:s}'.format(lpfac, s4))
-                ff.write('BOLTZ{0:s}'.format(s5))
-                ff.write('{0:f}{1:s}'.format(efcut, s6))
-                ff.write('{0:f} {1:f}{2:s}'.format(tmax, deltat, s7))
-                ff.write('{0:f}{1:s}'.format(ecut2, s8))
-                ff.write('{0:s}{1:s}'.format(dosmethod, s9))
+                ff.write('CALC {0:s}'.format(s3))
+                ff.write('{0:d} {1:s}'.format(lpfac, s4))
+                ff.write('BOLTZ {0:s}'.format(s5))
+                ff.write('{0:f} {1:s}'.format(efcut, s6))
+                ff.write('{0:f} {1:f} {2:s}'.format(tmax, deltat, s7))
+                ff.write('{0:f} {1:s}'.format(ecut2, s8))
+                ff.write('{0:s}\n'.format(dosmethod))
 
             with open(filenames[2], 'wb') as ff:
                 ff.write(b'{0:s}\n'.format(self.prefix))
