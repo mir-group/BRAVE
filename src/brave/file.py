@@ -897,172 +897,154 @@ class File(object):
         s2 = '{0:f}\n'
         s3 = 'energy {0:d} {1:d} {2:d}\n'
 
-        with open(filenames[0], 'w') as ff:
+        with open(filenames[0], 'wb') as ff:
             if level > 0:
                 if hasattr(self, 'prefix'):
-                    ff.write('prefix = {0:s}\n'.format(self.prefix))
+                    ff.write(b'prefix = {0:s}\n'.format(self.prefix))
                 if hasattr(self, 'aunit'):
-                    ff.write('aunit = {0:s}\n'.format(self.aunit))
+                    ff.write(b'aunit = {0:s}\n'.format(self.aunit))
                 if hasattr(self, 'alat'):
-                    ff.write('alat = {0:f}\n'.format(self.alat))
+                    ff.write(b'alat = {0:f}\n'.format(self.alat))
 
                 if hasattr(self, 'avec'):
-                    ff.write('avec 3\n')
-                    for ii in range(3):
-                        ff.write(s0.format(self.avec[ii, :]))
+                    ff.write(b'avec 3\n')
+                    numpy.savetxt(ff, self.avec)
                 if hasattr(self, 'bvec'):
-                    ff.write('bvec 3\n')
-                    for ii in range(3):
-                        ff.write(s0.format(self.bvec[ii, :]))
+                    ff.write(b'bvec 3\n')
+                    numpy.savetxt(ff, self.bvec)
 
                 if hasattr(self, 'avol'):
-                    ff.write('avol = {0:f}\n'.format(self.avol))
+                    ff.write(b'avol = {0:f}\n'.format(self.avol))
                 if hasattr(self, 'bvol'):
-                    ff.write('bvol = {0:f}\n'.format(self.bvol))
+                    ff.write(b'bvol = {0:f}\n'.format(self.bvol))
                 if hasattr(self, 'natom'):
-                    ff.write('natom = {0:d}\n'.format(self.natom))
+                    ff.write(b'natom = {0:d}\n'.format(self.natom))
                 if hasattr(self, 'nelec'):
-                    ff.write('nelec = {0:f}\n'.format(self.nelec))
+                    ff.write(b'nelec = {0:f}\n'.format(self.nelec))
 
                 if hasattr(self, 'rot'):
-                    ff.write('sym {0:d}\n'.format(self.nsym))
-                    for ii in range(self.nsym):
-                        ff.write(s1.format(self.rot[ii, :, :]))
+                    ff.write(b'sym {0:d}\n'.format(self.nsym))
+                    numpy.savetxt(ff, self.rot.reshape(self.nsym, 9))
 
             if level > 1:
                 if hasattr(self, 'kunit'):
-                    ff.write('kunit = {0:s}\n'.format(self.kunit))
+                    ff.write(b'kunit = {0:s}\n'.format(self.kunit))
 
                 if hasattr(self, 'kpoint'):
-                    ff.write('kpoint {0:d}\n'.format(self.nkpoint))
-                    for ii in range(self.nkpoint):
-                        ff.write(s0.format(self.kpoint[ii, :]))
+                    ff.write(b'kpoint {0:d}\n'.format(self.nkpoint))
+                    numpy.savetxt(ff, self.kpoint)
 
                 if hasattr(self, 'kline'):
-                    ff.write('kline {0:d}\n'.format(self.nkpoint))
-                    for ii in range(self.nkpoint):
-                        ff.write(s2.format(self.kline[ii]))
+                    ff.write(b'kline {0:d}\n'.format(self.nkpoint))
+                    self.kline.tofile(ff, '\n')
 
                 if hasattr(self, 'kweight'):
-                    ff.write('kweight {0:d}\n'.format(self.nkpoint))
-                    for ii in range(self.nkpoint):
-                        ff.write(s2.format(self.kweight[ii]))
+                    ff.write(b'kweight {0:d}\n'.format(self.nkpoint))
+                    self.kweight.tofile(ff, '\n')
 
                 if hasattr(self, 'kpath'):
-                    ff.write('kpath {0:d}\n'.format(self.nkpath))
-                    for ii in range(self.nkpath):
-                        ff.write(s0.format(self.kpath[ii, :]))
+                    ff.write(b'kpath {0:d}\n'.format(self.nkpath))
+                    numpy.savetxt(ff, self.kpath)
 
                 if hasattr(self, 'kindex'):
-                    ff.write('kindex {0:d}\n'.format(self.nkpath))
-                    for ii in range(self.nkpath):
-                        ff.write('{0:d}\n'.format(self.kindex[ii]))
+                    ff.write(b'kindex {0:d}\n'.format(self.nkpath))
+                    self.kindex.tofile(ff, '\n')
 
                 if hasattr(self, 'klabel'):
-                    ff.write('klabel {0:d}\n'.format(self.nkpath))
+                    ff.write(b'klabel {0:d}\n'.format(self.nkpath))
                     for ii in range(self.nkpath):
-                        ff.write('{0:s}\n'.format(self.klabel[ii]))
+                        ff.write(b'{0:s}\n'.format(self.klabel[ii]))
 
             if level > 2:
                 if hasattr(self, 'eunit'):
-                    ff.write('eunit = {0:s}\n'.format(self.eunit))
+                    ff.write(b'eunit = {0:s}\n'.format(self.eunit))
 
                 if hasattr(self, 'energy'):
                     ff.write(s3.format(self.nkpoint, self.nband, self.nspin))
-                    for ii in range(self.nkpoint):
-                        for jj in range(self.nband):
-                            for kk in range(self.nspin):
-                                ff.write(s2.format(self.energy[ii, jj, kk]))
+                    self.energy.tofile(ff, '\n')
 
                 if hasattr(self, 'efermi'):
-                    ff.write('efermi = {0:f}\n'.format(self.efermi))
+                    ff.write(b'efermi = {0:f}\n'.format(self.efermi))
                 if hasattr(self, 'vref'):
-                    ff.write('vref = {0:f}\n'.format(self.vref))
+                    ff.write(b'vref = {0:f}\n'.format(self.vref))
 
     def _write_file_pw_in(self, level, filenames):
-        s0 = '{0[0]:f} {0[1]:f} {0[2]:f}\n'
-        s1 = '{0[0]:f} {0[1]:f} {0[2]:f} {1:f}\n'
         d0 = {'bohr': 'bohr', 'angstrom': 'angstrom', 'nm': 'angstrom'}
         d1 = {'bohr': 'bohr', 'angstrom': 'angstrom'}
         d2 = {'cartesian': 'tpiba', 'crystal': 'crystal'}
         d3 = {'cartesian': 'tpiba_b', 'crystal': 'crystal_b'}
 
-        with open(filenames[0], 'w') as ff:
+        with open(filenames[0], 'wb') as ff:
             if level > 0:
                 if hasattr(self, 'aunit') and hasattr(self, 'alat') and hasattr(
                         self, 'avec'):
                     oldaunit = self.aunit
                     self.set_aunit(d0[self.aunit])
 
-                    ff.write('CELL_PARAMETERS {0:s}\n'.format(d1[self.aunit]))
-                    for ii in range(3):
-                        ff.write(s0.format(self.avec[ii, :] * self.alat))
-
+                    ff.write(b'CELL_PARAMETERS {0:s}\n'.format(d1[self.aunit]))
+                    numpy.savetxt(ff, self.alat * self.avec)
                     self.set_aunit(oldaunit)
 
             if level > 1:
                 if hasattr(self, 'kunit') and hasattr(self, 'kpoint'):
-                    ff.write('K_POINTS {0:s}\n'.format(d2[self.kunit]))
-                    ff.write('{0:d}\n'.format(self.nkpoint))
+                    ff.write(b'K_POINTS {0:s}\n'.format(d2[self.kunit]))
+                    ff.write(b'{0:d}\n'.format(self.nkpoint))
 
                     if hasattr(self, 'kweight'):
                         weight = 2.0 * self.kweight
                     else:
                         weight = numpy.full(self.nkpoint, 2 / self.nkpoint)
+                    numpy.savetxt(ff, numpy.concatenate((
+                        self.kpoint, weight.reshape(self.nkpoint, 1)), 1))
 
-                    for ii in range(self.nkpoint):
-                        ff.write(s1.format(self.kpoint[ii, :], weight[ii]))
-
-                if hasattr(self, 'kunit') and hasattr(self, 'kpath'):
+                if hasattr(self, 'kunit') and hasattr(
+                        self, 'kpath') and hasattr(self, 'kindex'):
                     if self.check_kindex() == 'uninitialized':
                         raise ValueError('call calc_kindex')
 
-                    ff.write('K_POINTS {0:s}\n'.format(d3[self.kunit]))
-                    ff.write('{0:d}\n'.format(self.nkpath))
+                    ff.write(b'K_POINTS {0:s}\n'.format(d3[self.kunit]))
+                    ff.write(b'{0:d}\n'.format(self.nkpath))
 
                     knum = numpy.append(numpy.diff(self.kindex), 0)
-                    for ii in range(self.nkpath):
-                        ff.write(s1.format(self.kpath[ii, :], float(knum[ii])))
+                    numpy.savetxt(ff, numpy.concatenate((
+                        self.kpath, knum.reshape(self.nkpath, 1)), 1))
 
     def _write_file_wannier_in(self, level, filenames):
-        s0 = '{0[0]:f} {0[1]:f} {0[2]:f}\n'
-        s1 = '{0:s} {1[0]:f} {1[1]:f} {1[2]:f}{2:s}'
         d0 = {'bohr': 'bohr', 'angstrom': 'ang'}
         l0 = [' ', '\n']
 
-        with open(filenames[0], 'w') as ff:
+        with open(filenames[0], 'wb') as ff:
             if level > 0:
                 if hasattr(self, 'aunit') and hasattr(self, 'alat') and hasattr(
                         self, 'avec'):
-                    ff.write('begin unit_cell_cart\n')
-                    ff.write('{0:s}'.format(d0[self.aunit]))
-                    for ii in range(3):
-                        ff.write(s0.format(self.avec[ii, :] * self.alat))
-                    ff.write('end unit_cell_cart\n')
+                    ff.write(b'begin unit_cell_cart\n')
+                    ff.write(b'{0:s}'.format(d0[self.aunit]))
+                    numpy.savetxt(ff, self.alat * self.avec)
+                    ff.write(b'end unit_cell_cart\n')
 
             if level > 1:
                 if hasattr(self, 'kunit') and hasattr(self, 'kpath'):
                     oldkunit = self.kunit
                     self.set_kunit('crystal')
 
-                    ff.write('begin kpoint_path\n')
+                    ff.write(b'begin kpoint_path\n')
                     for ii in range(self.nkpath - 1):
                         for jj in range(2):
-                            ff.write(s1.format(self.klabel[ii + jj], self.kpath[
-                                ii + jj, :], l0[jj]))
-                    ff.write('end kpoint_path\n')
+                            ff.write(b'{0:s} '.format(self.klabel[ii + jj]))
+                            self.kpath[ii + jj, :].tofile(ff, ' ')
+                            ff.write(b'{0:s}'.format(l0[jj]))
+                    ff.write(b'end kpoint_path\n')
 
                     self.set_kunit(oldkunit)
 
     def _write_file_vasp_kpt(self, level, filenames):
-        s0 = '{0[0]:f} {0[1]:f} {0[2]:f} ! {1:s}\n'
         d0 = {'cartesian': 'cartesian', 'crystal': 'reciprocal'}
 
         with open(filenames[0], 'w') as ff:
             if level > 1:
                 if hasattr(self, 'kunit') and hasattr(self, 'kpath'):
                     if self.check_kindex() != 'number':
-                        raise ValueError('call calc_kindex(\'number\')')
+                        raise ValueError("call calc_kindex('number')")
 
                     ff.write('k-points along high symmetry lines\n')
                     ff.write('{0:d}\n'.format(self.kindex[1]))
@@ -1073,8 +1055,8 @@ class File(object):
                         if ii > 0:
                             ff.write('\n')
                         for jj in range(2):
-                            ff.write(s0.format(self.kpath[
-                                ii + jj, :], self.klabel[ii + jj]))
+                            self.kpath[ii + jj, :].tofile(ff, ' ')
+                            ff.write(' ! {0:s}\n'.format(self.klabel[ii + jj]))
 
     def _write_file_lapw_kpt(self, level, filenames, lapwkunit):
         if level > 1:
@@ -1158,31 +1140,31 @@ class File(object):
                 filename_struct = os.path.basename(filenames[2])
                 filename_energy = os.path.basename(filenames[3])
 
-                s0 = ', \'old\', \'formatted\', 0\n'
-                s1 = ', \'unknown\', \'formatted\', 0\n'
-                s2 = ', \'unknown\', \'unformatted\', 0\n'
+                s0 = ", 'old', 'formatted', 0\n"
+                s1 = ", 'unknown', 'formatted', 0\n"
+                s2 = ", 'unknown', 'unformatted', 0\n"
 
-                ff.write('5, \'{0:s}\'{1:s}'.format(filename_intrans, s0))
-                ff.write('6, \'{0:s}.outputtrans\'{1:s}'.format(
+                ff.write("5, '{0:s}'{1:s}".format(filename_intrans, s0))
+                ff.write("6, '{0:s}.outputtrans'{1:s}".format(
                     self.prefix, s1))
-                ff.write('20, \'{0:s}\'{1:s}'.format(filename_struct, s0))
-                ff.write('10, \'{0:s}\'{1:s}'.format(filename_energy, s0))
-                ff.write('48, \'{0:s}.engre\'{1:s}'.format(self.prefix, s2))
-                ff.write('49, \'{0:s}.transdos\'{1:s}'.format(self.prefix, s1))
-                ff.write('50, \'{0:s}.sigxx\'{1:s}'.format(self.prefix, s1))
-                ff.write('51, \'{0:s}.sigxxx\'{1:s}'.format(self.prefix, s1))
-                ff.write('21, \'{0:s}.trace\'{1:s}'.format(self.prefix, s1))
-                ff.write('22, \'{0:s}.condtens\'{1:s}'.format(self.prefix, s1))
-                ff.write('24, \'{0:s}.halltens\'{1:s}'.format(self.prefix, s1))
-                ff.write('30, \'{0:s}_BZ.dx\'{1:s}'.format(self.prefix, s1))
-                ff.write('31, \'{0:s}_fermi.dx\'{1:s}'.format(self.prefix, s1))
-                ff.write('32, \'{0:s}_sigxx.dx\'{1:s}'.format(self.prefix, s1))
-                ff.write('33, \'{0:s}_sigyy.dx\'{1:s}'.format(self.prefix, s1))
-                ff.write('34, \'{0:s}_sigzz.dx\'{1:s}'.format(self.prefix, s1))
-                ff.write('35, \'{0:s}_band.dat\'{1:s}'.format(self.prefix, s1))
-                ff.write('36, \'{0:s}_band.gpl\'{1:s}'.format(self.prefix, s1))
-                ff.write('37, \'{0:s}_deriv.dat\'{1:s}'.format(self.prefix, s1))
-                ff.write('38, \'{0:s}MASS.dat\'{1:s}'.format(self.prefix, s1))
+                ff.write("20, '{0:s}'{1:s}".format(filename_struct, s0))
+                ff.write("10, '{0:s}'{1:s}".format(filename_energy, s0))
+                ff.write("48, '{0:s}.engre'{1:s}".format(self.prefix, s2))
+                ff.write("49, '{0:s}.transdos'{1:s}".format(self.prefix, s1))
+                ff.write("50, '{0:s}.sigxx'{1:s}".format(self.prefix, s1))
+                ff.write("51, '{0:s}.sigxxx'{1:s}".format(self.prefix, s1))
+                ff.write("21, '{0:s}.trace'{1:s}".format(self.prefix, s1))
+                ff.write("22, '{0:s}.condtens'{1:s}".format(self.prefix, s1))
+                ff.write("24, '{0:s}.halltens'{1:s}".format(self.prefix, s1))
+                ff.write("30, '{0:s}_BZ.dx'{1:s}".format(self.prefix, s1))
+                ff.write("31, '{0:s}_fermi.dx'{1:s}".format(self.prefix, s1))
+                ff.write("32, '{0:s}_sigxx.dx'{1:s}".format(self.prefix, s1))
+                ff.write("33, '{0:s}_sigyy.dx'{1:s}".format(self.prefix, s1))
+                ff.write("34, '{0:s}_sigzz.dx'{1:s}".format(self.prefix, s1))
+                ff.write("35, '{0:s}_band.dat'{1:s}".format(self.prefix, s1))
+                ff.write("36, '{0:s}_band.gpl'{1:s}".format(self.prefix, s1))
+                ff.write("37, '{0:s}_deriv.dat'{1:s}".format(self.prefix, s1))
+                ff.write("38, '{0:s}MASS.dat'{1:s}".format(self.prefix, s1))
 
             with open(filenames[1], 'w') as ff:
                 nelec = self.nelec - 2 * nband_exclude
@@ -1213,28 +1195,22 @@ class File(object):
                 ff.write('{0:f}{1:s}'.format(ecut2, s8))
                 ff.write('{0:s}{1:s}'.format(dosmethod, s9))
 
-            with open(filenames[2], 'w') as ff:
-                s0 = '{0[0]:f} {0[1]:f} {0[2]:f}\n'
-                s1 = '{0[0][0]:d} {0[1][0]:d} {0[2][0]:d} {0[0][1]:d} {0[1]['
-                s1 += '1]:d} {0[2][1]:d} {0[0][2]:d} {0[1][2]:d} {0[2][2]:d}\n'
-
-                ff.write('{0:s}\n'.format(self.prefix))
-                for ii in range(3):
-                    ff.write(s0.format(self.avec[ii, :]))
-                ff.write('{0:d}\n'.format(self.nsym))
+            with open(filenames[2], 'wb') as ff:
+                ff.write(b'{0:s}\n'.format(self.prefix))
+                numpy.savetxt(ff, self.avec)
+                ff.write(b'{0:d}\n'.format(self.nsym))
                 for ir in range(self.nsym):
-                    ff.write(s1.format(self.rot[ir, :, :]))
+                    self.rot[ir, :, :].transpose().tofile(ff, ' ')
+                    ff.write(b'\n')
 
             with open(filenames[3], 'w') as ff:
                 nband = self.nspin * (self.nband - nband_exclude)
-
-                s0 = '{0[0]:f} {0[1]:f} {0[2]:f} {1:d}\n'
-
                 ff.write('{0:s}\n'.format(self.prefix))
                 ff.write('{0:d}\n'.format(self.nkpoint))
                 for ii in range(self.nkpoint):
-                    ff.write(s0.format(self.kpoint[ii, :], nband))
-                    for jj in range(nband_exclude, self.nband):
-                        for kk in range(self.nspin):
-                            ff.write('{0:f}\n'.format(self.energy[ii, jj, kk]))
+                    self.kpoint[ii, :].tofile(ff, ' ')
+                    ff.write(' {0:d}\n'.format(nband))
+                    self.energy[ii, nband_exclude:self.nband, :].tofile(
+                        ff, '\n')
+                    ff.write('\n')
 

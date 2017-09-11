@@ -159,7 +159,7 @@ class Cell(File):
 
     @nelec.setter
     def nelec(self, value):
-        if not isinstance(value, int):
+        if not isinstance(value, float):
             raise TypeError('nelec {0!r}'.format(value))
         self._nelec = value
 
