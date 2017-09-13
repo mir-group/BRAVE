@@ -1196,9 +1196,8 @@ class File(object):
                 ff.write(b'{0:s}\n'.format(self.prefix))
                 numpy.savetxt(ff, self.avec)
                 ff.write(b'{0:d}\n'.format(self.nsym))
-                for ir in range(self.nsym):
-                    self.rot[ir, :, :].transpose().tofile(ff, ' ')
-                    ff.write(b'\n')
+                numpy.savetxt(ff, self.rot.transpose(0, 2, 1).reshape(
+                    self.nsym, 9))
 
             with open(filenames[3], 'w') as ff:
                 nband = self.nspin * (self.nband - nband_exclude)
