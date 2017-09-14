@@ -618,44 +618,28 @@ class Transport(Cell):
         ntemp = numpy.where(trace[1, :] == trace[1, 0])[0][1]
         nmu = trace.shape[1] // ntemp
 
-        mu = (trace[0, ::ntemp] - efermi) * common.RYDBERG
-        temp = trace[1, 0:ntemp]
+        self.mu = (trace[0, ::ntemp] - efermi) * common.RYDBERG
+        self.temp = trace[1, 0:ntemp]
         view = trace.reshape(trace.shape[0], nmu, ntemp)
-        numelec = -view[2, :, :]
-        convdos = view[3, :, :] / common.HARTREE
-        seebeck = view[4, :, :]
-        sigma = view[5, :, :]
-        hall = view[6, :, :]
-        kappael = view[7, :, :]
-        specheat = view[8, :, :]
-        magsus = view[9, :, :]
+        self.numelec = -view[2, :, :]
+        self.convdos = view[3, :, :] / common.HARTREE
+        self.seebeck = view[4, :, :]
+        self.sigma = view[5, :, :]
+        self.hall = view[6, :, :]
+        self.kappael = view[7, :, :]
+        self.specheat = view[8, :, :]
+        self.magsus = view[9, :, :]
 
         if tauvc is not None:
-            for imu in range(nmu):
-                if mu[imu] < 0.0:
-                    tau = tauvc[0]
-                else:
-                    tau = tauvc[1]
-                sigma[imu, :] *= tau
-                kappael[imu, :] *= tau
+            tau = numpy.broadcast_to(numpy.where(self.mu < 0.0, tauvc[0], tauvc[
+                1]).reshape(nmu, 1), (nmu, ntemp))
+            self.sigma = numpy.multiply(self.sigma, tau)
+            self.kappael = numpy.multiply(self.kappael, tau)
 
         if kappaelzeroj:
-            _seebeck2 = numpy.square(seebeck)
-            _sigma_seebeck2 = numpy.multiply(sigma, _seebeck2)
-            _temp = numpy.broadcast_to(temp, (nmu, ntemp))
-            _sigma_seebeck2_temp = numpy.multiply(_sigma_seebeck2, _temp)
-            kappael = numpy.subtract(kappael, _sigma_seebeck2_temp)
-
-        self.mu = mu
-        self.temp = temp
-        self.numelec = numelec
-        self.convdos = convdos
-        self.seebeck = seebeck
-        self.sigma = sigma
-        self.hall = hall
-        self.kappael = kappael
-        self.specheat = specheat
-        self.magsus = magsus
+            self.kappael = numpy.subtract(self.kappael, numpy.multiply(
+                numpy.multiply(self.sigma, numpy.square(
+                self.seebeck)), numpy.broadcast_to(self.temp, (nmu, ntemp))))
 
     def __init__(
             self, mu=None, temp=None, numelec=None, convdos=None, seebeck=None,

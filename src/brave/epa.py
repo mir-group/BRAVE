@@ -216,7 +216,7 @@ class EPA(DOS):
 
     @property
     def gavg(self):
-        """A nmode by nemax by nemax by nwin ndarray of floats holding the
+        """A nwin by nemax by nemax by nmode ndarray of floats holding the
     averaged squared absolute electron-phonon coupling matrix elements, in
     units of eV^2.
         """
@@ -298,14 +298,14 @@ class EPA(DOS):
                 else:
                     ii = 2
                 if (ne[ii] == 1):
-                    gk[:] = gavg(ll, 1, 1, ii)
+                    gk[:] = gavg[ii, 1, 1, ll]
                 else:
                     xx = (en[nn] - ee[ii]) / de[ii]
                     xx = max(xx, 1.0e-12)
                     xx = min(xx, ne[ii] - 1.0e-12)
                     jj = int(xx)
                     for kk in range(nemax):
-                        gj[kk] = gavg[ll, kk, jj, ii]
+                        gj[kk] = gavg[ii, jj, kk, ll]
                     for mm in range(2):
                         xx = (en[nn] + ww[ll] * (3 - 2 * mm) - ee[ii]) / de[ii]
                         xx = max(xx, 1.0e-12)
@@ -358,23 +358,15 @@ class EPA(DOS):
                 ee[ii] = float(tt[0])
                 de[ii] = float(tt[1])
                 ne[ii] = int(tt[2])
+            self.ee, self.de, self.ne, = ee, de, ne
 
-            wavg = numpy.empty(nmode, float)
-            tt = ff.readline().split()
-            for ii in range(nmode):
-                wavg[ii] = float(tt[ii])
+            self.wavg = numpy.fromfile(
+                ff, dtype = float, count = nmode, sep = ' ')
 
             nemax = numpy.amax(ne)
-            gavg = numpy.zeros((nmode, nemax, nemax, nwin), float)
-            for line in ff:
-                tt = line.split()
-                ii = int(tt[0]) - 1
-                jj = int(tt[1]) - 1
-                kk = int(tt[2]) - 1
-                for ll in range(nmode):
-                    gavg[ll, kk, jj, ii] = float(tt[ll + 3])
-
-        self.ee, self.de, self.ne, self.wavg, self.gavg = ee, de, ne, wavg, gavg
+            self.gavg = numpy.loadtxt(ff, dtype = float, usecols = (
+                ii for ii in range(3, 3 + nmode))).reshape(
+                nwin, nemax, nemax, nmode)
 
     def __init__(
             self, energy=None, mu=None, temp=None, ee=None, de=None, ne=None,

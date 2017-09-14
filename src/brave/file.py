@@ -249,133 +249,74 @@ class File(object):
                         )[2])
 
     def _read_file_pw_out(self, level, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename) as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
-        if level > 0:
-            avec = []
-            bvec = []
-            idxsym = []
         if level > 1:
             nspin = 1
-        if level > 2:
-            idxbnd = []
-            iefermi = 0
-        for ii, line in enumerate(contents[0]):
-            if level > 0:
-                if 'Writing output data file' in line:
-                    prefix = line.split()[4][:-5]
 
-                elif 'lattice parameter (alat)  =' in line or (
-                        'lattice parameter (a_0)   =' in line):
-                    alat = float(line.split()[4])
+        with open(filenames[0], 'rb') as ff:
+            ii = 0
+            for line in ff:
+                if level > 0:
+                    if b'Writing output data file' in line:
+                        self.prefix = line.split()[4][:-5]
+                    elif b'lattice parameter' in line:
+                        self.aunit = 'bohr'
+                        self.alat = float(line.split()[4])
+                    elif b'crystal axes' in line:
+                        self.avec = numpy.genfromtxt(
+                            ff, dtype = float, usecols = (
+                            3, 4, 5), max_rows = 3)
+                    elif b'reciprocal axes' in line:
+                        self.bvec = numpy.genfromtxt(
+                            ff, dtype = float, usecols = (
+                            3, 4, 5), max_rows = 3)
+                    elif b'unit-cell volume' in line:
+                        self.avol = float(line.split()[3]) / self.alat ** 3
+                    elif b'number of atoms/cell' in line:
+                        self.natom = int(line.split()[4])
+                    elif b'number of electrons' in line:
+                        self.nelec = float(line.split()[4])
+                    elif b'Sym. Ops.' in line:
+                        nsym = int(line.split()[0])
+                    elif b'isym =  1' in line:
+                        skip = ff.readline()
+                        buf = ''
+                        for jj in range(nsym):
+                            for kk in range(3):
+                                buf += ff.readline()[19:53]
+                            for kk in range(8):
+                                skip = ff.readline()
+                        self.rot = numpy.fromstring(
+                            buf, dtype = int, sep = ' ').reshape(nsym, 3, 3)
 
-                elif ('a(1) = (' in line or 'a(2) = (' in line
-                        or 'a(3) = (' in line):
-                    words = line.replace('(', ' ').replace(')', ' ').split()
-                    avec.append((
-                            float(words[3]), float(words[4]), float(words[5])))
+                if level > 1:
+                    if b'magnetic' in line:
+                        nspin = 2
+                    elif b'number of k points=' in line:
+                        self.kunit = 'crystal'
+                        nkpoint = int(line.split()[4]) / nspin
+                    elif b' cryst. coord.' in line:
+                        kk = numpy.genfromtxt(ff, dtype = float, delimiter = (
+                            20, 12, 12, 12, 7, 12), usecols = (
+                            1, 2, 3, 5), max_rows = nkpoint)
+                        self.kpoint, self.kweight = kk[:, :-1], kk[:, 3] / 2
 
-                elif ('b(1) = (' in line or 'b(2) = (' in line
-                        or 'b(3) = (' in line):
-                    words = line.replace('(', ' ').replace(')', ' ').split()
-                    bvec.append((
-                            float(words[3]), float(words[4]), float(words[5])))
-
-                elif 'unit-cell volume          =' in line:
-                    avol = float(line.split()[3])
-
-                elif 'number of atoms/cell' in line:
-                    natom = int(line.split()[4])
-
-                elif 'number of electrons' in line:
-                    nelec = float(line.split()[4])
-
-                elif 'cryst.   s' in line:
-                    idxsym.append(ii)
-
-            if level > 1:
-                if 'number of k points=' in line:
-                    nkpoint = int(line.split()[4])
-                elif 'SPIN' in line:
-                    nspin = 2
-                elif ' cryst. coord.' in line:
-                    idxkpt = ii + 1
+                if level > 2:
+                    if b'number of Kohn-Sham states' in line:
+                        self.eunit = 'ev'
+                        nband = int(line.split()[4])
+                        energy = numpy.empty((nkpoint, nband, nspin), float)
+                    elif b'(ev)' in line:
+                        energy[ii % nkpoint, :, ii // nkpoint] = numpy.fromfile(
+                            ff, dtype = float, count = nband, sep = ' ')
+                        ii += 1
+                    elif b'the Fermi energy is' in line:
+                        self.efermi = float(line.split()[4])
+                    elif b'highest occupied, lowest unoccupied level' in line:
+                        tt = line.split()
+                        self.efermi = (float(tt[6]) + float(tt[7])) / 2.0
 
             if level > 2:
-                if 'number of Kohn-Sham states=' in line:
-                    nband = int(line.split()[4])
-                elif 'band energies (ev)' in line or 'bands (ev)' in line:
-                    idxbnd.append(ii + 2)
-                elif 'the Fermi energy is' in line:
-                    efermi = float(line.split()[4])
-                    iefermi += 1
-                elif 'highest occupied, lowest unoccupied level' in line:
-                    efermi = (float(line.split()[6]) + float(
-                            line.split()[7])) / 2.0
-                    iefermi += 1
-
-        if level > 0:
-            nsym = len(idxsym)
-            if nsym > 0:
-                rot = numpy.empty((nsym, 3, 3), int)
-                for ii in range(nsym):
-                    for jj in range(3):
-                        words = contents[0][idxsym[ii] + jj][19:53].split()
-                        for kk in range(3):
-                            rot[ii, jj, kk] = int(words[kk])
-
-            self.prefix, self.natom, self.nelec = prefix, natom, nelec
-            self.aunit, self.alat, self.avec, self.bvec, self.avol = (
-                    'bohr', alat, avec, bvec, avol / alat ** 3)
-            if nsym > 0:
-                self.rot = rot
-
-        if level > 1:
-            nkpoint //= nspin
-            kpoint = numpy.empty((nkpoint, 3), float)
-            kweight = numpy.empty(nkpoint, float)
-            for ikpoint in range(nkpoint):
-                words = contents[0][idxkpt + ikpoint][20:56].split()
-                words.append(contents[0][idxkpt + ikpoint].split()[-1])
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[jj])
-                kweight[ikpoint] = 0.5 * float(words[3])
-
-            self.kunit, self.kpoint, self.kweight = 'crystal', kpoint, kweight
-
-        if level > 2:
-            energy = numpy.empty((nkpoint, nband, nspin), float)
-
-            ncol = 8
-            nrow = nband // ncol
-            if nband % ncol != 0:
-                nrow += 1
-
-            for ikpoint in range(nkpoint):
-                for ispin in range(nspin):
-                    iband = 0
-                    for irow in range(nrow):
-# This does not work if there are no spaces between eigenvalues
-# which often happens for semicore states.
-#                        words = contents[0][idxbnd[
-#                                ikpoint + ispin * nkpoint] + irow].split()
-# This works even if there are no spaces between eigenvalues.
-                        line = contents[0][idxbnd[
-                                ikpoint + ispin * nkpoint] + irow]
-                        words = []
-                        for jj in range(2, len(line) - 9, 9):
-                            words.append(line[jj:jj + 9])
-                        for word in words:
-                            energy[ikpoint, iband, ispin] = float(word)
-                            iband += 1
-
-            self.eunit, self.energy = 'ev', energy
-            if iefermi != 0:
-                self.efermi = efermi
+                self.energy = energy
 
     def _read_file_wannier_in(self, level, filenames):
         contents = []
@@ -888,7 +829,8 @@ class File(object):
                 if ii == 0:
                     energy = numpy.empty((nkpoint, nband, nspin), float)
                 energy[:, :, ii] = wan[1, :].reshape(nband, nkpoint).transpose()
-                self.eunit, self.energy = 'ev', energy
+                if ii == nspin - 1:
+                    self.eunit, self.energy = 'ev', energy
 
     def _write_file_internal(self, level, filenames):
         s0 = '{0[0]:f} {0[1]:f} {0[2]:f}\n'
