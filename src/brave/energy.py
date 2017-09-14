@@ -26,7 +26,7 @@ class Energy(Kpoint):
             raise TypeError('eunit {0!r}'.format(value))
         if value not in common._escale.keys():
             raise ValueError('eunit {0!r}'.format(value))
-        self._eunit = eunit
+        self._eunit = value
 
     @eunit.deleter
     def eunit(self):

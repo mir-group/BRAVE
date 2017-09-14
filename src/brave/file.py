@@ -257,7 +257,7 @@ class File(object):
             for line in ff:
                 if level > 0:
                     if b'Writing output data file' in line:
-                        self.prefix = line.split()[4][:-5]
+                        self.prefix = line.split()[4][:-5].decode()
                     elif b'lattice parameter' in line:
                         self.aunit = 'bohr'
                         self.alat = float(line.split()[4])
@@ -279,7 +279,7 @@ class File(object):
                         nsym = int(line.split()[0])
                     elif b'isym =  1' in line:
                         skip = ff.readline()
-                        buf = ''
+                        buf = b''
                         for jj in range(nsym):
                             for kk in range(3):
                                 buf += ff.readline()[19:53]
@@ -293,7 +293,7 @@ class File(object):
                         nspin = 2
                     elif b'number of k points=' in line:
                         self.kunit = 'crystal'
-                        nkpoint = int(line.split()[4]) / nspin
+                        nkpoint = int(line.split()[4]) // nspin
                     elif b' cryst. coord.' in line:
                         kk = numpy.genfromtxt(ff, dtype = float, delimiter = (
                             20, 12, 12, 12, 7, 12), usecols = (
@@ -304,6 +304,7 @@ class File(object):
                     if b'number of Kohn-Sham states' in line:
                         self.eunit = 'ev'
                         nband = int(line.split()[4])
+                    elif b'FFT' in line:
                         energy = numpy.empty((nkpoint, nband, nspin), float)
                     elif b'(ev)' in line:
                         energy[ii % nkpoint, :, ii // nkpoint] = numpy.fromfile(
@@ -842,11 +843,11 @@ class File(object):
         with open(filenames[0], 'wb') as ff:
             if level > 0:
                 if hasattr(self, 'prefix'):
-                    ff.write(b'prefix = {0:s}\n'.format(self.prefix))
+                    ff.write('prefix = {0:s}\n'.format(self.prefix).encode())
                 if hasattr(self, 'aunit'):
-                    ff.write(b'aunit = {0:s}\n'.format(self.aunit))
+                    ff.write('aunit = {0:s}\n'.format(self.aunit).encode())
                 if hasattr(self, 'alat'):
-                    ff.write(b'alat = {0:f}\n'.format(self.alat))
+                    ff.write('alat = {0:f}\n'.format(self.alat).encode())
 
                 if hasattr(self, 'avec'):
                     ff.write(b'avec 3\n')
@@ -856,59 +857,60 @@ class File(object):
                     numpy.savetxt(ff, self.bvec)
 
                 if hasattr(self, 'avol'):
-                    ff.write(b'avol = {0:f}\n'.format(self.avol))
+                    ff.write('avol = {0:f}\n'.format(self.avol).encode())
                 if hasattr(self, 'bvol'):
-                    ff.write(b'bvol = {0:f}\n'.format(self.bvol))
+                    ff.write('bvol = {0:f}\n'.format(self.bvol).encode())
                 if hasattr(self, 'natom'):
-                    ff.write(b'natom = {0:d}\n'.format(self.natom))
+                    ff.write('natom = {0:d}\n'.format(self.natom).encode())
                 if hasattr(self, 'nelec'):
-                    ff.write(b'nelec = {0:f}\n'.format(self.nelec))
+                    ff.write('nelec = {0:f}\n'.format(self.nelec).encode())
 
                 if hasattr(self, 'rot'):
-                    ff.write(b'sym {0:d}\n'.format(self.nsym))
-                    numpy.savetxt(ff, self.rot.reshape(self.nsym, 9))
+                    ff.write('sym {0:d}\n'.format(self.nsym).encode())
+                    numpy.savetxt(ff, self.rot.reshape(self.nsym, 9), fmt='%d')
 
             if level > 1:
                 if hasattr(self, 'kunit'):
-                    ff.write(b'kunit = {0:s}\n'.format(self.kunit))
+                    ff.write('kunit = {0:s}\n'.format(self.kunit).encode())
 
                 if hasattr(self, 'kpoint'):
-                    ff.write(b'kpoint {0:d}\n'.format(self.nkpoint))
+                    ff.write('kpoint {0:d}\n'.format(self.nkpoint).encode())
                     numpy.savetxt(ff, self.kpoint)
 
                 if hasattr(self, 'kline'):
-                    ff.write(b'kline {0:d}\n'.format(self.nkpoint))
+                    ff.write('kline {0:d}\n'.format(self.nkpoint).encode())
                     self.kline.tofile(ff, '\n')
 
                 if hasattr(self, 'kweight'):
-                    ff.write(b'kweight {0:d}\n'.format(self.nkpoint))
+                    ff.write('kweight {0:d}\n'.format(self.nkpoint).encode())
                     self.kweight.tofile(ff, '\n')
 
                 if hasattr(self, 'kpath'):
-                    ff.write(b'kpath {0:d}\n'.format(self.nkpath))
+                    ff.write('kpath {0:d}\n'.format(self.nkpath).encode())
                     numpy.savetxt(ff, self.kpath)
 
                 if hasattr(self, 'kindex'):
-                    ff.write(b'kindex {0:d}\n'.format(self.nkpath))
+                    ff.write('kindex {0:d}\n'.format(self.nkpath).encode())
                     self.kindex.tofile(ff, '\n')
 
                 if hasattr(self, 'klabel'):
-                    ff.write(b'klabel {0:d}\n'.format(self.nkpath))
+                    ff.write('klabel {0:d}\n'.format(self.nkpath).encode())
                     for ii in range(self.nkpath):
-                        ff.write(b'{0:s}\n'.format(self.klabel[ii]))
+                        ff.write('{0:s}\n'.format(self.klabel[ii]).encode())
 
             if level > 2:
                 if hasattr(self, 'eunit'):
-                    ff.write(b'eunit = {0:s}\n'.format(self.eunit))
+                    ff.write('eunit = {0:s}\n'.format(self.eunit).encode())
 
                 if hasattr(self, 'energy'):
-                    ff.write(s3.format(self.nkpoint, self.nband, self.nspin))
+                    ff.write(s3.format(
+                        self.nkpoint, self.nband, self.nspin).encode())
                     self.energy.tofile(ff, '\n')
 
                 if hasattr(self, 'efermi'):
-                    ff.write(b'efermi = {0:f}\n'.format(self.efermi))
+                    ff.write('efermi = {0:f}\n'.format(self.efermi).encode())
                 if hasattr(self, 'vref'):
-                    ff.write(b'vref = {0:f}\n'.format(self.vref))
+                    ff.write('vref = {0:f}\n'.format(self.vref).encode())
 
     def _write_file_pw_in(self, level, filenames):
         d0 = {'bohr': 'bohr', 'angstrom': 'angstrom', 'nm': 'angstrom'}
@@ -923,14 +925,15 @@ class File(object):
                     oldaunit = self.aunit
                     self.set_aunit(d0[self.aunit])
 
-                    ff.write(b'CELL_PARAMETERS {0:s}\n'.format(d1[self.aunit]))
+                    ff.write('CELL_PARAMETERS {0:s}\n'.format(d1[
+                        self.aunit]).encode())
                     numpy.savetxt(ff, self.alat * self.avec)
                     self.set_aunit(oldaunit)
 
             if level > 1:
                 if hasattr(self, 'kunit') and hasattr(self, 'kpoint'):
-                    ff.write(b'K_POINTS {0:s}\n'.format(d2[self.kunit]))
-                    ff.write(b'{0:d}\n'.format(self.nkpoint))
+                    ff.write('K_POINTS {0:s}\n'.format(d2[self.kunit]).encode())
+                    ff.write('{0:d}\n'.format(self.nkpoint).encode())
 
                     if hasattr(self, 'kweight'):
                         weight = 2.0 * self.kweight
@@ -944,8 +947,8 @@ class File(object):
                     if self.check_kindex() == 'uninitialized':
                         raise ValueError('call calc_kindex')
 
-                    ff.write(b'K_POINTS {0:s}\n'.format(d3[self.kunit]))
-                    ff.write(b'{0:d}\n'.format(self.nkpath))
+                    ff.write('K_POINTS {0:s}\n'.format(d3[self.kunit]).encode())
+                    ff.write('{0:d}\n'.format(self.nkpath).encode())
 
                     knum = numpy.append(numpy.diff(self.kindex), 0)
                     numpy.savetxt(ff, numpy.concatenate((
@@ -960,7 +963,7 @@ class File(object):
                 if hasattr(self, 'aunit') and hasattr(self, 'alat') and hasattr(
                         self, 'avec'):
                     ff.write(b'begin unit_cell_cart\n')
-                    ff.write(b'{0:s}'.format(d0[self.aunit]))
+                    ff.write('{0:s}'.format(d0[self.aunit]).encode())
                     numpy.savetxt(ff, self.alat * self.avec)
                     ff.write(b'end unit_cell_cart\n')
 
@@ -972,9 +975,10 @@ class File(object):
                     ff.write(b'begin kpoint_path\n')
                     for ii in range(self.nkpath - 1):
                         for jj in range(2):
-                            ff.write(b'{0:s} '.format(self.klabel[ii + jj]))
+                            ff.write('{0:s} '.format(self.klabel[
+                                ii + jj]).encode())
                             self.kpath[ii + jj, :].tofile(ff, ' ')
-                            ff.write(b'{0:s}'.format(l0[jj]))
+                            ff.write('{0:s}'.format(l0[jj]).encode())
                     ff.write(b'end kpoint_path\n')
 
                     self.set_kunit(oldkunit)
@@ -1122,8 +1126,8 @@ class File(object):
                 s8 = '# energyrange of bands given individual DOS output'
                 s8 += ' sig_xxx and dos_xxx (xxx is band number)\n'
 
-                ff.write('GENE      {s:0}'.format(s0))
-                ff.write('0 0 0 0.0 {s:0}'.format(s1))
+                ff.write('GENE      {0:s}'.format(s0))
+                ff.write('0 0 0 0.0 {0:s}'.format(s1))
                 ff.write('{0:f} {1:f} {2:f} {3:f} {4:s}'.format(
                     self.efermi, deltae, ecut, nelec, s2))
                 ff.write('CALC {0:s}'.format(s3))
@@ -1135,11 +1139,11 @@ class File(object):
                 ff.write('{0:s}\n'.format(dosmethod))
 
             with open(filenames[2], 'wb') as ff:
-                ff.write(b'{0:s}\n'.format(self.prefix))
+                ff.write('{0:s}\n'.format(self.prefix).encode())
                 numpy.savetxt(ff, self.avec)
-                ff.write(b'{0:d}\n'.format(self.nsym))
+                ff.write('{0:d}\n'.format(self.nsym).encode())
                 numpy.savetxt(ff, self.rot.transpose(0, 2, 1).reshape(
-                    self.nsym, 9))
+                    self.nsym, 9), fmt='%d')
 
             with open(filenames[3], 'w') as ff:
                 nband = self.nspin * (self.nband - nband_exclude)
