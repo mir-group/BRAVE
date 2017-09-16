@@ -25,228 +25,83 @@ class File(object):
     """
 
     def _read_file_internal(self, level, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename) as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
 
-        if level > 0:
-            iprefix = -1
-            iaunit = -1
-            ialat = -1
-            iavec = -1
-            ibvec = -1
-            iavol = -1
-            ibvol = -1
-            inatom = -1
-            inelec = -1
-            isym = -1
-        if level > 1:
-            ikunit = -1
-            ikpt = -1
-            ikline = -1
-            ikweight = -1
-            ikpath = -1
-            ikindex = -1
-            iklabel = -1
-        if level > 2:
-            ieunit = -1
-            ienergy = -1
-            iefrm = -1
-            ivref = -1
-        for ii, line in enumerate(contents[0]):
-            if line.lstrip()[0:1] == '#':
-                continue
-            if level > 0:
-                if 'prefix' in line:
-                    iprefix = ii
-                elif 'aunit' in line:
-                    iaunit = ii
-                elif 'alat' in line:
-                    ialat = ii
-                elif 'avec' in line:
-                    iavec = ii
-                elif 'bvec' in line:
-                    ibvec = ii
-                elif 'avol' in line:
-                    iavol = ii
-                elif 'bvol' in line:
-                    ibvol = ii
-                elif 'natom' in line:
-                    inatom = ii
-                elif 'nelec' in line:
-                    inelec = ii
-                elif 'sym' in line:
-                    isym = ii
-            if level > 1:
-                if 'kunit' in line:
-                    ikunit = ii
-                elif 'kpoint' in line:
-                    ikpt = ii
-                elif 'kline' in line:
-                    ikline = ii
-                elif 'kweight' in line:
-                    ikweight = ii
-                elif 'kpath' in line:
-                    ikpath = ii
-                elif 'kindex' in line:
-                    ikindex = ii
-                elif 'klabel' in line:
-                    iklabel = ii
-            if level > 2:
-                if 'eunit' in line:
-                    ieunit = ii
-                elif 'energy' in line:
-                    ienergy = ii
-                elif 'efermi' in line:
-                    iefrm = ii
-                elif 'vref' in line:
-                    ivref = ii
+        with open(filenames[0], 'rb') as ff:
+            for line in ff:
+                if line.strip().startswith(b'#'):
+                    continue
 
-        if level > 0:
-            if iprefix != -1:
-                self.prefix = contents[0][iprefix].replace('=', ' = ').split(
-                        )[2]
-            if iaunit != -1:
-                self.aunit = contents[0][iaunit].replace('=', ' = ').split()[2]
-            if ialat != -1:
-                self.alat = float(contents[0][ialat].replace('=', ' = ').split(
-                        )[2])
+                if level > 0:
+                    if b'prefix' in line:
+                        self.prefix = line[line.find(b'=')+1:].strip().decode()
+                    elif b'aunit' in line:
+                        self.aunit = line[line.find(b'=')+1:].strip().decode()
+                    elif b'alat' in line:
+                        self.alat = float(line[line.find(b'=')+1:].strip())
+                    elif b'avec' in line:
+                        self.avec = numpy.genfromtxt(
+                            ff, dtype = float, max_rows = 3)
+                    elif b'bvec' in line:
+                        self.bvec = numpy.genfromtxt(
+                            ff, dtype = float, max_rows = 3)
+                    elif b'avol' in line:
+                        self.avol = float(line[line.find(b'=')+1:].strip())
+                    elif b'bvol' in line:
+                        self.bvol = float(line[line.find(b'=')+1:].strip())
+                    elif b'natom' in line:
+                        self.natom = int(line[line.find(b'=')+1:].strip())
+                    elif b'nelec' in line:
+                        self.nelec = float(line[line.find(b'=')+1:].strip())
+                    elif b'sym' in line:
+                        nsym = int(line.split()[1])
+                        self.rot = numpy.genfromtxt(
+                            ff, dtype = int, max_rows = nsym).reshape(
+                            nsym, 3, 3)
 
-            if iavec != -1:
-                adim = int(contents[0][iavec].split()[1])
-                if adim != 3:
-                    raise ValueError(adim)
+                if level > 1:
+                    if b'kunit' in line:
+                        self.kunit = line[line.find(b'=')+1:].strip().decode()
+                    elif b'kpoint' in line:
+                        nkpoint = int(line.split()[1])
+                        self.kpoint = numpy.genfromtxt(
+                            ff, dtype = float, max_rows = nkpoint)
+                    elif b'kline' in line:
+                        nkpoint = int(line.split()[1])
+                        self.kline = numpy.fromfile(
+                            ff, dtype = float, count = nkpoint, sep = ' ')
+                    elif b'kweight' in line:
+                        nkpoint = int(line.split()[1])
+                        self.kweight = numpy.fromfile(
+                            ff, dtype = float, count = nkpoint, sep = ' ')
+                    elif b'kpath' in line:
+                        nkpath = int(line.split()[1])
+                        self.kpath = numpy.genfromtxt(
+                            ff, dtype = float, max_rows = nkpath)
+                    elif b'kindex' in line:
+                        nkpath = int(line.split()[1])
+                        self.kindex = numpy.fromfile(
+                            ff, dtype = int, count = nkpath, sep = ' ')
+                    elif b'klabel' in line:
+                        nkpath = int(line.split()[1])
+                        self.klabel = list(numpy.genfromtxt(
+                            ff, dtype = str, max_rows = nkpath))
 
-                avec = []
-                for ii in range(3):
-                    words = contents[0][iavec + 1 + ii].split()
-                    avec.append([])
-                    for word in words:
-                        avec[ii].append(float(word))
-                self.avec = avec
-
-            if ibvec != -1:
-                bdim = int(contents[0][ibvec].split()[1])
-                if bdim != 3:
-                    raise ValueError(bdim)
-
-                bvec = []
-                for ii in range(3):
-                    words = contents[0][ibvec + 1 + ii].split()
-                    bvec.append([])
-                    for word in words:
-                        bvec[ii].append(float(word))
-                self.bvec = bvec
-
-            if iavol != -1:
-                self.avol = float(contents[0][iavol].replace('=', ' = ').split(
-                        )[2])
-            if ibvol != -1:
-                self.bvol = float(contents[0][ibvol].replace('=', ' = ').split(
-                        )[2])
-            if inatom != -1:
-                self.natom = int(contents[0][inatom].replace('=', ' = ').split(
-                        )[2])
-            if inelec != -1:
-                self.nelec = float(contents[0][inelec].replace(
-                        '=', ' = ').split()[2])
-
-            if isym != -1:
-                nsym = int(contents[0][isym].split()[1])
-                rot = numpy.empty((nsym, 3, 3), int)
-                for ii in range(nsym):
-                    words = contents[0][isym + 1 + ii].split()
-                    for jj in range(3):
-                        for kk in range(3):
-                            rot[ii, jj, kk] = float(words[jj * 3 + kk])
-                self.rot = rot
-
-            if iavec != -1 and ibvec == -1:
-                self.calc_bvec()
-            elif iavec == -1 and ibvec != -1:
-                self.calc_avec()
-
-        if level > 1:
-            if ikunit != -1:
-                self.kunit = contents[0][ikunit].replace('=', ' = ').split()[2]
-
-            if ikpt != -1:
-                nkpoint = int(contents[0][ikpt].split()[1])
-                kpoint = numpy.empty((nkpoint, 3), float)
-                for ikpoint in range(nkpoint):
-                    words = contents[0][ikpt + 1 + ikpoint].split()
-                    for jj in range(3):
-                        kpoint[ikpoint, jj] = float(words[jj])
-                self.kpoint = kpoint
-
-            if ikline != -1:
-                nkpoint = int(contents[0][ikline].split()[1])
-                kline = numpy.empty(nkpoint, float)
-                for ikpoint in range(nkpoint):
-                    kline[ikpoint] = float(contents[0][ikline + 1 + ikpoint])
-                self.kline = kline
-
-            if ikweight != -1:
-                nkpoint = int(contents[0][ikweight].split()[1])
-                kweight = numpy.empty(nkpoint, float)
-                for ikpoint in range(nkpoint):
-                    kweight[ikpoint] = float(contents[0][
-                            ikweight + 1 + ikpoint])
-                self.kweight = kweight
-
-            if ikpath != -1:
-                nkpath = int(contents[0][ikpath].split()[1])
-                kpath = numpy.empty((nkpath, 3), float)
-                for ikpoint in range(nkpath):
-                    words = contents[0][ikpath + 1 + ikpoint].split()
-                    for jj in range(3):
-                        kpath[ikpoint, jj] = float(words[jj])
-                self.kpath = kpath
-
-            if ikindex != -1:
-                nkpath = int(contents[0][ikindex].split()[1])
-                kindex = numpy.empty(nkpath, int)
-                for ikpoint in range(nkpath):
-                    kindex[ikpoint] = int(contents[0][ikindex + 1 + ikpoint])
-                self.kindex = kindex
-
-            if iklabel != -1:
-                nkpath = int(contents[0][iklabel].split()[1])
-                klabel = []
-                for ikpoint in range(nkpath):
-                    words = contents[0][iklabel + 1 + ikpoint].split()
-                    klabel.append(words[0])
-                self.klabel = klabel
-
-        if level > 2:
-            if ieunit != -1:
-                self.eunit = contents[0][ieunit].replace('=', ' = ').split()[2]
-
-            if ienergy != -1:
-                nkpoint = int(contents[0][ienergy].split()[1])
-                if nkpoint != self.nkpoint:
-                    raise ValueError(nkpoint)
-                nband = int(contents[0][ienergy].split()[2])
-                nspin = int(contents[0][ienergy].split()[3])
-                energy = numpy.empty((nkpoint, nband, nspin), float)
-                ii = ienergy + 1
-                for ikpoint in range(nkpoint):
-                    for iband in range(nband):
-                        for ispin in range(nspin):
-                            energy[ikpoint, iband, ispin] = float(
-                                    contents[0][ii].split()[0])
-                            ii += 1
-                self.energy = energy
-
-            if iefrm != -1:
-                self.efermi = float(contents[0][iefrm].replace(
-                        '=', ' = ').split()[2])
-
-            if ivref != -1:
-                self.vref = float(contents[0][ivref].replace('=', ' = ').split(
-                        )[2])
+                if level > 2:
+                    if b'eunit' in line:
+                        self.eunit = line[line.find(b'=')+1:].strip().decode()
+                    elif b'energy' in line:
+                        tt = line.split()
+                        nkpoint = int(tt[1])
+                        nband = int(tt[2])
+                        nspin = int(tt[3])
+                        self.energy = numpy.fromfile(
+                            ff, dtype = float, count = (
+                            nkpoint * nband * nspin), sep = ' ').reshape(
+                            nkpoint, nband, nspin)
+                    elif b'efermi' in line:
+                        self.efermi = float(line[line.find(b'=')+1:].strip())
+                    elif b'vref' in line:
+                        self.vref = float(line[line.find(b'=')+1:].strip())
 
     def _read_file_pw_out(self, level, filenames):
         if level > 1:
@@ -880,10 +735,12 @@ class File(object):
                 if hasattr(self, 'kline'):
                     ff.write('kline {0:d}\n'.format(self.nkpoint).encode())
                     self.kline.tofile(ff, '\n')
+                    ff.write(b'\n')
 
                 if hasattr(self, 'kweight'):
                     ff.write('kweight {0:d}\n'.format(self.nkpoint).encode())
                     self.kweight.tofile(ff, '\n')
+                    ff.write(b'\n')
 
                 if hasattr(self, 'kpath'):
                     ff.write('kpath {0:d}\n'.format(self.nkpath).encode())
@@ -892,6 +749,7 @@ class File(object):
                 if hasattr(self, 'kindex'):
                     ff.write('kindex {0:d}\n'.format(self.nkpath).encode())
                     self.kindex.tofile(ff, '\n')
+                    ff.write(b'\n')
 
                 if hasattr(self, 'klabel'):
                     ff.write('klabel {0:d}\n'.format(self.nkpath).encode())
@@ -906,6 +764,7 @@ class File(object):
                     ff.write(s3.format(
                         self.nkpoint, self.nband, self.nspin).encode())
                     self.energy.tofile(ff, '\n')
+                    ff.write(b'\n')
 
                 if hasattr(self, 'efermi'):
                     ff.write('efermi = {0:f}\n'.format(self.efermi).encode())
