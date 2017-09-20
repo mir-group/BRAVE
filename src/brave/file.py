@@ -177,7 +177,7 @@ class File(object):
     def _read_file_wannier_in(self, level, filenames):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -242,7 +242,7 @@ class File(object):
     def _read_file_vasp_out(self, level, filenames):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -322,7 +322,7 @@ class File(object):
     def _read_file_lapw_out(self, level, filenames, lapwkunit):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -481,7 +481,7 @@ class File(object):
     def _read_file_bands_out(self, level, filenames):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -520,7 +520,7 @@ class File(object):
     def _read_file_matdyn_out(self, level, filenames):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -565,7 +565,7 @@ class File(object):
     def _read_file_inteqp_out(self, level, filenames, etype):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -613,7 +613,7 @@ class File(object):
     def _read_file_sigma_out(self, level, filenames, etype):
         contents = []
         for filename in filenames:
-            with open(filename) as fileobj:
+            with open(filename, 'rb') as fileobj:
                 content = fileobj.readlines()
             contents.append(content)
 
@@ -845,22 +845,23 @@ class File(object):
     def _write_file_vasp_kpt(self, level, filenames):
         d0 = {'cartesian': 'cartesian', 'crystal': 'reciprocal'}
 
-        with open(filenames[0], 'w') as ff:
+        with open(filenames[0], 'wb') as ff:
             if level > 1:
                 if hasattr(self, 'kunit') and hasattr(self, 'kpath'):
                     if self.check_kindex() != 'number':
                         raise ValueError("call calc_kindex('number')")
 
-                    ff.write('k-points along high symmetry lines\n')
-                    ff.write('{0:d}\n'.format(self.kindex[1]))
-                    ff.write('line-mode\n')
-                    ff.write('{0:s}'.format(d0[self.kunit]))
+                    ff.write(b'k-points along high symmetry lines\n')
+                    ff.write('{0:d}\n'.format(self.kindex[1]).encode())
+                    ff.write(b'line-mode\n')
+                    ff.write('{0:s}'.format(d0[self.kunit]).encode())
 
                     for ii in range(self.nkpath - 1):
-                        ff.write('\n')
+                        ff.write(b'\n')
                         for jj in range(2):
                             self.kpath[ii + jj, :].tofile(ff, ' ')
-                            ff.write(' ! {0:s}\n'.format(self.klabel[ii + jj]))
+                            ff.write(' ! {0:s}\n'.format(self.klabel[
+                                ii + jj]).encode())
 
     def _write_file_lapw_kpt(self, level, filenames, lapwkunit):
         if level > 1:
@@ -924,11 +925,11 @@ class File(object):
 
                 s0 = '{0:s}{1[0]:5d}{1[1]:5d}{1[2]:5d}{2:5d}{3:s}\n'
 
-                with open(filenames[0], 'w') as ff:
+                with open(filenames[0], 'wb') as ff:
                     for ii in range(len(labels)):
                         ff.write(s0.format(labels[ii], kpoints[ii], ngrids[
-                            ii], weights[ii]))
-                    ff.write('END\n')
+                            ii], weights[ii]).encode())
+                    ff.write(b'END\n')
 
     def _write_file_boltztrap_in(
             self, level, filenames, deltae, ecut, lpfac, efcut, tmax, deltat,
@@ -939,7 +940,7 @@ class File(object):
             self.set_kunit('crystal')
             self.set_eunit('rydberg')
 
-            with open(filenames[0], 'w') as ff:
+            with open(filenames[0], 'wb') as ff:
                 filename_intrans = os.path.basename(filenames[1])
                 filename_struct = os.path.basename(filenames[2])
                 filename_energy = os.path.basename(filenames[3])
@@ -948,28 +949,48 @@ class File(object):
                 s1 = ", 'unknown', 'formatted', 0\n"
                 s2 = ", 'unknown', 'unformatted', 0\n"
 
-                ff.write("5, '{0:s}'{1:s}".format(filename_intrans, s0))
-                ff.write("6, '{0:s}.outputtrans'{1:s}".format(self.prefix, s1))
-                ff.write("20, '{0:s}'{1:s}".format(filename_struct, s0))
-                ff.write("10, '{0:s}'{1:s}".format(filename_energy, s0))
-                ff.write("48, '{0:s}.engre'{1:s}".format(self.prefix, s2))
-                ff.write("49, '{0:s}.transdos'{1:s}".format(self.prefix, s1))
-                ff.write("50, '{0:s}.sigxx'{1:s}".format(self.prefix, s1))
-                ff.write("51, '{0:s}.sigxxx'{1:s}".format(self.prefix, s1))
-                ff.write("21, '{0:s}.trace'{1:s}".format(self.prefix, s1))
-                ff.write("22, '{0:s}.condtens'{1:s}".format(self.prefix, s1))
-                ff.write("24, '{0:s}.halltens'{1:s}".format(self.prefix, s1))
-                ff.write("30, '{0:s}_BZ.dx'{1:s}".format(self.prefix, s1))
-                ff.write("31, '{0:s}_fermi.dx'{1:s}".format(self.prefix, s1))
-                ff.write("32, '{0:s}_sigxx.dx'{1:s}".format(self.prefix, s1))
-                ff.write("33, '{0:s}_sigyy.dx'{1:s}".format(self.prefix, s1))
-                ff.write("34, '{0:s}_sigzz.dx'{1:s}".format(self.prefix, s1))
-                ff.write("35, '{0:s}_band.dat'{1:s}".format(self.prefix, s1))
-                ff.write("36, '{0:s}_band.gpl'{1:s}".format(self.prefix, s1))
-                ff.write("37, '{0:s}_deriv.dat'{1:s}".format(self.prefix, s1))
-                ff.write("38, '{0:s}MASS.dat'{1:s}".format(self.prefix, s1))
+                ff.write("5, '{0:s}'{1:s}".format(
+                    filename_intrans, s0).encode())
+                ff.write("6, '{0:s}.outputtrans'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("20, '{0:s}'{1:s}".format(
+                    filename_struct, s0).encode())
+                ff.write("10, '{0:s}'{1:s}".format(
+                    filename_energy, s0).encode())
+                ff.write("48, '{0:s}.engre'{1:s}".format(
+                    self.prefix, s2).encode())
+                ff.write("49, '{0:s}.transdos'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("50, '{0:s}.sigxx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("51, '{0:s}.sigxxx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("21, '{0:s}.trace'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("22, '{0:s}.condtens'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("24, '{0:s}.halltens'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("30, '{0:s}_BZ.dx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("31, '{0:s}_fermi.dx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("32, '{0:s}_sigxx.dx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("33, '{0:s}_sigyy.dx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("34, '{0:s}_sigzz.dx'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("35, '{0:s}_band.dat'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("36, '{0:s}_band.gpl'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("37, '{0:s}_deriv.dat'{1:s}".format(
+                    self.prefix, s1).encode())
+                ff.write("38, '{0:s}MASS.dat'{1:s}".format(
+                    self.prefix, s1).encode())
 
-            with open(filenames[1], 'w') as ff:
+            with open(filenames[1], 'wb') as ff:
                 nelec = self.nelec - 2 * nband_exclude
 
                 s0 = '# Format of DOS\n'
@@ -985,17 +1006,17 @@ class File(object):
                 s8 = '# energyrange of bands given individual DOS output'
                 s8 += ' sig_xxx and dos_xxx (xxx is band number)\n'
 
-                ff.write('GENE      {0:s}'.format(s0))
-                ff.write('0 0 0 0.0 {0:s}'.format(s1))
+                ff.write('GENE      {0:s}'.format(s0).encode())
+                ff.write('0 0 0 0.0 {0:s}'.format(s1).encode())
                 ff.write('{0:f} {1:f} {2:f} {3:f} {4:s}'.format(
-                    self.efermi, deltae, ecut, nelec, s2))
-                ff.write('CALC {0:s}'.format(s3))
-                ff.write('{0:d} {1:s}'.format(lpfac, s4))
-                ff.write('BOLTZ {0:s}'.format(s5))
-                ff.write('{0:f} {1:s}'.format(efcut, s6))
-                ff.write('{0:f} {1:f} {2:s}'.format(tmax, deltat, s7))
-                ff.write('{0:f} {1:s}'.format(ecut2, s8))
-                ff.write('{0:s}\n'.format(dosmethod))
+                    self.efermi, deltae, ecut, nelec, s2).encode())
+                ff.write('CALC {0:s}'.format(s3).encode())
+                ff.write('{0:d} {1:s}'.format(lpfac, s4).encode())
+                ff.write('BOLTZ {0:s}'.format(s5).encode())
+                ff.write('{0:f} {1:s}'.format(efcut, s6).encode())
+                ff.write('{0:f} {1:f} {2:s}'.format(tmax, deltat, s7).encode())
+                ff.write('{0:f} {1:s}'.format(ecut2, s8).encode())
+                ff.write('{0:s}\n'.format(dosmethod).encode())
 
             with open(filenames[2], 'wb') as ff:
                 ff.write('{0:s}\n'.format(self.prefix).encode())
@@ -1004,14 +1025,14 @@ class File(object):
                 numpy.savetxt(ff, self.rot.transpose(0, 2, 1).reshape(
                     self.nsym, 9), fmt='%d')
 
-            with open(filenames[3], 'w') as ff:
+            with open(filenames[3], 'wb') as ff:
                 nband = self.nspin * (self.nband - nband_exclude)
-                ff.write('{0:s}\n'.format(self.prefix))
-                ff.write('{0:d}\n'.format(self.nkpoint))
+                ff.write('{0:s}\n'.format(self.prefix).encode())
+                ff.write('{0:d}\n'.format(self.nkpoint).encode())
                 for ii in range(self.nkpoint):
                     self.kpoint[ii, :].tofile(ff, ' ')
-                    ff.write(' {0:d}\n'.format(nband))
+                    ff.write(' {0:d}\n'.format(nband).encode())
                     self.energy[ii, nband_exclude:self.nband, :].tofile(
                         ff, '\n')
-                    ff.write('\n')
+                    ff.write(b'\n')
 

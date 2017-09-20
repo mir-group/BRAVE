@@ -345,7 +345,7 @@ class EPA(DOS):
 
     def _read_epa_epa_out(self, filenames):
 
-        with open(filenames[0]) as ff:
+        with open(filenames[0], 'rb') as ff:
             tt = ff.readline().split()
             nwin = int(tt[0])
             nmode = int(tt[1])
