@@ -45,7 +45,7 @@ class EPA(DOS):
         if hasattr(self, 'ne'):
             _list.append(self._ne.shape[0])
         if hasattr(self, 'gavg'):
-            _list.append(self._gavg.shape[3])
+            _list.append(self._gavg.shape[0])
 
         if _list[1:] == _list[:-1] and len(_list) > 0:
             return _list[0]
@@ -59,7 +59,7 @@ class EPA(DOS):
         if hasattr(self, 'wavg'):
             _list.append(self._wavg.shape[0])
         if hasattr(self, 'gavg'):
-            _list.append(self._gavg.shape[0])
+            _list.append(self._gavg.shape[3])
 
         if _list[1:] == _list[:-1] and len(_list) > 0:
             return _list[0]
@@ -301,15 +301,15 @@ class EPA(DOS):
                     gk[:] = gavg[ii, 1, 1, ll]
                 else:
                     xx = (en[nn] - ee[ii]) / de[ii]
-                    xx = max(xx, 1.0e-12)
-                    xx = min(xx, ne[ii] - 1.0e-12)
+                    xx = max(xx, common.EPS12)
+                    xx = min(xx, ne[ii] - common.EPS12)
                     jj = int(xx)
                     for kk in range(nemax):
                         gj[kk] = gavg[ii, jj, kk, ll]
                     for mm in range(2):
-                        xx = (en[nn] + ww[ll] * (3 - 2 * mm) - ee[ii]) / de[ii]
-                        xx = max(xx, 1.0e-12)
-                        xx = min(xx, ne[ii] - 1.0e-12)
+                        xx = (en[nn] + ww[ll] * (1 - 2 * mm) - ee[ii]) / de[ii]
+                        xx = max(xx, common.EPS12)
+                        xx = min(xx, ne[ii] - common.EPS12)
                         kk = int(xx)
                         gk[mm] = gj[kk]
 

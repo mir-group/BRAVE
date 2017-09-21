@@ -130,7 +130,7 @@ class File(object):
                         self.natom = int(line.split()[4])
                     elif b'number of electrons' in line:
                         self.nelec = float(line.split()[4])
-                    elif b'Sym. Ops.' in line:
+                    elif b'Sym. Ops.' in line or b'Sym.Ops.' in line:
                         nsym = int(line.split()[0])
                     elif b'isym =  1' in line:
                         skip = ff.readline()
@@ -161,7 +161,7 @@ class File(object):
                         nband = int(line.split()[4])
                     elif b'FFT' in line:
                         energy = numpy.empty((nkpoint, nband, nspin), float)
-                    elif b'(ev)' in line:
+                    elif b'bands (ev)' in line or b'band energies (ev)' in line:
                         energy[ii % nkpoint, :, ii // nkpoint] = numpy.fromfile(
                             ff, dtype = float, count = nband, sep = ' ')
                         ii += 1
