@@ -1,6 +1,6 @@
 """This module defines common parameters and functions."""
 
-import numpy
+import numpy as np
 
 # These are the "2014 CODATA recommended values" taken from
 # "The NIST Reference on Constants, Units, and Uncertainty"
@@ -41,7 +41,7 @@ _escale = {
         'cm-1': 1.0e-2 / PLANCK / LIGHT}
 
 def _int_pts(value, param):
-    dummy = numpy.abs(value - param)
+    dummy = np.abs(value - param)
     idx1 = dummy.argmin()
     dummy[idx1] = INF12
     idx2 = dummy.argmin()

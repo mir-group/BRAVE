@@ -1,6 +1,6 @@
 """This module defines class Diagram."""
 
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.energy import Energy
@@ -116,7 +116,7 @@ class Diagram(DOS, Energy):
             self.calc_kline()
 
             if fillgap is not None:
-                curve = numpy.empty((2, self.nkpoint * 2 + 1), float)
+                curve = np.empty((2, self.nkpoint * 2 + 1), float)
                 iband = fillgap[0]
                 ispin = fillgap[1]
                 curve[0, 0:self.nkpoint] = self.kline
@@ -137,7 +137,7 @@ class Diagram(DOS, Energy):
 
             for ispin in range(self.nspin - 1, -1, -1):
                 for iband in range(self.nband):
-                    curve = numpy.empty((2, self.nkpoint), float)
+                    curve = np.empty((2, self.nkpoint), float)
                     curve[0] = self.kline
                     curve[1] = self.energy[:, iband, ispin]
                     data[i_e].append(curve)
@@ -146,7 +146,7 @@ class Diagram(DOS, Energy):
                     color[i_e].append(_color_band[ispin])
 
             if hasattr(self, 'efermi'):
-                curve = numpy.empty((2, 2), float)
+                curve = np.empty((2, 2), float)
                 curve[0, 0] = xmin
                 curve[0, 1] = xmax
                 curve[1, :] = self.efermi
@@ -156,7 +156,7 @@ class Diagram(DOS, Energy):
                 color[i_e].append(_color_efermi)
 
             if hasattr(self, 'vref'):
-                curve = numpy.empty((2, 2), float)
+                curve = np.empty((2, 2), float)
                 curve[0, 0] = xmin
                 curve[0, 1] = xmax
                 curve[1, :] = self.vref
@@ -190,7 +190,7 @@ class Diagram(DOS, Energy):
             style[i_d].append(_style_dos)
             color[i_d].append(_color_dos)
 
-            xlim.append([0.0, numpy.amax(self.dos[1]) * (1.0 + _ypad)])
+            xlim.append([0.0, np.amax(self.dos[1]) * (1.0 + _ypad)])
 
             xtick.append(None)
             xgrid.append(None)

@@ -1,6 +1,6 @@
 """This module defines class Kpoint."""
 
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.cell import Cell
@@ -58,9 +58,9 @@ class Kpoint(Cell):
 
     @kpoint.setter
     def kpoint(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kpoint {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(
+        if value.dtype != np.dtype('float') or len(
                 value.shape) != 2 or value.shape[1] != 3:
             raise ValueError('kpoint {0!r}'.format(value))
         self._kpoint = value
@@ -78,9 +78,9 @@ class Kpoint(Cell):
 
     @kline.setter
     def kline(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kline {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('kline {0!r}'.format(value))
         self._kline = value
 
@@ -97,9 +97,9 @@ class Kpoint(Cell):
 
     @kweight.setter
     def kweight(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kweight {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('kweight {0!r}'.format(value))
         self._kweight = value
 
@@ -136,9 +136,9 @@ class Kpoint(Cell):
 
     @kpath.setter
     def kpath(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kpath {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(
+        if value.dtype != np.dtype('float') or len(
                 value.shape) != 2 or value.shape[1] != 3:
             raise ValueError('kpath {0!r}'.format(value))
         self._kpath = value
@@ -156,9 +156,9 @@ class Kpoint(Cell):
 
     @kindex.setter
     def kindex(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kindex {0!r}'.format(value))
-        if value.dtype != numpy.dtype('int') or len(value.shape) != 1:
+        if value.dtype != np.dtype('int') or len(value.shape) != 1:
             raise ValueError('kindex {0!r}'.format(value))
         self._kindex = value
 
@@ -215,9 +215,9 @@ class Kpoint(Cell):
                     self.calc_avec()
                 mtrx = self.avec.transpose()
             if hasattr(self, 'kpoint'):
-                self.kpoint = numpy.dot(self.kpoint, mtrx)
+                self.kpoint = np.dot(self.kpoint, mtrx)
             if hasattr(self, 'kpath'):
-                self.kpath = numpy.dot(self.kpath, mtrx)
+                self.kpath = np.dot(self.kpath, mtrx)
             self.kunit = kunit
 
     def calc_kindex(self, mode):
@@ -231,7 +231,7 @@ class Kpoint(Cell):
         nkpath = self.nkpath
         nkfirst = self.kindex[1]
         nksect = nkpath - 1
-        kindex = numpy.empty((nkpath), int)
+        kindex = np.empty((nkpath), int)
 
         if mode == 'number':
             for ii in range(2, nkpath):
@@ -240,9 +240,9 @@ class Kpoint(Cell):
         elif mode == 'density':
             oldkunit = self.kunit
             self.set_kunit('cartesian')
-            klen = numpy.zeros(nksect, float)
+            klen = np.zeros(nksect, float)
             for ii in range(nksect):
-                klen[ii] = numpy.linalg.norm(self.kpath[
+                klen[ii] = np.linalg.norm(self.kpath[
                         ii + 1, :] - self.kpath[ii, :])
             self.set_kunit(oldkunit)
             knum = [nkfirst]
@@ -285,15 +285,15 @@ class Kpoint(Cell):
         nksect = self.nkpath - 1
         nkpoint = kindex[nksect] + 1
 
-        kpoint = numpy.empty((nkpoint, 3), float)
+        kpoint = np.empty((nkpoint, 3), float)
         for ii in range(nksect):
             kstart = kpath[ii]
             kend = kpath[ii + 1]
             nkstart = kindex[ii]
             nkend = kindex[ii + 1]
             kstep = (kend - kstart) / float(nkend - nkstart)
-            kpoint[nkstart:nkend, :] = numpy.add(numpy.outer(
-                    numpy.arange(nkend - nkstart), kstep), kstart)
+            kpoint[nkstart:nkend, :] = np.add(np.outer(
+                    np.arange(nkend - nkstart), kstep), kstart)
         kpoint[nkpoint - 1, :] = kpath[nksect]
 
         self.kpoint = kpoint
@@ -302,11 +302,11 @@ class Kpoint(Cell):
         """Method for calculating kline given kpoint."""
         oldkunit = self.kunit
         self.set_kunit('cartesian')
-        kdiff = numpy.diff(self.kpoint, axis=0)
+        kdiff = np.diff(self.kpoint, axis=0)
         self.set_kunit(oldkunit)
-        knorm = numpy.linalg.norm(kdiff, axis=1)
-        kcumsum = numpy.cumsum(knorm)
-        self.kline = numpy.insert(kcumsum, 0, 0.0)
+        knorm = np.linalg.norm(kdiff, axis=1)
+        kcumsum = np.cumsum(knorm)
+        self.kline = np.insert(kcumsum, 0, 0.0)
 
     def read(self, fileformat, filenames, lapwkunit=None):
         """Method for reading properties from file.

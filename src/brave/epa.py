@@ -2,7 +2,7 @@
 
 import math
 
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.dos import DOS
@@ -90,9 +90,9 @@ class EPA(DOS):
 
     @energy.setter
     def energy(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('energy {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('energy {0!r}'.format(value))
         self._energy = value
 
@@ -109,9 +109,9 @@ class EPA(DOS):
 
     @mu.setter
     def mu(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('mu {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('mu {0!r}'.format(value))
         self._mu = value
 
@@ -128,9 +128,9 @@ class EPA(DOS):
 
     @temp.setter
     def temp(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('temp {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('temp {0!r}'.format(value))
         self._temp = value
 
@@ -147,9 +147,9 @@ class EPA(DOS):
 
     @ee.setter
     def ee(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('ee {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('ee {0!r}'.format(value))
         self._ee = value
 
@@ -166,9 +166,9 @@ class EPA(DOS):
 
     @de.setter
     def de(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('de {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('de {0!r}'.format(value))
         self._de = value
 
@@ -185,9 +185,9 @@ class EPA(DOS):
 
     @ne.setter
     def ne(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('ne {0!r}'.format(value))
-        if value.dtype != numpy.dtype('int') or len(value.shape) != 1:
+        if value.dtype != np.dtype('int') or len(value.shape) != 1:
             raise ValueError('ne {0!r}'.format(value))
         self._ne = value
 
@@ -204,9 +204,9 @@ class EPA(DOS):
 
     @wavg.setter
     def wavg(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('wavg {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('wavg {0!r}'.format(value))
         self._wavg = value
 
@@ -224,9 +224,9 @@ class EPA(DOS):
 
     @gavg.setter
     def gavg(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('gavg {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 4:
+        if value.dtype != np.dtype('float') or len(value.shape) != 4:
             raise ValueError('gavg {0!r}'.format(value))
         self._gavg = value
 
@@ -243,9 +243,9 @@ class EPA(DOS):
 
     @invtau.setter
     def invtau(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('invtau {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('invtau {0!r}'.format(value))
         self._invtau = value
 
@@ -278,9 +278,9 @@ class EPA(DOS):
         ww = self.wavg * 1.0e2 * common.PLANCK * common.LIGHT
         gavg = self.gavg
 
-        gj = numpy.empty(nemax, float)
-        gk = numpy.empty(2, float)
-        invtau = numpy.empty(nepa, float)
+        gj = np.empty(nemax, float)
+        gk = np.empty(2, float)
+        invtau = np.empty(nepa, float)
 
         for nn in range(nepa):
             dummy = 0.0
@@ -290,10 +290,10 @@ class EPA(DOS):
                         ) + 1.0)
                 fe = 1.0 / (math.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]
                         ) + 1.0)
-                dosa = numpy.interp(en[nn] + ww[ll], dos[0,:], dos[1,:])
-                dose = numpy.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
+                dosa = np.interp(en[nn] + ww[ll], dos[0,:], dos[1,:])
+                dose = np.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
 
-                if (en[nn] < numpy.sum(ee) / nwin):
+                if (en[nn] < np.sum(ee) / nwin):
                     ii = 1
                 else:
                     ii = 2
@@ -350,9 +350,9 @@ class EPA(DOS):
             nwin = int(tt[0])
             nmode = int(tt[1])
 
-            ee = numpy.empty(nwin, float)
-            de = numpy.empty(nwin, float)
-            ne = numpy.empty(nwin, int)
+            ee = np.empty(nwin, float)
+            de = np.empty(nwin, float)
+            ne = np.empty(nwin, int)
             for ii in range(nwin):
                 tt = ff.readline().split()
                 ee[ii] = float(tt[0])
@@ -360,11 +360,11 @@ class EPA(DOS):
                 ne[ii] = int(tt[2])
             self.ee, self.de, self.ne, = ee, de, ne
 
-            self.wavg = numpy.fromfile(
+            self.wavg = np.fromfile(
                 ff, dtype = float, count = nmode, sep = ' ')
 
-            nemax = numpy.amax(ne)
-            self.gavg = numpy.loadtxt(ff, dtype = float, usecols = (
+            nemax = np.amax(ne)
+            self.gavg = np.loadtxt(ff, dtype = float, usecols = (
                 ii for ii in range(3, 3 + nmode))).reshape(
                 nwin, nemax, nemax, nmode)
 

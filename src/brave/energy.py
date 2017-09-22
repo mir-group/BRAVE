@@ -1,6 +1,6 @@
 """This module defines class Energy."""
 
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.kpoint import Kpoint
@@ -70,9 +70,9 @@ class Energy(Kpoint):
 
     @energy.setter
     def energy(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('energy {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 3:
+        if value.dtype != np.dtype('float') or len(value.shape) != 3:
             raise ValueError('energy {0!r}'.format(value))
         self._energy = value
 
@@ -153,9 +153,9 @@ class Energy(Kpoint):
         nspin = self.nspin
         energy = self.energy
         kpoint = self.kpoint
-        ivbm = numpy.unravel_index(energy[:, :nval, :].argmax(), (
+        ivbm = np.unravel_index(energy[:, :nval, :].argmax(), (
                 nkpoint, nval, nspin))
-        icbm = numpy.unravel_index(energy[:, nval:, :].argmin(), (
+        icbm = np.unravel_index(energy[:, nval:, :].argmin(), (
                 nkpoint, nband - nval, nspin))
         evbm = energy[ivbm[0], ivbm[1], ivbm[2]]
         ecbm = energy[icbm[0], icbm[1] + nval, icbm[2]]
@@ -169,13 +169,13 @@ class Energy(Kpoint):
         """Method for sorting energy in ascending order by band
     to fix discontinuities in the band structure.
         """
-        _energy = numpy.copy(self.energy)
+        _energy = np.copy(self.energy)
 
-        slice = numpy.zeros(self.nband, float)
+        slice = np.zeros(self.nband, float)
         for ikpoint in range(1, self.nkpoint):
             for ispin in range(self.nspin):
                 slice = _energy[ikpoint, :, ispin]
-                dummy = numpy.sort(slice)
+                dummy = np.sort(slice)
                 _energy[ikpoint, :, ispin] = dummy
 
         self.energy = _energy

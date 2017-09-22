@@ -1,6 +1,6 @@
 """This module defines class Cell."""
 
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.file import File
@@ -74,9 +74,9 @@ class Cell(File):
 
     @avec.setter
     def avec(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('avec {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (3, 3):
+        if value.dtype != np.dtype('float') or value.shape != (3, 3):
             raise ValueError('avec {0!r}'.format(value))
         self._avec = value
 
@@ -93,9 +93,9 @@ class Cell(File):
 
     @bvec.setter
     def bvec(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('bvec {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (3, 3):
+        if value.dtype != np.dtype('float') or value.shape != (3, 3):
             raise ValueError('bvec {0!r}'.format(value))
         self._bvec = value
 
@@ -181,9 +181,9 @@ class Cell(File):
 
     @rot.setter
     def rot(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('rot {0!r}'.format(value))
-        if value.dtype != numpy.dtype('int') or len(
+        if value.dtype != np.dtype('int') or len(
                 value.shape) != 3 or value.shape[1:3] != (3, 3):
             raise ValueError('rot {0!r}'.format(value))
         self._rot = value
@@ -278,15 +278,15 @@ class Cell(File):
             raise ValueError(fileformat)
 
     def _calc_vec(self, xvec):
-        yvec = numpy.empty((3, 3), float)
-        yvec[0] = numpy.cross(xvec[1], xvec[2])
-        yvec[1] = numpy.cross(xvec[2], xvec[0])
-        yvec[2] = numpy.cross(xvec[0], xvec[1])
+        yvec = np.empty((3, 3), float)
+        yvec[0] = np.cross(xvec[1], xvec[2])
+        yvec[1] = np.cross(xvec[2], xvec[0])
+        yvec[2] = np.cross(xvec[0], xvec[1])
         yvec /= self._calc_vol(xvec)
         return yvec
 
     def _calc_vol(self, vec):
-        vol = numpy.dot(vec[0], numpy.cross(vec[1], vec[2]))
+        vol = np.dot(vec[0], np.cross(vec[1], vec[2]))
         return vol
 
     def __init__(
@@ -312,7 +312,7 @@ class Cell(File):
         if nelec is not None:
             self.nelec = nelec
         if rot is None:
-            self.rot = numpy.array([numpy.identity(3, int)])
+            self.rot = np.array([np.identity(3, int)])
         else:
             self.rot = rot
 

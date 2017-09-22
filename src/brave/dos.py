@@ -1,7 +1,7 @@
 """This module defines class DOS."""
 
 import linecache
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.cell import Cell
@@ -49,9 +49,9 @@ class DOS(Cell):
 
     @dos.setter
     def dos(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('dos {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(
+        if value.dtype != np.dtype('float') or len(
                 value.shape) != 2 or value.shape[0] != 2:
             raise ValueError('dos {0!r}'.format(value))
         self._dos = value
@@ -117,7 +117,7 @@ class DOS(Cell):
             spin_degeneracy = 2
 
         efermi = float(linecache.getline(filenames[0], 3).split()[0])
-        dos = numpy.loadtxt(filenames[
+        dos = np.loadtxt(filenames[
             1], dtype = float, skiprows = 1, usecols = (0, 1), unpack = True)
         dos[0, :] -= efermi
         dos[1, :] *= spin_degeneracy
@@ -126,7 +126,7 @@ class DOS(Cell):
 
     def _read_dos_matdyn_dos(self, filenames):
 
-        dos = numpy.loadtxt(filenames[0], dtype = float, unpack = True)
+        dos = np.loadtxt(filenames[0], dtype = float, unpack = True)
 
         self.dunit, self.dos = ['uc', 'cm-1'], dos
 

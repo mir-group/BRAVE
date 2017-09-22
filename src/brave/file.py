@@ -5,7 +5,7 @@ import math
 import fractions
 import os
 
-import numpy
+import numpy as np
 
 import brave.common as common
 
@@ -39,10 +39,10 @@ class File(object):
                     elif b'alat' in line:
                         self.alat = float(line[line.find(b'=')+1:].strip())
                     elif b'avec' in line:
-                        self.avec = numpy.genfromtxt(
+                        self.avec = np.genfromtxt(
                             ff, dtype = float, max_rows = 3)
                     elif b'bvec' in line:
-                        self.bvec = numpy.genfromtxt(
+                        self.bvec = np.genfromtxt(
                             ff, dtype = float, max_rows = 3)
                     elif b'avol' in line:
                         self.avol = float(line[line.find(b'=')+1:].strip())
@@ -54,7 +54,7 @@ class File(object):
                         self.nelec = float(line[line.find(b'=')+1:].strip())
                     elif b'sym' in line:
                         nsym = int(line.split()[1])
-                        self.rot = numpy.genfromtxt(
+                        self.rot = np.genfromtxt(
                             ff, dtype = int, max_rows = nsym).reshape(
                             nsym, 3, 3)
 
@@ -63,27 +63,27 @@ class File(object):
                         self.kunit = line[line.find(b'=')+1:].strip().decode()
                     elif b'kpoint' in line:
                         nkpoint = int(line.split()[1])
-                        self.kpoint = numpy.genfromtxt(
+                        self.kpoint = np.genfromtxt(
                             ff, dtype = float, max_rows = nkpoint)
                     elif b'kline' in line:
                         nkpoint = int(line.split()[1])
-                        self.kline = numpy.fromfile(
+                        self.kline = np.fromfile(
                             ff, dtype = float, count = nkpoint, sep = ' ')
                     elif b'kweight' in line:
                         nkpoint = int(line.split()[1])
-                        self.kweight = numpy.fromfile(
+                        self.kweight = np.fromfile(
                             ff, dtype = float, count = nkpoint, sep = ' ')
                     elif b'kpath' in line:
                         nkpath = int(line.split()[1])
-                        self.kpath = numpy.genfromtxt(
+                        self.kpath = np.genfromtxt(
                             ff, dtype = float, max_rows = nkpath)
                     elif b'kindex' in line:
                         nkpath = int(line.split()[1])
-                        self.kindex = numpy.fromfile(
+                        self.kindex = np.fromfile(
                             ff, dtype = int, count = nkpath, sep = ' ')
                     elif b'klabel' in line:
                         nkpath = int(line.split()[1])
-                        self.klabel = list(numpy.genfromtxt(
+                        self.klabel = list(np.genfromtxt(
                             ff, dtype = str, max_rows = nkpath))
 
                 if level > 2:
@@ -94,7 +94,7 @@ class File(object):
                         nkpoint = int(tt[1])
                         nband = int(tt[2])
                         nspin = int(tt[3])
-                        self.energy = numpy.fromfile(
+                        self.energy = np.fromfile(
                             ff, dtype = float, count = (
                             nkpoint * nband * nspin), sep = ' ').reshape(
                             nkpoint, nband, nspin)
@@ -117,11 +117,11 @@ class File(object):
                         self.aunit = 'bohr'
                         self.alat = float(line.split()[4])
                     elif b'crystal axes' in line:
-                        self.avec = numpy.genfromtxt(
+                        self.avec = np.genfromtxt(
                             ff, dtype = float, usecols = (
                             3, 4, 5), max_rows = 3)
                     elif b'reciprocal axes' in line:
-                        self.bvec = numpy.genfromtxt(
+                        self.bvec = np.genfromtxt(
                             ff, dtype = float, usecols = (
                             3, 4, 5), max_rows = 3)
                     elif b'unit-cell volume' in line:
@@ -140,7 +140,7 @@ class File(object):
                                 buf += ff.readline()[19:53]
                             for kk in range(8):
                                 skip = ff.readline()
-                        self.rot = numpy.fromstring(
+                        self.rot = np.fromstring(
                             buf, dtype = int, sep = ' ').reshape(nsym, 3, 3)
 
                 if level > 1:
@@ -150,7 +150,7 @@ class File(object):
                         self.kunit = 'crystal'
                         nkpoint = int(line.split()[4]) // nspin
                     elif b' cryst. coord.' in line:
-                        kk = numpy.genfromtxt(ff, dtype = float, delimiter = (
+                        kk = np.genfromtxt(ff, dtype = float, delimiter = (
                             20, 12, 12, 12, 7, 12), usecols = (
                             1, 2, 3, 5), max_rows = nkpoint)
                         self.kpoint, self.kweight = kk[:, :-1], kk[:, 3] / 2
@@ -160,9 +160,9 @@ class File(object):
                         self.eunit = 'ev'
                         nband = int(line.split()[4])
                     elif b'FFT' in line:
-                        energy = numpy.empty((nkpoint, nband, nspin), float)
+                        energy = np.empty((nkpoint, nband, nspin), float)
                     elif b'bands (ev)' in line or b'band energies (ev)' in line:
-                        energy[ii % nkpoint, :, ii // nkpoint] = numpy.fromfile(
+                        energy[ii % nkpoint, :, ii // nkpoint] = np.fromfile(
                             ff, dtype = float, count = nband, sep = ' ')
                         ii += 1
                     elif b'the Fermi energy is' in line:
@@ -297,7 +297,7 @@ class File(object):
             self.set_alat(alat)
 
         if level > 1:
-            kpoint = numpy.empty((nkpoint, 3), float)
+            kpoint = np.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
                 words = contents[0][idxkpt + ikpoint].split()
                 for jj in range(3):
@@ -306,7 +306,7 @@ class File(object):
             self.kunit, self.kpoint = 'crystal', kpoint
 
         if level > 2:
-            energy = numpy.empty((nkpoint, nband, nspin), float)
+            energy = np.empty((nkpoint, nband, nspin), float)
             ii = 0
             for ispin in range(nspin):
                 for ikpoint in range(nkpoint):
@@ -445,7 +445,7 @@ class File(object):
         if level > 1:
             nkpoint = len(idxkpt)
 
-            kpoint = numpy.empty((nkpoint, 3), float)
+            kpoint = np.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
                 words = contents[0][idxkpt[ikpoint]].split()
                 for jj in range(3):
@@ -464,7 +464,7 @@ class File(object):
                     if iband < nband:
                         nband = iband
 
-            energy = numpy.zeros((nkpoint, nband, nspin), float)
+            energy = np.zeros((nkpoint, nband, nspin), float)
             for ispin in range(nspin):
                 for ikpoint in range(nkpoint):
                     iband = 0
@@ -493,7 +493,7 @@ class File(object):
             if nband % ncol != 0:
                 nrow += 1
 
-            kpoint = numpy.empty((nkpoint, 3), float)
+            kpoint = np.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
                 words = contents[0][ikpoint * (nrow + 1) + 1].split()
                 for jj in range(3):
@@ -504,7 +504,7 @@ class File(object):
         if level > 2:
             nspin = len(contents)
 
-            energy = numpy.empty((nkpoint, nband, nspin), float)
+            energy = np.empty((nkpoint, nband, nspin), float)
             for ispin in range(nspin):
                 for ikpoint in range(nkpoint):
                     iband = 0
@@ -539,7 +539,7 @@ class File(object):
 
         if level > 1:
             nkpoint = len(idxkpt)
-            kpoint = numpy.empty((nkpoint, 3), float)
+            kpoint = np.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
                 words = contents[0][idxkpt[ikpoint]].split()
                 for jj in range(3):
@@ -551,7 +551,7 @@ class File(object):
             nband = len(idxbnd) // nkpoint
             nspin = 1
 
-            energy = numpy.empty((nkpoint, nband, nspin), float)
+            energy = np.empty((nkpoint, nband, nspin), float)
             ispin = 0
             for ikpoint in range(nkpoint):
                 for iband in range(nband):
@@ -588,7 +588,7 @@ class File(object):
             nband = int(contents[0][nhead + ndata - 1].split()[1])
             nkpoint = ndata // ((nband - nfirst + 1) * nspin)
 
-            kpoint = numpy.empty((nkpoint, 3), float)
+            kpoint = np.empty((nkpoint, 3), float)
             for ikpoint in range(nkpoint):
                 words = contents[0][nhead + ikpoint][14:50].split()
                 for jj in range(3):
@@ -598,7 +598,7 @@ class File(object):
             self.set_aunit(oldaunit)
 
         if level > 2:
-            energy = numpy.empty((nkpoint, nband, nspin), float)
+            energy = np.empty((nkpoint, nband, nspin), float)
             energy[:, 0:nfirst - 1, :] = -common.INF12
             ii = nhead
             for ispin in range(nspin):
@@ -644,7 +644,7 @@ class File(object):
                     nband = int(words[2]) - int(words[1]) + 1
 
         if level > 1:
-            kpoint = numpy.empty((nkpoint, 3), float)
+            kpoint = np.empty((nkpoint, 3), float)
 
             for ikpoint in range(nkpoint):
                 words = contents[0][idxkpt[ikpoint]].split()
@@ -654,7 +654,7 @@ class File(object):
             self.kunit, self.kpoint = 'crystal', kpoint
 
         if level > 2:
-            energy = numpy.empty((nkpoint, nband, nspin), float)
+            energy = np.empty((nkpoint, nband, nspin), float)
 
             for ikpoint in range(nkpoint):
                 for ispin in range(nspin):
@@ -669,9 +669,9 @@ class File(object):
         nspin = len(filenames)
         for ii, filename in enumerate(finenames):
             if level > 1:
-                wan = numpy.loadtxt(filename, dtype = float, unpack = True)
+                wan = np.loadtxt(filename, dtype = float, unpack = True)
                 if ii == 0:
-                    nkpoint = numpy.where(wan[0, :] == wan[0, 0])[0][1]
+                    nkpoint = np.where(wan[0, :] == wan[0, 0])[0][1]
                     nband = wan.shape[0] // nkpoint
 
                     kline = wan[0, 0:nkpoint]
@@ -683,7 +683,7 @@ class File(object):
 
             if level > 2:
                 if ii == 0:
-                    energy = numpy.empty((nkpoint, nband, nspin), float)
+                    energy = np.empty((nkpoint, nband, nspin), float)
                 energy[:, :, ii] = wan[1, :].reshape(nband, nkpoint).transpose()
                 if ii == nspin - 1:
                     self.eunit, self.energy = 'ev', energy
@@ -706,10 +706,10 @@ class File(object):
 
                 if hasattr(self, 'avec'):
                     ff.write(b'avec 3\n')
-                    numpy.savetxt(ff, self.avec)
+                    np.savetxt(ff, self.avec)
                 if hasattr(self, 'bvec'):
                     ff.write(b'bvec 3\n')
-                    numpy.savetxt(ff, self.bvec)
+                    np.savetxt(ff, self.bvec)
 
                 if hasattr(self, 'avol'):
                     ff.write('avol = {0:f}\n'.format(self.avol).encode())
@@ -722,7 +722,7 @@ class File(object):
 
                 if hasattr(self, 'rot'):
                     ff.write('sym {0:d}\n'.format(self.nsym).encode())
-                    numpy.savetxt(ff, self.rot.reshape(self.nsym, 9), fmt='%d')
+                    np.savetxt(ff, self.rot.reshape(self.nsym, 9), fmt='%d')
 
             if level > 1:
                 if hasattr(self, 'kunit'):
@@ -730,7 +730,7 @@ class File(object):
 
                 if hasattr(self, 'kpoint'):
                     ff.write('kpoint {0:d}\n'.format(self.nkpoint).encode())
-                    numpy.savetxt(ff, self.kpoint)
+                    np.savetxt(ff, self.kpoint)
 
                 if hasattr(self, 'kline'):
                     ff.write('kline {0:d}\n'.format(self.nkpoint).encode())
@@ -744,7 +744,7 @@ class File(object):
 
                 if hasattr(self, 'kpath'):
                     ff.write('kpath {0:d}\n'.format(self.nkpath).encode())
-                    numpy.savetxt(ff, self.kpath)
+                    np.savetxt(ff, self.kpath)
 
                 if hasattr(self, 'kindex'):
                     ff.write('kindex {0:d}\n'.format(self.nkpath).encode())
@@ -786,7 +786,7 @@ class File(object):
 
                     ff.write('CELL_PARAMETERS {0:s}\n'.format(d1[
                         self.aunit]).encode())
-                    numpy.savetxt(ff, self.alat * self.avec)
+                    np.savetxt(ff, self.alat * self.avec)
                     self.set_aunit(oldaunit)
 
             if level > 1:
@@ -797,8 +797,8 @@ class File(object):
                     if hasattr(self, 'kweight'):
                         weight = 2.0 * self.kweight
                     else:
-                        weight = numpy.full(self.nkpoint, 2 / self.nkpoint)
-                    numpy.savetxt(ff, numpy.concatenate((
+                        weight = np.full(self.nkpoint, 2 / self.nkpoint)
+                    np.savetxt(ff, np.concatenate((
                         self.kpoint, weight.reshape(self.nkpoint, 1)), 1))
 
                 if hasattr(self, 'kunit') and hasattr(
@@ -809,8 +809,8 @@ class File(object):
                     ff.write('K_POINTS {0:s}\n'.format(d3[self.kunit]).encode())
                     ff.write('{0:d}\n'.format(self.nkpath).encode())
 
-                    knum = numpy.append(numpy.diff(self.kindex), 0)
-                    numpy.savetxt(ff, numpy.concatenate((
+                    knum = np.append(np.diff(self.kindex), 0)
+                    np.savetxt(ff, np.concatenate((
                         self.kpath, knum.reshape(self.nkpath, 1)), 1))
 
     def _write_file_wannier_in(self, level, filenames):
@@ -823,7 +823,7 @@ class File(object):
                         self, 'avec'):
                     ff.write(b'begin unit_cell_cart\n')
                     ff.write('{0:s}'.format(d0[self.aunit]).encode())
-                    numpy.savetxt(ff, self.alat * self.avec)
+                    np.savetxt(ff, self.alat * self.avec)
                     ff.write(b'end unit_cell_cart\n')
 
             if level > 1:
@@ -872,9 +872,9 @@ class File(object):
                 oldkunit = self.kunit
                 self.set_kunit(lapwkunit)
                 nline = self.nkpath - 1
-                nstep = numpy.diff(self.kindex)
-                line = numpy.diff(self.kpath, axis = 0)
-                step = line / numpy.broadcast_to(nstep, (3, nline)).transpose()
+                nstep = np.diff(self.kindex)
+                line = np.diff(self.kpath, axis = 0)
+                step = line / np.broadcast_to(nstep, (3, nline)).transpose()
                 origin = self.kpath[0, :] - step[0, :]
                 self.set_kunit(oldkunit)
 
@@ -1020,9 +1020,9 @@ class File(object):
 
             with open(filenames[2], 'wb') as ff:
                 ff.write('{0:s}\n'.format(self.prefix).encode())
-                numpy.savetxt(ff, self.avec)
+                np.savetxt(ff, self.avec)
                 ff.write('{0:d}\n'.format(self.nsym).encode())
-                numpy.savetxt(ff, self.rot.transpose(0, 2, 1).reshape(
+                np.savetxt(ff, self.rot.transpose(0, 2, 1).reshape(
                     self.nsym, 9), fmt='%d')
 
             with open(filenames[3], 'wb') as ff:

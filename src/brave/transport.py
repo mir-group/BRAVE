@@ -1,7 +1,7 @@
 """This module defines class Transport."""
 
 import linecache
-import numpy
+import numpy as np
 
 import brave.common as common
 from brave.cell import Cell
@@ -28,9 +28,9 @@ class Transport(Cell):
 
     @mu.setter
     def mu(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('mu {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('mu {0!r}'.format(value))
         self._mu = value
 
@@ -52,9 +52,9 @@ class Transport(Cell):
 
     @temp.setter
     def temp(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('temp {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or len(value.shape) != 1:
+        if value.dtype != np.dtype('float') or len(value.shape) != 1:
             raise ValueError('temp {0!r}'.format(value))
         self._temp = value
 
@@ -73,9 +73,9 @@ class Transport(Cell):
 
     @numelec.setter
     def numelec(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('numelec {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('numelec {0!r}'.format(value))
         self._numelec = value
@@ -93,9 +93,9 @@ class Transport(Cell):
 
     @convdos.setter
     def convdos(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('convdos {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('convdos {0!r}'.format(value))
         self._convdos = value
@@ -113,9 +113,9 @@ class Transport(Cell):
 
     @seebeck.setter
     def seebeck(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('seebeck {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('seebeck {0!r}'.format(value))
         self._seebeck = value
@@ -133,9 +133,9 @@ class Transport(Cell):
 
     @sigma.setter
     def sigma(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('sigma {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('sigma {0!r}'.format(value))
         self._sigma = value
@@ -153,9 +153,9 @@ class Transport(Cell):
 
     @hall.setter
     def hall(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('hall {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('hall {0!r}'.format(value))
         self._hall = value
@@ -174,9 +174,9 @@ class Transport(Cell):
 
     @kappael.setter
     def kappael(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kappael {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('kappael {0!r}'.format(value))
         self._kappael = value
@@ -194,9 +194,9 @@ class Transport(Cell):
 
     @specheat.setter
     def specheat(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('specheat {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('specheat {0!r}'.format(value))
         self._specheat = value
@@ -214,9 +214,9 @@ class Transport(Cell):
 
     @magsus.setter
     def magsus(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('magsus {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('magsus {0!r}'.format(value))
         self._magsus = value
@@ -234,9 +234,9 @@ class Transport(Cell):
 
     @kappalat.setter
     def kappalat(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kappalat {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('kappalat {0!r}'.format(value))
         self._kappalat = value
@@ -254,9 +254,9 @@ class Transport(Cell):
 
     @kappa.setter
     def kappa(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('kappa {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('kappa {0!r}'.format(value))
         self._kappa = value
@@ -274,9 +274,9 @@ class Transport(Cell):
 
     @L.setter
     def L(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('L {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('L {0!r}'.format(value))
         self._L = value
@@ -294,9 +294,9 @@ class Transport(Cell):
 
     @PF.setter
     def PF(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('PF {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('PF {0!r}'.format(value))
         self._PF = value
@@ -314,9 +314,9 @@ class Transport(Cell):
 
     @ZT.setter
     def ZT(self, value):
-        if not isinstance(value, numpy.ndarray):
+        if not isinstance(value, np.ndarray):
             raise TypeError('ZT {0!r}'.format(value))
-        if value.dtype != numpy.dtype('float') or value.shape != (
+        if value.dtype != np.dtype('float') or value.shape != (
                 self.nmu, self.ntemp):
             raise ValueError('ZT {0!r}'.format(value))
         self._ZT = value
@@ -331,7 +331,7 @@ class Transport(Cell):
     kappalat = kappalatvalue if tempvalue <= 0, kappalatvalue
     in units of W/(m K), tempvalue in units of K.
         """
-        kappalat = numpy.zeros((self.nmu, self.ntemp), float)
+        kappalat = np.zeros((self.nmu, self.ntemp), float)
 
         for imu in range(self.nmu):
             for itemp in range(self.ntemp):
@@ -344,28 +344,28 @@ class Transport(Cell):
     def calc_kappa(self):
         """Method for calculating kappa given kappael and kappalat."""
 
-        self.kappa = numpy.add(self.kappael, self.kappalat)
+        self.kappa = np.add(self.kappael, self.kappalat)
 
     def calc_L(self):
         """Method for calculating L given sigma and kappael."""
 
-        _sigma = numpy.maximum(self.sigma, common.EPS12)
-        _temp = numpy.broadcast_to(self.temp, (self.nmu, self.ntemp))
-        _sigma_temp = numpy.multiply(_sigma, _temp)
-        self.L = numpy.divide(self.kappael, _sigma_temp)
+        _sigma = np.maximum(self.sigma, common.EPS12)
+        _temp = np.broadcast_to(self.temp, (self.nmu, self.ntemp))
+        _sigma_temp = np.multiply(_sigma, _temp)
+        self.L = np.divide(self.kappael, _sigma_temp)
 
     def calc_PF(self):
         """Method for calculating PF given sigma and seebeck."""
 
-        _seebeck2 = numpy.square(self.seebeck)
-        self.PF = numpy.multiply(self.sigma, _seebeck2)
+        _seebeck2 = np.square(self.seebeck)
+        self.PF = np.multiply(self.sigma, _seebeck2)
 
     def calc_ZT(self):
         """Method for calculating ZT given PF and kappa."""
 
-        _temp = numpy.broadcast_to(self.temp, (self.nmu, self.ntemp))
-        _PF_temp = numpy.multiply(self.PF, _temp)
-        self.ZT = numpy.divide(_PF_temp, self.kappa)
+        _temp = np.broadcast_to(self.temp, (self.nmu, self.ntemp))
+        _PF_temp = np.multiply(self.PF, _temp)
+        self.ZT = np.divide(_PF_temp, self.kappa)
 
     def interpolate_binary(self, propname, paramtype, paramvalue):
         """Method for interpolating functional dependence of
@@ -389,26 +389,26 @@ class Transport(Cell):
         propvalue = getattr(self, propname)
 
         if paramtype == 'temp':
-            slice = numpy.zeros(self.nmu, float)
+            slice = np.zeros(self.nmu, float)
             itemp1, itemp2, weight1, weight2 = common._int_pts(
                     self.temp, paramvalue)
             for imu in range(self.nmu):
                 slice[imu] = (weight1 * propvalue[
                         imu, itemp1] + weight2 * propvalue[imu, itemp2])
         elif paramtype == 'mu':
-            slice = numpy.zeros(self.ntemp, float)
+            slice = np.zeros(self.ntemp, float)
             imu1, imu2, weight1, weight2 = common._int_pts(
                     self.mu, paramvalue)
             for itemp in range(self.ntemp):
                 slice[itemp] = (weight1 * propvalue[
                         imu1, itemp] + weight2 * propvalue[imu2, itemp])
         elif paramtype == 'numelec':
-            slice = numpy.zeros(self.ntemp, float)
+            slice = np.zeros(self.ntemp, float)
             numelec = self.numelec
             for itemp in range(self.ntemp):
                 _paramvalue = paramvalue if type(
                         paramvalue) is float else paramvalue[itemp]
-                slice[itemp] = numpy.interp(_paramvalue, numelec[
+                slice[itemp] = np.interp(_paramvalue, numelec[
                         :, itemp], propvalue[:, itemp])
         else:
             raise ValueError(paramtype)
@@ -427,9 +427,9 @@ class Transport(Cell):
     'mu'          chemical potential in units of eV
         """
         if argtype == 'temp':
-            value = numpy.interp(argvalue, self.temp, propunary)
+            value = np.interp(argvalue, self.temp, propunary)
         elif argtype == 'mu':
-            value = numpy.interp(argvalue, self.mu, propunary)
+            value = np.interp(argvalue, self.mu, propunary)
         else:
             raise ValueError(argtype)
 
@@ -443,7 +443,7 @@ class Transport(Cell):
     be extracted from file case.transdos.
         """
         numelec = self.numelec
-        numelec0 = numpy.interp(0.0, self.mu, numelec[:, 0])
+        numelec0 = np.interp(0.0, self.mu, numelec[:, 0])
         numelec -= numelec0
         self.numelec = numelec
 
@@ -487,10 +487,10 @@ class Transport(Cell):
         """
         if outputtype == 'temp':
             slice = self.interpolate_binary('numelec', 'mu', inputvalues[0])
-            outputvalue = numpy.interp(inputvalues[1], self.temp, slice)
+            outputvalue = np.interp(inputvalues[1], self.temp, slice)
         elif outputtype == 'mu':
             slice = self.interpolate_binary('numelec', 'temp', inputvalues[0])
-            outputvalue = numpy.interp(inputvalues[1], self.mu, slice)
+            outputvalue = np.interp(inputvalues[1], self.mu, slice)
         elif outputtype == 'numelec':
             itemp1, itemp2, wtemp1, wtemp2 = common._int_pts(
                     self.temp, inputvalues[0])
@@ -612,10 +612,10 @@ class Transport(Cell):
     def _read_trn_boltztrap_out(self, filenames, tauvc, kappaelzeroj):
 
         efermi = float(linecache.getline(filenames[0], 3).split()[0])
-        trace = numpy.loadtxt(filenames[
+        trace = np.loadtxt(filenames[
             1], dtype = float, skiprows = 1, unpack = True)
 
-        ntemp = numpy.where(trace[1, :] == trace[1, 0])[0][1]
+        ntemp = np.where(trace[1, :] == trace[1, 0])[0][1]
         nmu = trace.shape[1] // ntemp
 
         self.mu = (trace[0, ::ntemp] - efermi) * common.RYDBERG
@@ -631,15 +631,15 @@ class Transport(Cell):
         self.magsus = view[9, :, :]
 
         if tauvc is not None:
-            tau = numpy.broadcast_to(numpy.where(self.mu < 0.0, tauvc[0], tauvc[
+            tau = np.broadcast_to(np.where(self.mu < 0.0, tauvc[0], tauvc[
                 1]).reshape(nmu, 1), (nmu, ntemp))
-            self.sigma = numpy.multiply(self.sigma, tau)
-            self.kappael = numpy.multiply(self.kappael, tau)
+            self.sigma = np.multiply(self.sigma, tau)
+            self.kappael = np.multiply(self.kappael, tau)
 
         if kappaelzeroj:
-            self.kappael = numpy.subtract(self.kappael, numpy.multiply(
-                numpy.multiply(self.sigma, numpy.square(
-                self.seebeck)), numpy.broadcast_to(self.temp, (nmu, ntemp))))
+            self.kappael = np.subtract(self.kappael, np.multiply(
+                np.multiply(self.sigma, np.square(
+                self.seebeck)), np.broadcast_to(self.temp, (nmu, ntemp))))
 
     def __init__(
             self, mu=None, temp=None, numelec=None, convdos=None, seebeck=None,
