@@ -788,33 +788,31 @@ class Plot(object):
 
     def _writep_matplotlib(self, fileformat, filename):
 
-        _linestyle_dict = {
-                'solid': '-',
-                'dash': '--',
-                'dot': ':',
-                'dashdot': '-.'}
+        style_dict = [{
+            'solid': '-',
+            'dash': '--',
+            'dot': ':',
+            'dashdot': '-.'}, {
+            'circle': 'o',
+            'square': 's',
+            'diamond': 'D',
+            'triangle_up': '^',
+            'triangle_down': 'v',
+            'triangle_left': '<',
+            'triangle_right': '>',
+            'star': '*',
+            'cross': 'x',
+            'plus': '+'}]
 
-        _markerstyle_dict = {
-                'circle': 'o',
-                'square': 's',
-                'diamond': 'D',
-                'triangle_up': '^',
-                'triangle_down': 'v',
-                'triangle_left': '<',
-                'triangle_right': '>',
-                'star': '*',
-                'cross': 'x',
-                'plus': '+'}
-
-        _color_dict = {
-                'black': 'k',
-                'red': 'r',
-                'green': 'g',
-                'blue': 'b',
-                'magenta': 'm',
-                'yellow': 'y',
-                'cyan': 'c',
-                'white': 'w'}
+        color_dict = {
+            'black': 'k',
+            'red': 'r',
+            'green': 'g',
+            'blue': 'b',
+            'magenta': 'm',
+            'yellow': 'y',
+            'cyan': 'c',
+            'white': 'w'}
 
         matplotlib.rcParams['lines.linewidth'] = self.linewidth
         matplotlib.rcParams['lines.markeredgewidth'] = self.linewidth
@@ -865,395 +863,349 @@ class Plot(object):
         matplotlib.rcParams['savefig.pad_inches'] = self.gridpad[
                 0] * self.fontsize / 72.0
 
-        _figure = plt.figure(figsize = (self.pagesize[0], self.pagesize[1]))
-        _grid = gridspec.GridSpec(self.griddim[0], self.griddim[1])
+        fig1 = plt.figure(figsize = (self.pagesize[0], self.pagesize[1]))
+        gs1 = gridspec.GridSpec(self.griddim[0], self.griddim[1])
 
-        _artist_list = []
-        for iplot in range(len(self.data)):
-            _plot = _figure.add_subplot(_grid[
-                    self.gridpos[iplot][0]:self.gridpos[iplot][1],
-                    self.gridpos[iplot][2]:self.gridpos[iplot][3]],
-                    axisbelow = True)
+        artist1 = []
+        for ii, data in enumerate(self.data):
+            ax1 = fig1.add_subplot(
+                gs1[self.gridpos[ii][0]:self.gridpos[ii][1],
+                self.gridpos[ii][2]:self.gridpos[ii][3]], axisbelow = True)
 
-            _is_legend = False
-            for idata in range(len(self.data[iplot])):
+            legend1 = False
+            for jj, curve in enumerate(data):
                 if hasattr(self, 'kind'):
-                    _kind = self.kind[iplot][idata]
+                    kind1 = self.kind[ii][jj]
                 else:
-                    _kind = 'plot'
+                    kind1 = 'plot'
 
                 if hasattr(self, 'style'):
-                    _style = self.style[iplot][idata]
+                    style1 = self.style[ii][jj]
                 else:
-                    _style = ['solid', 'None']
+                    style1 = ['solid', 'None']
 
                 if hasattr(self, 'color'):
-                    _color = self.color[iplot][idata]
+                    color1 = self.color[ii][jj]
                 else:
-                    _color = ['black', 'none', 'none']
+                    color1 = ['black', 'none', 'none']
 
                 if hasattr(self, 'label'):
-                    _label = self.label[iplot][idata]
-                    if _label != '' and _label is not None:
-                        _is_legend = True
+                    label1 = self.label[ii][jj]
+                    if label1 != '' and label1 is not None:
+                        legend1 = True
                 else:
-                    _label = ''
+                    label1 = ''
 
                 if hasattr(self, 'zorder'):
-                    _zorder = self.zorder[iplot][idata]
+                    zorder1 = self.zorder[ii][jj]
                 else:
-                    _zorder = 2
+                    zorder1 = 2
 
-                _style_plt = []
-                for _ii in range(2):
-                    _aa = _style[_ii]
-                    _bb = _aa
-                    if type(_aa) is str:
-                        if _ii == 0:
-                            if _aa in _linestyle_dict:
-                                _bb = _linestyle_dict[_aa]
-                        else:
-                            if _aa in _markerstyle_dict:
-                                _bb = _markerstyle_dict[_aa]
-                    _style_plt.append(_bb)
+                style2 = []
+                for kk in range(2):
+                    aa = style1[kk]
+                    bb = aa
+                    if isinstance(aa, str):
+                        if aa in style_dict[kk]:
+                            bb = style_dict[kk][aa]
+                    style2.append(bb)
 
-                _color_plt = []
-                for _cc in _color:
-                    _dd = _cc
-                    if type(_cc) is str:
-                        if _cc in _color_dict:
-                            _dd = _color_dict[_cc]
-                    _color_plt.append(_dd)
+                color2 = []
+                for cc in color1:
+                    dd = cc
+                    if isinstance(cc, str):
+                        if cc in color_dict:
+                            dd = color_dict[cc]
+                    color2.append(dd)
 
-                if _kind == 'plot':
-                    _curve = _plot.plot(
-                            self.data[iplot][idata][0],
-                            self.data[iplot][idata][1],
-                            linestyle = _style_plt[0],
-                            marker = _style_plt[1],
-                            color = _color_plt[0],
-                            markeredgecolor = _color_plt[1],
-                            markerfacecolor = _color_plt[2],
-                            label = _label, zorder = _zorder)
+                if kind1 == 'plot':
+                    curve1 = ax1.plot(
+                        curve[0, :], curve[1, :], linestyle = style2[0],
+                        marker = style2[1], color = color2[0],
+                        markeredgecolor = color2[1], markerfacecolor = color2[
+                        2], label = label1, zorder = zorder1)
 
-                elif _kind == 'scatter':
-                    _curve = _plot.scatter(
-                            self.data[iplot][idata][0],
-                            self.data[iplot][idata][1],
-                            s = self.data[iplot][idata][2],
-                            marker = _style_plt[1],
-                            edgecolors = _color_plt[0],
-                            color = _color_plt[1],
-                            label = _label, zorder = _zorder)
+                elif kind1 == 'scatter':
+                    curve1 = ax1.scatter(
+                        curve[0, :], curve[1, :], s = curve[2, :],
+                        marker = style2[1], edgecolors = color2[0],
+                        color = color2[1], label = label1, zorder = zorder1)
 
-                elif _kind == 'bar':
-                    if max(
-                            np.amax(self.data[iplot][idata][4]),
-                            np.amax(self.data[iplot][idata][5])
-                            ) > common.EPS12:
-                        yerr = [
-                                self.data[iplot][idata][4],
-                                self.data[iplot][idata][5]]
+                elif kind1 == 'bar':
+                    if max(np.amax(curve[4, :]), np.amax(
+                            curve[5, :])) > common.EPS12:
+                        yerr = [curve[4, :], curve[5, :]]
                     else:
                         yerr = None
-                    _curve = _plot.bar(
-                            self.data[iplot][idata][0],
-                            self.data[iplot][idata][1],
-                            width = self.data[iplot][idata][2],
-                            bottom = self.data[iplot][idata][3],
-                            yerr = yerr,
-                            color = _color_plt[0],
-                            edgecolor = _color_plt[1],
-                            ecolor = _color_plt[2],
-                            linewidth = self.linewidth,
-                            label = _label, zorder = _zorder)
+                    curve1 = ax1.bar(
+                        curve[0, :], curve[1, :], width = curve[2, :],
+                        bottom = curve[3, :], yerr = yerr, color = color2[0],
+                        edgecolor = color2[1], ecolor = color2[2],
+                        linewidth = self.linewidth, label = label1,
+                        zorder = zorder1)
 
-                elif _kind == 'errorbar':
-                    if np.amax(self.data[iplot][idata][2]) > common.EPS12:
-                        yerr = self.data[iplot][idata][2]
+                elif kind1 == 'errorbar':
+                    if np.amax(curve[2, :]) > common.EPS12:
+                        yerr = curve[2, :]
                     else:
                         yerr = None
-                    if np.amax(self.data[iplot][idata][3]) > common.EPS12:
-                        xerr = self.data[iplot][idata][3]
+                    if np.amax(curve[3, :]) > common.EPS12:
+                        xerr = curve[3, :]
                     else:
                         xerr = None
-                    _curve = _plot.errorbar(
-                            self.data[iplot][idata][0],
-                            self.data[iplot][idata][1],
-                            yerr = yerr, xerr = xerr,
-                            linestyle = _style_plt[0],
-                            marker = _style_plt[1],
-                            color = _color_plt[0],
-                            markeredgecolor = _color_plt[1],
-                            markerfacecolor = _color_plt[2],
-                            ecolor = _color_plt[3],
-                            label = _label, zorder = _zorder)
+                    curve1 = ax1.errorbar(
+                        curve[0, :], curve[1, :], yerr = yerr, xerr = xerr,
+                        linestyle = style2[0], marker = style2[1],
+                        color = color2[0], markeredgecolor = color2[1],
+                        markerfacecolor = color2[2], ecolor = color2[3],
+                        label = label1, zorder = zorder1)
 
-                elif _kind == 'fill':
-                    _curve = _plot.fill(
-                            self.data[iplot][idata][0],
-                            self.data[iplot][idata][1],
-                            linestyle = _style_plt[0],
-                            facecolor = _color_plt[0],
-                            edgecolor = _color_plt[1],
-                            label = _label, zorder = _zorder)
+                elif kind1 == 'fill':
+                    curve1 = ax1.fill(
+                        curve[0, :], curve[1, :], linestyle = style2[0],
+                        facecolor = color2[0], edgecolor = color2[1],
+                        label = label1, zorder = zorder1)
 
                 else:
-                    raise ValueError(_kind)
+                    raise ValueError('kind {0!r}'.format(kind1))
 
-            if _is_legend:
+            if legend1:
                 if hasattr(self, 'legend'):
-                    if self.legend[iplot] is not None:
-                        if type(self.legend[iplot][0]) is str:
-                            _loc = self.legend[iplot][0]
+                    if self.legend[ii] is not None:
+                        if isinstance(self.legend[ii][0], str):
+                            loc1 = self.legend[ii][0]
                         else:
-                            _loc = 'best'
-                        if type(self.legend[iplot][1]) is int:
-                            _ncol = self.legend[iplot][1]
+                            loc1 = 'best'
+                        if isinstance(self.legend[ii][1], int):
+                            ncol1 = self.legend[ii][1]
                         else:
-                            _ncol = 1
-                        if type(self.legend[iplot][2]) is list:
-                            _borderaxespad = 0.0
-                            _bbox_to_anchor = self.legend[iplot][2]
-                            _bbox_transform = _figure.transFigure
+                            ncol1 = 1
+                        if isinstance(self.legend[ii][2], list):
+                            pad1 = 0.0
+                            ancor1 = self.legend[ii][2]
+                            tran1 = fig1.transFigure
                         else:
-                            _borderaxespad = 0.5
-                            _bbox_to_anchor = None
-                            _bbox_transform = _plot.transAxes
+                            pad1 = 0.5
+                            ancor1 = None
+                            tran1 = ax1.transAxes
                     else:
-                        _loc = 'best'
-                        _ncol = 1
-                        _borderaxespad = 0.5
-                        _bbox_to_anchor = None
-                        _bbox_transform = _plot.transAxes
+                        loc1 = 'best'
+                        ncol1 = 1
+                        pad1 = 0.5
+                        ancor1 = None
+                        tran1 = ax1.transAxes
                 else:
-                    _loc = 'best'
-                    _ncol = 1
-                    _borderaxespad = 0.5
-                    _bbox_to_anchor = None
-                    _bbox_transform = _plot.transAxes
-                _legend = _plot.legend(
-                        loc = _loc, ncol = _ncol,
-                        borderaxespad = _borderaxespad,
-                        bbox_to_anchor = _bbox_to_anchor,
-                        bbox_transform = _bbox_transform)
+                    loc1 = 'best'
+                    ncol1 = 1
+                    pad1 = 0.5
+                    ancor1 = None
+                    tran1 = ax1.transAxes
+                legend2 = ax1.legend(
+                        loc = loc1, ncol = ncol1, borderaxespad = pad1,
+                        bbox_to_anchor = ancor1, bbox_transform = tran1)
                 if self.frame:
-                    _legend.get_frame().set_linewidth(self.linewidth)
+                    legend2.get_frame().set_linewidth(self.linewidth)
 
             if hasattr(self, 'xscale'):
-                _plot.set_xscale(self.xscale[iplot])
+                ax1.set_xscale(self.xscale[ii])
 
             if hasattr(self, 'yscale'):
-                _plot.set_yscale(self.yscale[iplot])
+                ax1.set_yscale(self.yscale[ii])
 
-            _plot.autoscale(enable = True, axis = 'both', tight = False)
+            ax1.autoscale(enable = True, axis = 'both', tight = False)
 
             if hasattr(self, 'xlim'):
-                if self.xlim[iplot] is not None:
-                    _plot.set_xlim(self.xlim[iplot][0], self.xlim[iplot][1])
+                if self.xlim[ii] is not None:
+                    ax1.set_xlim(self.xlim[ii][0], self.xlim[ii][1])
 
             if hasattr(self, 'ylim'):
-                if self.ylim[iplot] is not None:
-                    _plot.set_ylim(self.ylim[iplot][0], self.ylim[iplot][1])
+                if self.ylim[ii] is not None:
+                    ax1.set_ylim(self.ylim[ii][0], self.ylim[ii][1])
 
-            _xmin, _xmax, _ymin, _ymax = _plot.axis()
+            xmin, xmax, ymin, ymax = ax1.axis()
 
             if hasattr(self, 'xdel'):
-                if self.xdel[iplot] is not None:
-                    _plot.xaxis.set_major_locator(
-                            matplotlib.ticker.MultipleLocator(
-                            self.xdel[iplot][0]))
-                    _plot.xaxis.set_minor_locator(
-                            matplotlib.ticker.MultipleLocator(
-                            self.xdel[iplot][1]))
+                if self.xdel[ii] is not None:
+                    ax1.xaxis.set_major_locator(
+                        matplotlib.ticker.MultipleLocator(self.xdel[ii][0]))
+                    ax1.xaxis.set_minor_locator(
+                        matplotlib.ticker.MultipleLocator(self.xdel[ii][1]))
 
             if hasattr(self, 'ydel'):
-                if self.ydel[iplot] is not None:
-                    _plot.yaxis.set_major_locator(
-                            matplotlib.ticker.MultipleLocator(
-                            self.ydel[iplot][0]))
-                    _plot.yaxis.set_minor_locator(
-                            matplotlib.ticker.MultipleLocator(
-                            self.ydel[iplot][1]))
+                if self.ydel[ii] is not None:
+                    ax1.yaxis.set_major_locator(
+                        matplotlib.ticker.MultipleLocator(self.ydel[ii][0]))
+                    ax1.yaxis.set_minor_locator(
+                        matplotlib.ticker.MultipleLocator(self.ydel[ii][1]))
 
             if hasattr(self, 'xtick'):
-                if self.xtick[iplot] is not None:
-                    _xtickposition = []
-                    _xticklabel = []
-                    for item in self.xtick[iplot]:
-                        _xtickposition.append(item[0])
-                        _xticklabel.append(item[1])
-                    _plot.set_xticks(_xtickposition)
-                    _plot.set_xticklabels(_xticklabel)
+                if self.xtick[ii] is not None:
+                    position2 = []
+                    label2 = []
+                    for item in self.xtick[ii]:
+                        position2.append(item[0])
+                        label2.append(item[1])
+                    ax1.set_xticks(position2)
+                    ax1.set_xticklabels(label2)
 
             if hasattr(self, 'ytick'):
-                if self.ytick[iplot] is not None:
-                    _ytickposition = []
-                    _yticklabel = []
-                    for item in self.ytick[iplot]:
-                        _ytickposition.append(item[0])
-                        _yticklabel.append(item[1])
-                    _plot.set_yticks(_ytickposition)
-                    _plot.set_yticklabels(_yticklabel)
+                if self.ytick[ii] is not None:
+                    position2 = []
+                    label2 = []
+                    for item in self.ytick[ii]:
+                        position2.append(item[0])
+                        label2.append(item[1])
+                    ax1.set_yticks(position2)
+                    ax1.set_yticklabels(label2)
 
             if hasattr(self, 'xgrid'):
-                if self.xgrid[iplot][0] is not None:
-                    _style = self.xgrid[iplot][0][0]
-                    _color = self.xgrid[iplot][0][1]
-                    _width = self.xgrid[iplot][0][2]
-                    if not None in (_style, _color, _width):
-                        _style_plt = _style
-                        if type(_style) is str:
-                            if _style in _linestyle_dict:
-                                _style_plt = _linestyle_dict[_style]
-                        _color_plt = _color
-                        if type(_color) is str:
-                            if _color in _color_dict:
-                                _color_plt = _color_dict[_color]
-                        _plot.grid(
-                                b = True, which = 'major', axis = 'x',
-                                linestyle = _style_plt,
-                                color = _color_plt,
-                                linewidth = _width)
+                if self.xgrid[ii][0] is not None:
+                    style1 = self.xgrid[ii][0][0]
+                    color1 = self.xgrid[ii][0][1]
+                    width2 = self.xgrid[ii][0][2]
+                    if not None in (style1, color1, width2):
+                        style2 = style1
+                        if isinstance(style1, str):
+                            if style1 in style_dict[0]:
+                                style2 = style_dict[0][style1]
+                        color2 = color1
+                        if isinstance(color1, str):
+                            if color1 in color_dict:
+                                color2 = color_dict[color1]
+                        ax1.grid(
+                            b = True, which = 'major', axis = 'x',
+                            linestyle = style2, color = color2,
+                            linewidth = width2)
 
-                if self.xgrid[iplot][1] is not None:
-                    _style = self.xgrid[iplot][1][0]
-                    _color = self.xgrid[iplot][1][1]
-                    _width = self.xgrid[iplot][1][2]
-                    if not None in (_style, _color, _width):
-                        _style_plt = _style
-                        if type(_style) is str:
-                            if _style in _linestyle_dict:
-                                _style_plt = _linestyle_dict[_style]
-                        _color_plt = _color
-                        if type(_color) is str:
-                            if _color in _color_dict:
-                                _color_plt = _color_dict[_color]
-                        _plot.grid(
-                                b = True, which = 'minor', axis = 'x',
-                                linestyle = _style_plt,
-                                color = _color_plt,
-                                linewidth = _width)
+                if self.xgrid[ii][1] is not None:
+                    style1 = self.xgrid[ii][1][0]
+                    color1 = self.xgrid[ii][1][1]
+                    width2 = self.xgrid[ii][1][2]
+                    if not None in (style1, color1, width2):
+                        style2 = style1
+                        if isinstance(style1, str):
+                            if style1 in style_dict[0]:
+                                style2 = style_dict[0][style1]
+                        color2 = color1
+                        if isinstance(color1, str):
+                            if color1 in color_dict:
+                                color2 = color_dict[color1]
+                        ax1.grid(
+                            b = True, which = 'minor', axis = 'x',
+                            linestyle = style2, color = color2,
+                            linewidth = width2)
 
             if hasattr(self, 'ygrid'):
-                if self.ygrid[iplot][0] is not None:
-                    _style = self.ygrid[iplot][0][0]
-                    _color = self.ygrid[iplot][0][1]
-                    _width = self.ygrid[iplot][0][2]
-                    if not None in (_style, _color, _width):
-                        _style_plt = _style
-                        if type(_style) is str:
-                            if _style in _linestyle_dict:
-                                _style_plt = _linestyle_dict[_style]
-                        _color_plt = _color
-                        if type(_color) is str:
-                            if _color in _color_dict:
-                                _color_plt = _color_dict[_color]
-                        _plot.grid(
-                                b = True, which = 'major', axis = 'y',
-                                linestyle = _style_plt,
-                                color = _color_plt,
-                                linewidth = _width)
+                if self.ygrid[ii][0] is not None:
+                    style1 = self.ygrid[ii][0][0]
+                    color1 = self.ygrid[ii][0][1]
+                    width2 = self.ygrid[ii][0][2]
+                    if not None in (style1, color1, width2):
+                        style2 = style1
+                        if isinstance(style1, str):
+                            if style1 in style_dict[0]:
+                                style2 = style_dict[0][style1]
+                        color2 = color1
+                        if isinstance(color1, str):
+                            if color1 in color_dict:
+                                color2 = color_dict[color1]
+                        ax1.grid(
+                            b = True, which = 'major', axis = 'y',
+                            linestyle = style2, color = color2,
+                            linewidth = width2)
 
-                if self.ygrid[iplot][1] is not None:
-                    _style = self.ygrid[iplot][1][0]
-                    _color = self.ygrid[iplot][1][1]
-                    _width = self.ygrid[iplot][1][2]
-                    if not None in (_style, _color, _width):
-                        _style_plt = _style
-                        if type(_style) is str:
-                            if _style in _linestyle_dict:
-                                _style_plt = _linestyle_dict[_style]
-                        _color_plt = _color
-                        if type(_color) is str:
-                            if _color in _color_dict:
-                                _color_plt = _color_dict[_color]
-                        _plot.grid(
-                                b = True, which = 'minor', axis = 'y',
-                                linestyle = _style_plt,
-                                color = _color_plt,
-                                linewidth = _width)
+                if self.ygrid[ii][1] is not None:
+                    style1 = self.ygrid[ii][1][0]
+                    color1 = self.ygrid[ii][1][1]
+                    width2 = self.ygrid[ii][1][2]
+                    if not None in (style1, color1, width2):
+                        style2 = style1
+                        if isinstance(style1, str):
+                            if style1 in style_dict[0]:
+                                style2 = style_dict[0][style1]
+                        color2 = color1
+                        if isinstance(color1, str):
+                            if color1 in color_dict:
+                                color2 = color_dict[color1]
+                        ax1.grid(
+                            b = True, which = 'minor', axis = 'y',
+                            linestyle = style2, color = color2,
+                            linewidth = width2)
 
             if hasattr(self, 'xlabel'):
-                if self.xlabel[iplot] == '':
-                    _xticklabels = []
-                    for _xticklabel in _plot.get_xticklabels():
-                        _xticklabels.append('')
-                    _plot.set_xticklabels(_xticklabels)
+                if self.xlabel[ii] == '':
+                    label2 = []
+                    for label3 in ax1.get_xticklabels():
+                        label2.append('')
+                    ax1.set_xticklabels(label2)
                 else:
-                    _xposition = 0.5
-                    _xalign = 'center'
+                    position2 = 0.5
+                    align2 = 'center'
                     if hasattr(self, 'xlabpos'):
-                        if self.xlabpos[iplot] is not None:
-                            _xposition = self.xlabpos[iplot][0]
-                            _xalign = self.xlabpos[iplot][1]
-                    _xlabel = _plot.set_xlabel(
-                            self.xlabel[iplot], labelpad = self.labelpad[0],
-                            multialignment = 'center', x = _xposition,
-                            ha = _xalign)
-                    _artist_list.append(_xlabel)
+                        if self.xlabpos[ii] is not None:
+                            position2 = self.xlabpos[ii][0]
+                            align2 = self.xlabpos[ii][1]
+                    label3 = ax1.set_xlabel(
+                        self.xlabel[ii], labelpad = self.labelpad[0],
+                        multialignment = 'center', x = position2, ha = align2)
+                    artist1.append(label3)
 
             if hasattr(self, 'ylabel'):
-                if self.ylabel[iplot] == '':
-                    _yticklabels = []
-                    for _yticklabel in _plot.get_yticklabels():
-                        _yticklabels.append('')
-                    _plot.set_yticklabels(_yticklabels)
+                if self.ylabel[ii] == '':
+                    label2 = []
+                    for label3 in ax1.get_yticklabels():
+                        label2.append('')
+                    ax1.set_yticklabels(label2)
                 else:
-                    _yposition = 0.5
-                    _yalign = 'center'
+                    position2 = 0.5
+                    align2 = 'center'
                     if hasattr(self, 'ylabpos'):
-                        if self.ylabpos[iplot] is not None:
-                            _yposition = self.ylabpos[iplot][0]
-                            _yalign = self.ylabpos[iplot][1]
-                    _ylabel = _plot.set_ylabel(
-                            self.ylabel[iplot], labelpad = self.labelpad[1],
-                            multialignment = 'center', y = _yposition,
-                            ha = _yalign)
-                    _artist_list.append(_ylabel)
+                        if self.ylabpos[ii] is not None:
+                            position2 = self.ylabpos[ii][0]
+                            align2 = self.ylabpos[ii][1]
+                    label3 = ax1.set_ylabel(
+                        self.ylabel[ii], labelpad = self.labelpad[1],
+                        multialignment = 'center', y = position2, ha = align2)
+                    artist1.append(label3)
 
             if hasattr(self, 'note'):
-                for item in self.note[iplot]:
-                    _xposition = item[0]
-                    _yposition = item[1]
-                    _xalign = item[2]
-                    _yalign = item[3]
-                    _text = item[4]
-                    _color = item[5]
-                    _fontscale = item[6]
-                    _note = _plot.text(
-                            _xposition, _yposition, _text,
-                            horizontalalignment = _xalign,
-                            verticalalignment = _yalign,
-                            transform = _plot.transAxes,
-                            color = _color,
-                            fontsize = _fontscale * self.fontsize)
-                    _artist_list.append(_note)
+                for item in self.note[ii]:
+                    position1 = item[0]
+                    position2 = item[1]
+                    align1 = item[2]
+                    align2 = item[3]
+                    text1 = item[4]
+                    color1 = item[5]
+                    fontscale1 = item[6]
+                    text2 = ax1.text(
+                        position1, position2, text1,
+                        horizontalalignment = align1,
+                        verticalalignment = align2,
+                        transform = ax1.transAxes, color = color1,
+                        fontsize = fontscale1 * self.fontsize)
+                    artist1.append(text2)
 
         if hasattr(self, 'title'):
             for item in self.title:
-                _xposition = item[0]
-                _yposition = item[1]
-                _xalign = item[2]
-                _yalign = item[3]
-                _text = item[4]
-                _color = item[5]
-                _fontscale = item[6]
-                _title = _figure.text(
-                        _xposition, _yposition, _text,
-                        horizontalalignment = _xalign,
-                        verticalalignment = _yalign,
-                        transform = _figure.transFigure,
-                        color = _color,
-                        fontsize = _fontscale * self.fontsize)
-            _artist_list.append(_title)
+                position1 = item[0]
+                position2 = item[1]
+                align1 = item[2]
+                align2 = item[3]
+                text1 = item[4]
+                color1 = item[5]
+                fontscale1 = item[6]
+                text2 = fig1.text(
+                    position1, position2, text1, horizontalalignment = align1,
+                    verticalalignment = align2, transform = fig1.transFigure,
+                    color = color1, fontsize = fontscale1 * self.fontsize)
+            artist1.append(text2)
 
-        _grid.tight_layout(_figure, h_pad = self.gridpad[1],
+        gs1.tight_layout(fig1, h_pad = self.gridpad[1],
                 w_pad = self.gridpad[2])
 
-        _figure.savefig(
-                filename, format = fileformat, bbox_inches = 'tight',
-                bbox_extra_artists = _artist_list)
+        fig1.savefig(
+            filename, format = fileformat, bbox_inches = 'tight',
+            bbox_extra_artists = artist1)
         plt.close()
 
     def __init__(

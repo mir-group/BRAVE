@@ -406,8 +406,8 @@ class Transport(Cell):
             slice = np.zeros(self.ntemp, float)
             numelec = self.numelec
             for itemp in range(self.ntemp):
-                _paramvalue = paramvalue if type(
-                        paramvalue) is float else paramvalue[itemp]
+                _paramvalue = paramvalue if isinstance(
+                        paramvalue, float) else paramvalue[itemp]
                 slice[itemp] = np.interp(_paramvalue, numelec[
                         :, itemp], propvalue[:, itemp])
         else:
