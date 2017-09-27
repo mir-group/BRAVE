@@ -690,8 +690,8 @@ class File(object):
 
     def _write_file_internal(self, level, filenames):
         s0 = '{0[0]:f} {0[1]:f} {0[2]:f}\n'
-        s1 = '{0[0][0]:2d} {0[0][1]:2d} {0[0][2]:2d}  {0[1][0]:2d} {0[1][1]:2d}'
-        s1 += ' {0[1][2]:2d}  {0[2][0]:2d} {0[2][1]:2d} {0[2][2]:2d}\n'
+        s1 = ('{0[0][0]:2d} {0[0][1]:2d} {0[0][2]:2d}  {0[1][0]:2d} {0[1][1]:'
+            '2d} {0[1][2]:2d}  {0[2][0]:2d} {0[2][1]:2d} {0[2][2]:2d}\n')
         s2 = '{0:f}\n'
         s3 = 'energy {0:d} {1:d} {2:d}\n'
 
@@ -995,16 +995,16 @@ class File(object):
 
                 s0 = '# Format of DOS\n'
                 s1 = '# iskip (not presently used) idebug setgap shiftgap\n'
-                s2 = '# Fermilevel (Ry), energygrid, energy span around'
-                s2 += ' Fermilevel, number of electrons\n'
-                s3 = '# CALC (calculate expansion coeff), NOCALC read from'
-                s3 += ' file\n'
+                s2 = ('# Fermilevel (Ry), energygrid, energy span around '
+                    'Fermilevel, number of electrons\n')
+                s3 = ('# CALC (calculate expansion coeff), NOCALC read from '
+                    'file\n')
                 s4 = '# lpfac, number of latt-points per k-point\n'
                 s5 = '# run mode (only BOLTZ is supported)\n'
                 s6 = '# (efcut) energy range of chemical potential\n'
                 s7 = '# Tmax, temperature grid\n'
-                s8 = '# energyrange of bands given individual DOS output'
-                s8 += ' sig_xxx and dos_xxx (xxx is band number)\n'
+                s8 = ('# energyrange of bands given individual DOS output '
+                    'sig_xxx and dos_xxx (xxx is band number)\n')
 
                 ff.write('GENE      {0:s}'.format(s0).encode())
                 ff.write('0 0 0 0.0 {0:s}'.format(s1).encode())
