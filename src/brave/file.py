@@ -3,6 +3,7 @@
 import sys
 import math
 import fractions
+import io
 import os
 
 import numpy as np
@@ -33,11 +34,12 @@ class File(object):
 
                 if level > 0:
                     if b'prefix' in line:
-                        self.prefix = line[line.find(b'=')+1:].strip().decode()
+                        self.prefix = line[line.find(b'=') + 1:].strip().decode(
+                            )
                     elif b'aunit' in line:
-                        self.aunit = line[line.find(b'=')+1:].strip().decode()
+                        self.aunit = line[line.find(b'=') + 1:].strip().decode()
                     elif b'alat' in line:
-                        self.alat = float(line[line.find(b'=')+1:].strip())
+                        self.alat = float(line[line.find(b'=') + 1:].strip())
                     elif b'avec' in line:
                         self.avec = np.genfromtxt(
                             ff, dtype = float, max_rows = 3)
@@ -45,13 +47,13 @@ class File(object):
                         self.bvec = np.genfromtxt(
                             ff, dtype = float, max_rows = 3)
                     elif b'avol' in line:
-                        self.avol = float(line[line.find(b'=')+1:].strip())
+                        self.avol = float(line[line.find(b'=') + 1:].strip())
                     elif b'bvol' in line:
-                        self.bvol = float(line[line.find(b'=')+1:].strip())
+                        self.bvol = float(line[line.find(b'=') + 1:].strip())
                     elif b'natom' in line:
-                        self.natom = int(line[line.find(b'=')+1:].strip())
+                        self.natom = int(line[line.find(b'=') + 1:].strip())
                     elif b'nelec' in line:
-                        self.nelec = float(line[line.find(b'=')+1:].strip())
+                        self.nelec = float(line[line.find(b'=') + 1:].strip())
                     elif b'sym' in line:
                         nsym = int(line.split()[1])
                         self.rot = np.genfromtxt(
@@ -60,7 +62,7 @@ class File(object):
 
                 if level > 1:
                     if b'kunit' in line:
-                        self.kunit = line[line.find(b'=')+1:].strip().decode()
+                        self.kunit = line[line.find(b'=') + 1:].strip().decode()
                     elif b'kpoint' in line:
                         nkpoint = int(line.split()[1])
                         self.kpoint = np.genfromtxt(
@@ -88,20 +90,20 @@ class File(object):
 
                 if level > 2:
                     if b'eunit' in line:
-                        self.eunit = line[line.find(b'=')+1:].strip().decode()
+                        self.eunit = line[line.find(b'=') + 1:].strip().decode()
                     elif b'energy' in line:
-                        tt = line.split()
-                        nkpoint = int(tt[1])
-                        nband = int(tt[2])
-                        nspin = int(tt[3])
+                        words = line.split()
+                        nkpoint = int(words[1])
+                        nband = int(words[2])
+                        nspin = int(words[3])
                         self.energy = np.fromfile(
                             ff, dtype = float, count = (
                             nkpoint * nband * nspin), sep = ' ').reshape(
                             nkpoint, nband, nspin)
                     elif b'efermi' in line:
-                        self.efermi = float(line[line.find(b'=')+1:].strip())
+                        self.efermi = float(line[line.find(b'=') + 1:].strip())
                     elif b'vref' in line:
-                        self.vref = float(line[line.find(b'=')+1:].strip())
+                        self.vref = float(line[line.find(b'=') + 1:].strip())
 
     def _read_file_pw_out(self, level, filenames):
         if level > 1:
@@ -133,15 +135,17 @@ class File(object):
                     elif b'Sym. Ops.' in line or b'Sym.Ops.' in line:
                         nsym = int(line.split()[0])
                     elif b'isym =  1' in line:
-                        skip = ff.readline()
-                        buf = b''
+                        line = ff.readline()
+                        buf = io.BytesIO()
                         for jj in range(nsym):
-                            for kk in range(3):
-                                buf += ff.readline()[19:53]
-                            for kk in range(8):
-                                skip = ff.readline()
-                        self.rot = np.fromstring(
-                            buf, dtype = int, sep = ' ').reshape(nsym, 3, 3)
+                            for kk in range(11):
+                                line = ff.readline()
+                                if kk < 3:
+                                    buf.write(line[19:53])
+                        buf.seek(0)
+                        self.rot = np.loadtxt(buf, dtype = int).reshape(
+                            nsym, 3, 3)
+                        buf.close()
 
                 if level > 1:
                     if b'magnetic' in line:
@@ -168,513 +172,421 @@ class File(object):
                     elif b'the Fermi energy is' in line:
                         self.efermi = float(line.split()[4])
                     elif b'highest occupied, lowest unoccupied level' in line:
-                        tt = line.split()
-                        self.efermi = (float(tt[6]) + float(tt[7])) / 2.0
+                        words = line.split()
+                        self.efermi = (float(words[6]) + float(words[7])) / 2.0
 
             if level > 2:
                 self.energy = energy
 
     def _read_file_wannier_in(self, level, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
         if level > 1:
             nkpersect = 100
-        for ii, line in enumerate(contents[0]):
-            lline = line.lower()
-            if level > 0:
-                if 'begin' in lline and 'unit_cell_cart' in lline:
-                    iaunit = ii + 1
-            if level > 1:
-                if 'bands_num_points' in lline:
-                    nkpersect = int(line.split()[2])
-                elif 'begin' in lline and 'kpoint_path' in lline:
-                    istart = ii
-                elif 'end' in lline and 'kpoint_path' in lline:
-                    iend = ii
 
-        if level > 0:
-            if contents[0][iaunit].split()[0].lower() == 'bohr':
-                aunit = 'bohr'
-            else:
-                aunit = 'angstrom'
+        with open(filenames[0], 'rb') as ff:
+            for line in ff:
+                if level > 0:
+                    if b'Unit_Cell_Cart' in line:
+                        self.aunit = ff.readline().strip().lower().decode()
+                        self.avec = np.genfromtxt(
+                            ff, dtype = float, max_rows = 3)
+                        self.alat = 1.0
 
-            avec = []
-            for ii in range(3):
-                words = contents[0][iaunit + 1 + ii].split()
-                avec.append([])
-                for word in words:
-                    avec[ii].append(float(word))
+                if level > 1:
+                    if b'bands_num_points' in line:
+                        nkpersect = int(line.split()[2])
+                    elif b'kpoint_path' in line:
+                        buf = io.BytesIO()
+                        for line in ff:
+                            if b'kpoint_path' in line:
+                                break
+                            buf.write(line)
+                        buf.seek(0)
+                        crd = np.loadtxt(buf, dtype = float, usecols = (
+                            0, 1, 2, 4, 5, 6))
+                        buf.seek(0)
+                        lbl = np.loadtxt(buf, dtype = 'S20', usecols = (3, 7))
+                        buf.close()
 
-            self.aunit, self.alat, self.avec = aunit, 1, avec
-            self.calc_bvec()
+                        if lbl[1:, 0] != lbl[:-1, 1] or crd[1:, 0:3] != crd[
+                                :-1, 3:6]:
+                            raise ValueError(kpath)
 
-        if level > 1:
-            nkpath = iend - istart
-
-            k1label = []
-            k1coord = []
-            k2label = []
-            k2coord = []
-            for ii in range(nkpath - 1):
-                words = contents[0][istart + 1 + ii].split()
-                k1label.append(words[0])
-                k1coord.append([])
-                k2label.append(words[4])
-                k2coord.append([])
-                for jj in range(3):
-                    k1coord[ii].append(float(words[1 + jj]))
-                    k2coord[ii].append(float(words[5 + jj]))
-
-            if k1label[1:] != k2label[:-1] or k1coord[1:] != k2coord[:-1]:
-                raise ValueError(kpath)
-
-            kpath = k1coord + [k2coord[nkpath - 1]]
-            kindex = [nkpersect] + [0 for ii in range(nkpath - 1)]
-            klabel = k1label + [k2label[nkpath - 1]]
-
-            self.kunit, self.kpath, self.kindex, self.klabel = (
-                    'crystal', kpath, kindex, klabel)
+                        self.kpath = np.concatenate((crd[:, 0:3], crd[
+                            -1:, 3:6]))
+                        self.klabel = np.concatenate((lbl[:, 0], lbl[
+                            -1:, 1])).tolist()
+                        self.kindex = [nkpersect] + [0 for ii in range(
+                            crd.shape[0])]
+                        self.kunit = 'crystal'
 
     def _read_file_vasp_out(self, level, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
-        if level > 0:
-            avec = []
         if level > 2:
-            nspin = 1
-            idxbnd = []
-            iefermi = 0
-        for ii, line in enumerate(contents[0]):
-            if level > 0:
-                if 'SYSTEM =' in line:
-                    prefix = line.split()[2]
+            nspin, kk, ll = 1, 0, 0
 
-                if 'ALAT       =' in line:
-                    alat = float(line.split()[2])
+        with open(filenames[0], 'rb') as ff:
+            for line in ff:
+                if level > 0:
+                    if b'SYSTEM =' in line:
+                        self.prefix = line[line.find(b'=') + 1:].strip().decode(
+                            )
+                    elif b'ALAT' in line:
+                        self.alat = float(line[line.find(b'=') + 1:].strip())
+                        self.aunit = 'angstrom'
+                    elif b'Lattice vectors:' in line:
+                        line = ff.readline()
+                        buf = io.BytesIO()
+                        for jj in range(3):
+                            line = ff.readline()
+                            buf.write(line[line.find(b'(') + 1:line.find(
+                                b')')] + b',')
+                        buf.seek(0)
+                        self.avec = np.loadtxt(
+                            buf, dtype = float, delimiter = b',').reshape(
+                            3, 3) / self.alat
+                        buf.close()
 
-                elif 'A1 = (' in line or 'A2 = (' in line or 'A3 = (' in line:
-                    words = line.replace(',', ' ').replace('(', ' ').replace(
-                            ')', ' ').split()
-                    avec.append((
-                            float(words[2]), float(words[3]), float(words[4])))
-            if level > 1:
-                if 'k-points           NKPTS =' in line:
-                    nkpoint = int(line.split()[3])
-
-                elif 'k-points in reciprocal lattice and weights:' in line:
-                    idxkpt = ii + 1
-
-            if level > 2:
-                if 'k-points NKPTS =' in line and (
-                        'number of bands NBANDS=' in line):
-                    nkpoint = int(line.split()[3])
-                    if nkpoint != self.nkpoint:
-                        raise ValueError(nkpoint)
-                    nband = int(line.split()[14])
-
-                elif 'ISPIN' in line:
-                    nspin = int(line.split()[2])
-
-                elif 'band No.  band energies occupation' in line:
-                    idxbnd.append(ii + 1)
-
-                elif 'E-fermi :' in line:
-                    efermi = float(line.split()[2])
-                    iefermi += 1
-
-        if level > 0:
-            self.prefix, self.aunit, self.alat, self.avec = (
-                    prefix, 'angstrom', 1, avec)
-            self.calc_bvec()
-            self.set_alat(alat)
-
-        if level > 1:
-            kpoint = np.empty((nkpoint, 3), float)
-            for ikpoint in range(nkpoint):
-                words = contents[0][idxkpt + ikpoint].split()
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[jj])
-
-            self.kunit, self.kpoint = 'crystal', kpoint
-
-        if level > 2:
-            energy = np.empty((nkpoint, nband, nspin), float)
-            ii = 0
-            for ispin in range(nspin):
-                for ikpoint in range(nkpoint):
-                    for iband in range(nband):
-                        words = contents[0][idxbnd[ii] + iband].split()
-                        energy[ikpoint, iband, ispin] = float(words[1])
-                    ii += 1
-
-            self.eunit, self.energy = 'ev', energy
-            if iefermi != 0:
-                self.efermi = efermi
-
-    def _read_file_lapw_out(self, level, filenames, lapwkunit):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
-        if level > 0:
-            avec = []
-            prefix = contents[0][1].split()[0]
-        if level > 1:
-            idxkpt = []
-        if level > 2:
-            nspin = len(contents)
-            idxbnd1 = []
-            idxbnd2 = []
-        for ispin in range(nspin):
-            if level > 2:
-                idxbnd1.append([])
-                idxbnd2.append([])
-            for ii, line in enumerate(contents[ispin]):
-                if level > 0 and ispin == 0:
-                    if 'TYPE LATTICE ASSUMED' in line:
-                        lattice = line.split()[1]
-
-                    elif 'LATTICE CONSTANTS ARE:' in line:
+                if level > 1:
+                    if b'Dimension of arrays:' in line:
+                        line = ff.readline()
                         words = line.split()
-                        apar = float(words[3])
-                        bpar = float(words[4])
-                        cpar = float(words[5])
-
-                        if len(words) == 6:
-                            alpha = 90.0 * math.pi / 180.0
-                            beta = 90.0 * math.pi / 180.0
-                            gamma = 90.0 * math.pi / 180.0
-                        else:
-                            alpha = float(words[6]) * math.pi / 180.0
-                            beta = float(words[7]) * math.pi / 180.0
-                            gamma = float(words[8]) * math.pi / 180.0
-
-                if level > 1 and ispin == 0:
-                    if '     K=' in line:
-                        idxkpt.append(ii)
+                        nkpoint = int(words[words.index(b'NKPTS') + 2])
+                        nband = int(words[words.index(b'NBANDS=') + 1])
+                    elif b'k-points in reciprocal lattice and weights':
+                        dummy = np.genfromtxt(
+                            ff, dtype = float, max_rows = nkpoint)
+                        self.kpoint, self.kweight = dummy[:, :-1], dummy[:, 3]
+                        self.kunit = 'crystal'
 
                 if level > 2:
-                    if 'EIGENVALUES ARE:' in line:
-                        idxbnd1[ispin].append(ii + 1)
-                    elif 'EIGENVALUES BELOW THE ENERGY' in line:
-                        idxbnd2[ispin].append(ii)
+                    if 'ISPIN' in line:
+                        nspin = int(line.split()[2])
+                    elif 'E-fermi :' in line:
+                        self.efermi = float(line.split()[2])
+                    elif 'band No.  band energies     occupation' in line:
+                        if kk == 0 and ll == 0:
+                            energy = np.empty((nkpoint, nband, nspin), float)
+                        energy[kk, :, ll] = np.genfromtxt(
+                            ff, dtype = float, usecols = 1, max_rows = nband)
+                        kk += 1
+                        if kk == nkpoint:
+                            kk = 0
+                            ll += 1
+                        if ll == nspin:
+                            self.energy, self.eunit = energy, 'ev'
 
+    def _calc_lapw_avec(lattype, apar, bpar, cpar, alpha, beta, gamma):
+
+        if lattype[0:1] == b'P':
+            phi = math.acos((math.cos(gamma) - math.cos(alpha) * math.cos(
+                    beta)) / (math.sin(alpha) * math.sin(beta)))
+            avec = np.array([[math.sin(beta) * math.sin(phi) * apar, math.sin(
+                beta) * math.cos(phi) * apar, math.cos(beta) * apar], [
+                0, math.sin(alpha) * bpar, math.cos(alpha) * bpar], [
+                0, 0, cpar]], float)
+
+        elif lattype[0:1] == b'H':
+            avec = np.array([[0.5 * math.sqrt(3) * apar, -0.5 * apar, 0], [
+                0, apar, 0], [0, 0, cpar]], float)
+
+        elif lattype[0:1] in [b'T', b'R']:
+            avec = np.array([[apar / (2 * math.sqrt(3)), -apar / 2, cpar / 3], [
+                apar / (2 * math.sqrt(3)), apar / 2, cpar / 3], [
+                -apar / math.sqrt(3), 0, cpar / 3]], float)
+
+        elif lattype[0:1] == b'F':
+            avec = np.array([[0, bpar / 2, cpar / 2], [apar / 2, 0, cpar / 2], [
+                apar / 2, bpar / 2, 0]], float)
+
+        elif lattype[0:1] == b'B':
+            avec = np.array([[-apar / 2, bpar / 2, cpar / 2], [
+                apar / 2, -bpar / 2, cpar / 2], [
+                apar / 2, bpar / 2, -cpar / 2]], float)
+
+        elif lattype[0:3] == b'CXY' and abs(
+                gamma - math.pi / 2) < common.EPS12 and (abs(
+                alpha - math.pi / 2) < common.EPS12 or abs(
+                beta - math.pi / 2) < common.EPS12):
+            avec = np.array([[math.sin(beta) * apar / 2, -math.sin(
+                alpha) * bpar / 2, math.cos(beta) * apar / 2 - math.cos(
+                alpha) * bpar / 2], [math.sin(beta) * apar / 2, math.sin(
+                alpha) * bpar / 2, math.cos(beta) * apar / 2 + math.cos(
+                alpha) * bpar / 2], [0, 0, cpar]], float)
+
+        elif lattype[0:3] == b'CYZ' and abs(
+                alpha - math.pi / 2) < common.EPS12 and (abs(
+                beta - math.pi / 2) < common.EPS12 or abs(
+                gamma - math.pi / 2) < common.EPS12):
+            avec = np.array([[math.sin(beta) * math.sin(gamma) * apar, math.sin(
+                beta) * math.cos(gamma) * apar, math.cos(beta) * apar], [
+                0, bpar, -cpar], [0, bpar, cpar]], float)
+
+        elif lattype[0:3] == b'CXZ' and abs(
+                beta - math.pi / 2) < common.EPS12 and (abs(
+                alpha - math.pi / 2) < common.EPS12 or abs(
+                gamma - math.pi / 2) < common.EPS12):
+            avec = np.array([[math.sin(gamma) * apar / 2, math.cos(
+                gamma) * apar / 2, -cpar / 2], [0, math.sin(
+                alpha) * bpar, math.cos(alpha) * bpar], [math.sin(
+                gamma) * apar / 2, math.cos(
+                gamma) * apar / 2, cpar / 2]], float)
+
+        else:
+            raise ValueError(lattype)
+
+        return avec / apar
+
+    def _read_file_lapw_out(self, level, filenames, lapwkunit):
         if level > 0:
-            if lattice[0:1] == 'P':
-                phi = math.acos((math.cos(gamma) - math.cos(alpha) * math.cos(
-                        beta)) / (math.sin(alpha) * math.sin(beta)))
-                avec.append((math.sin(beta) * math.sin(phi) * apar, math.sin(
-                        beta) * math.cos(phi) * apar, math.cos(beta) * apar))
-                avec.append((0.0, math.sin(alpha) * bpar, math.cos(
-                        alpha) * bpar))
-                avec.append((0.0, 0.0, cpar))
+            flag1, flag2 = True, True
+        if level > 1:
+            klist = []
+        if level > 2:
+            nspin = len(filenames)
+            nband = sys.maxsize
+            elist = []
 
-            elif lattice[0:1] == 'H':
-                avec.append((0.5 * math.sqrt(3.0) * apar, -0.5 * apar, 0.0))
-                avec.append((0.0, apar, 0.0))
-                avec.append((0.0, 0.0, cpar))
+        for ii, filename in enumerate(finenames):
+            if level > 2:
+                elist.append([])
+            with open(filename, 'rb') as ff:
+                for jj, line in enumerate(ff):
+                    if ii == 0:
+                        if level > 0:
+                            if jj == 1:
+                                self.prefix = line.strip().decode()
+                            if flag1 and b'TYPE LATTICE ASSUMED' in line:
+                                flag1 = False
+                                lattype = line.split()[1]
+                            elif flag2 and b'LATTICE CONSTANTS ARE:' in line:
+                                flag2 = False
+                                words = line.split()
+                                apar = float(words[3])
+                                bpar = float(words[4])
+                                cpar = float(words[5])
 
-            elif lattice[0:1] == 'T' or lattice[0:1] == 'R':
-                avec.append(((0.5 / math.sqrt(3.0)) * apar, -0.5 * apar, (
-                        1.0 / 3.0) * cpar))
-                avec.append(((0.5 / math.sqrt(3.0)) * apar, 0.5 * apar, (
-                        1.0 / 3.0) * cpar))
-                avec.append(((-1.0 / math.sqrt(3.0)) * apar, 0.0, (
-                        1.0 / 3.0) * cpar))
+                                if len(words) == 6:
+                                    alpha = math.pi / 2
+                                    beta = math.pi / 2
+                                    gamma = math.pi / 2
+                                else:
+                                    alpha = float(words[6]) * math.pi / 180.0
+                                    beta = float(words[7]) * math.pi / 180.0
+                                    gamma = float(words[8]) * math.pi / 180.0
 
-            elif lattice[0:1] == 'F':
-                avec.append((0.0, 0.5 * bpar, 0.5 * cpar))
-                avec.append((0.5 * apar, 0.0, 0.5 * cpar))
-                avec.append((0.5 * apar, 0.5 * bpar, 0.0))
+                                self.avec = _calc_lapw_avec(
+                                    lattype, apar, bpar, cpar, alpha, beta,
+                                    gamma)
+                                self.alat = apar
+                                self.aunit = 'bohr'
 
-            elif lattice[0:1] == 'B':
-                avec.append((-0.5 * apar, 0.5 * bpar, 0.5 * cpar))
-                avec.append((0.5 * apar, -0.5 * bpar, 0.5 * cpar))
-                avec.append((0.5 * apar, 0.5 * bpar, -0.5 * cpar))
+                        if level > 1:
+                            if '     K=' in line:
+                                dummy = np.fromfile(
+                                    ff, dtype = float, count = 3, sep = ' ')
+                                klist.append(dummy)
 
-            elif lattice[0:3] == 'CXY' and abs(
-                    gamma - 0.5 * math.pi) < common.EPS12 and (abs(
-                    alpha - 0.5 * math.pi) < common.EPS12 or abs(
-                    beta - 0.5 * math.pi) < common.EPS12):
-                avec.append((0.5 * math.sin(beta) * apar, -0.5 * math.sin(
-                        alpha) * bpar, 0.5 * math.cos(
-                        beta) * apar - 0.5 * math.cos(alpha) * bpar))
-                avec.append((0.5 * math.sin(beta) * apar, 0.5 * math.sin(
-                        alpha) * bpar, 0.5 * math.cos(
-                        beta) * apar + 0.5 * math.cos(alpha) * bpar))
-                avec.append((0.0, 0.0, cpar))
-
-            elif lattice[0:3] == 'CYZ' and abs(
-                    alpha - 0.5 * math.pi) < common.EPS12 and (abs(
-                    beta - 0.5 * math.pi) < common.EPS12 or abs(
-                    gamma - 0.5 * math.pi) < common.EPS12):
-                avec.append((math.sin(beta) * math.sin(gamma) * apar, math.sin(
-                        beta) * math.cos(gamma) * apar, math.cos(beta) * apar))
-                avec.append((0.0, bpar, -cpar))
-                avec.append((0.0, bpar, cpar))
-
-            elif lattice[0:3] == 'CXZ' and abs(
-                    beta - 0.5 * math.pi) < common.EPS12 and (abs(
-                    alpha - 0.5 * math.pi) < common.EPS12 or abs(
-                    gamma - 0.5 * math.pi) < common.EPS12):
-                avec.append((0.5 * math.sin(gamma) * apar, 0.5 * math.cos(
-                        gamma) * apar, -0.5 * cpar))
-                avec.append((0.0, math.sin(alpha) * bpar, math.cos(
-                        alpha) * bpar))
-                avec.append((0.5 * math.sin(gamma) * apar, 0.5 * math.cos(
-                        gamma) * apar, 0.5 * cpar))
-
-            else:
-                raise ValueError(lattice)
-
-            self.prefix, self.aunit, self.alat, self.avec, self.kunit = (
-                    prefix, 'bohr', 1, avec, lapwkunit)
-            self.calc_bvec()
-            self.set_alat(apar)
+                    if level > 2:
+                        if 'EIGENVALUES ARE:' in line:
+                            buf = io.BytesIO()
+                            for line in ff:
+                                if b'EIGENVALUES BELOW THE ENERGY' in line:
+                                    break
+                                buf.write(line.strip() + b' ')
+                            buf.seek(0)
+                            dummy = np.loadtxt(buf, dtype = float)
+                            buf.close()
+                            elist[ii].append(dummy)
+                            if dummy.shape[0] < nband:
+                                nband = dummy.shape[0]
 
         if level > 1:
-            nkpoint = len(idxkpt)
-
-            kpoint = np.empty((nkpoint, 3), float)
-            for ikpoint in range(nkpoint):
-                words = contents[0][idxkpt[ikpoint]].split()
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[1 + jj])
-
-            self.kpoint = kpoint
+            self.kpoint = np.array(klist, float)
+            self.kunit = lapwkunit
 
         if level > 2:
-            nband = sys.maxsize
-            for ispin in range(nspin):
-                for ikpoint in range(nkpoint):
-                    iband = 0
-                    for irow in range(
-                            idxbnd1[ispin][ikpoint], idxbnd2[ispin][ikpoint]):
-                        iband += len(contents[ispin][irow].split())
-                    if iband < nband:
-                        nband = iband
+            energy = np.empty((nkpoint, nband, nspin), float)
+            for ii in range(nspin):
+                for jj in range(nkpoint):
+                    energy[jj, :, ii] = elist[ii][jj]
 
-            energy = np.zeros((nkpoint, nband, nspin), float)
-            for ispin in range(nspin):
-                for ikpoint in range(nkpoint):
-                    iband = 0
-                    for irow in range(
-                            idxbnd1[ispin][ikpoint], idxbnd2[ispin][ikpoint]):
-                        words = contents[ispin][irow].split()
-                        for word in words:
-                            if iband < nband:
-                                energy[ikpoint, iband, ispin] = float(word)
-                            iband += 1
-
-            self.eunit, self.energy = 'rydberg', energy
+            self.energy = energy
+            self.eunit = 'rydberg'
 
     def _read_file_bands_out(self, level, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
+        if level > 2:
+            nspin = len(filenames)
+
+        for ii, filename in enumerate(finenames):
+            with open(filename, 'rb') as ff:
+                line = ff.readline()
+                if ii == 0:
+                    words = line.split()
+                    if level > 1:
+                        nkpoint = int(words[4])
+                        kpoint = np.empty((nkpoint, 3), float)
+                    if level > 2:
+                        nband = int(words[2][:-1])
+                        energy = np.empty((nkpoint, nband, nspin), float)
+
+                for jj in range(nkpoint):
+                    if ii == 0 and level > 1:
+                        kpoint[jj, :] = np.fromfile(
+                            ff, dtype = float, count = 3, sep = ' ')
+                    dummy = np.fromfile(
+                        ff, dtype = float, count = nband, sep = ' ')
+                    if level > 2:
+                        energy[jj, :, ii] = dummy
 
         if level > 1:
-            nkpoint = int(contents[0][0].split()[4])
-            nband = int(contents[0][0].split()[2].replace(',', ''))
-            ncol = 10
-            nrow = nband // ncol
-            if nband % ncol != 0:
-                nrow += 1
-
-            kpoint = np.empty((nkpoint, 3), float)
-            for ikpoint in range(nkpoint):
-                words = contents[0][ikpoint * (nrow + 1) + 1].split()
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[jj])
-
-            self.kunit, self.kpoint = 'cartesian', kpoint
+            self.kpoint = kpoint
+            self.kunit = 'cartesian'
 
         if level > 2:
-            nspin = len(contents)
-
-            energy = np.empty((nkpoint, nband, nspin), float)
-            for ispin in range(nspin):
-                for ikpoint in range(nkpoint):
-                    iband = 0
-                    for irow in range(nrow):
-                        words = contents[ispin][
-                                ikpoint * (nrow + 1) + irow + 2].split()
-                        for word in words:
-                            energy[ikpoint, iband, ispin] = float(word)
-                            iband += 1
-
-            self.eunit, self.energy = 'ev', energy
+            self.energy = energy
+            self.eunit = 'ev'
 
     def _read_file_matdyn_out(self, level, filenames):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
+        if level > 1:
+            klist = []
+            ii = -1
+        if level > 2:
+            elist = []
+
+        with open(filenames[0], 'rb') as ff:
+            for line in ff:
+                if level > 1:
+                    if b' q =' in line:
+                        dummy = np.fromstring(line[
+                            4:], dtype = float, count = 3, sep = ' ')
+                        klist.append(dummy)
+                        ii += 1
+                        elist.append([])
+
+                if level > 2:
+                    if any(ss in line for ss in [b'freq', b'omega']):
+                        words = line.split()
+                        elist[ii].append(float(words[7]))
 
         if level > 1:
-            idxkpt = []
-        if level > 2:
-            idxbnd = []
-        ii = 0
-        for line in contents[0]:
-            if level > 1:
-                if ' q =' in line:
-                    idxkpt.append(ii)
-            if level > 2:
-                if 'freq' in line or 'omega' in line:
-                    idxbnd.append(ii)
-
-        if level > 1:
-            nkpoint = len(idxkpt)
-            kpoint = np.empty((nkpoint, 3), float)
-            for ikpoint in range(nkpoint):
-                words = contents[0][idxkpt[ikpoint]].split()
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[jj + 2])
-
-            self.kunit, self.kpoint = 'cartesian', kpoint
+            self.kpoint = np.array(klist, float)
+            self.kunit = 'cartesian'
 
         if level > 2:
-            nband = len(idxbnd) // nkpoint
             nspin = 1
-
-            energy = np.empty((nkpoint, nband, nspin), float)
-            ispin = 0
-            for ikpoint in range(nkpoint):
-                for iband in range(nband):
-                    line = contents[0][idxbnd[ikpoint*nband+iband]]
-                    idx1 = len(line)-line[::-1].find('=')
-                    idx2 = len(line)-line[::-1].find('[')
-                    energy[ikpoint, iband, ispin] = float(line[idx1:idx2 - 1])
-
-            self.eunit, self.energy = 'cm-1', energy
+            self.energy = np.array(elist, float).reshape(nkpoint, nband, nspin)
+            self.eunit = 'cm-1'
 
     def _read_file_inteqp_out(self, level, filenames, etype):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
-        if level > 1:
-            oldaunit = self.aunit
-            self.set_aunit('bohr')
-            kscale = self.alat / (2.0 * math.pi)
+        if etype is None:
+            etype = 'eqp'
 
         if level > 2:
-            if etype is None:
-                etype = 'eqp'
             dd = {'emf': 5, 'eqp': 6}
             eindex = dd[etype]
 
         if level > 1:
-            nhead = 2
-            ndata = len(contents[0]) - nhead
-            nspin = int(contents[0][nhead + ndata - 1].split()[0])
-            nfirst = int(contents[0][nhead].split()[1])
-            nband = int(contents[0][nhead + ndata - 1].split()[1])
-            nkpoint = ndata // ((nband - nfirst + 1) * nspin)
+            data = np.loadtxt(filenames[
+                0], dtype = float, skiprows = 2, unpack = True)
+            nspin = int(round(data[0, -1]))
+            nband_exclude = int(round(data[1, 0])) - 1
+            nband = int(round(data[1, -1]))
+            nkpoint = data.shape[1] / nspin / (nband - nband_exclude)
 
-            kpoint = np.empty((nkpoint, 3), float)
-            for ikpoint in range(nkpoint):
-                words = contents[0][nhead + ikpoint][14:50].split()
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[jj]) * kscale
-
-            self.kunit, self.kpoint = 'cartesian', kpoint
+            oldaunit = self.aunit
+            self.set_aunit('bohr')
+            kscale = self.alat / (2.0 * math.pi)
             self.set_aunit(oldaunit)
 
-        if level > 2:
-            energy = np.empty((nkpoint, nband, nspin), float)
-            energy[:, 0:nfirst - 1, :] = -common.INF12
-            ii = nhead
-            for ispin in range(nspin):
-                for iband in range(nfirst - 1, nband):
-                    for ikpoint in range(nkpoint):
-                        energy[ikpoint, iband, ispin] = float(
-                                contents[ii].split()[eindex])
-                        ii += 1
+            kpoint = data[2:5, 0:nkpoint] * kscale
+            self.kpoint = kpoint
+            self.kunit = 'cartesian'
 
-            self.eunit, self.energy = 'ev', energy
+        if level > 2:
+            if nband_exclude == 0:
+                energy = data[:, eindex].reshape(
+                    nspin, nband, nkpoint).swapaxes(0, 2)
+            else:
+                energy = np.empty((nkpoint, nband, nspin), float)
+                energy[:, 0:nband_exclude, :] = -common.INF12
+                kk = 0
+                for ii in range(nspin):
+                    for jj in range(nband_exclude, nband):
+                        energy[:, jj, ii] = data[kk:kk + nkpoint, eindex]
+                        kk += nkpoint
+
+            self.energy = energy
+            self.eunit = 'ev'
 
     def _read_file_sigma_out(self, level, filenames, etype):
-        contents = []
-        for filename in filenames:
-            with open(filename, 'rb') as fileobj:
-                content = fileobj.readlines()
-            contents.append(content)
-
-        if level > 2:
-            if etype is None:
-                etype = 'eqp1'
-            dd = {
-                    'edft': 1, 'ecor': 2, 'eqp0': 8, 'eqp1': 9, 'eqp0p': 12,
-                    'eqp1p': 13}
-            eindex = dd[etype]
+        if etype is None:
+            etype = 'eqp1'
 
         if level > 1:
-            nkpoint = 0
-            idxkpt = []
+            klist = []
             nspin = 0
         if level > 2:
-            nband = 0
-        for ii, line in enumerate(contents[0]):
-            if level > 1:
-                if '       k =' in line:
-                    nkpoint += 1
-                    idxkpt.append(ii)
-                    words = line.split()
-                    nspin = max(nspin, int(words[10]))
-            if level > 2:
-                if 'band_index' in line:
-                    words = line.split()
-                    nband = int(words[2]) - int(words[1]) + 1
+            dd = {
+                'edft': 1, 'ecor': 2, 'eqp0': 8, 'eqp1': 9, 'eqp0p': 12,
+                'eqp1p': 13}
+            eindex = dd[etype]
+            elist = []
+
+        with open(filenames[0], 'rb') as ff:
+            for line in ff:
+                if level > 2:
+                    if b'band_index' in line:
+                        words = line.split()
+                        nband = int(words[2])
+                        nband_exclude = int(words[1]) - 1
+
+                if level > 1:
+                    if b'       k =' in line:
+                        dummy = np.fromstring(line[
+                            10:], dtype = float, count = 3, sep = ' ')
+                        klist.append(dummy)
+
+                        if level > 2:
+                            ispin = int(line[line.find('spin =') + 6:])
+                            if ispin > nspin:
+                                nspin = ispin
+
+                            dummy = np.genfromtxt(
+                                ff, dtype = float, skip_header = 2,
+                                usecols = eindex, max_rows = nband -
+                                nband_exclude)
+                            elist.append(dummy)
 
         if level > 1:
-            kpoint = np.empty((nkpoint, 3), float)
-
-            for ikpoint in range(nkpoint):
-                words = contents[0][idxkpt[ikpoint]].split()
-                for jj in range(3):
-                    kpoint[ikpoint, jj] = float(words[jj + 2])
-
-            self.kunit, self.kpoint = 'crystal', kpoint
+            self.kpoint = np.array(klist, float)
+            self.kunit = 'crystal'
 
         if level > 2:
-            energy = np.empty((nkpoint, nband, nspin), float)
+            if nband_exclude == 0:
+                energy = np.array(elist, float).reshape(
+                    nkpoint, nspin, nband).swapaxes(1, 2)
+            else:
+                energy = np.empty((nkpoint, nband, nspin), float)
+                energy[:, 0:nband_exclude, :] = -common.INF12
+                kk = 0
+                for ii in range(nkpoint):
+                    for jj in range(nspin):
+                        energy[ii, nband_exclude:nband, jj] = elist[kk]
+                        kk += 1
 
-            for ikpoint in range(nkpoint):
-                for ispin in range(nspin):
-                    for iband in range(nband):
-                        energy[ikpoint, iband, ispin] = float(
-                                contents[0][idxkpt[ikpoint * nspin + ispin
-                                ] + 3 + iband].split()[eindex])
-
-            self.eunit, self.energy = 'ev', energy
+            self.energy = energy
+            self.eunit = 'ev'
 
     def _read_file_wannier_out(self, level, filenames):
         nspin = len(filenames)
+
         for ii, filename in enumerate(finenames):
             if level > 1:
-                wan = np.loadtxt(filename, dtype = float, unpack = True)
+                data = np.loadtxt(filename, dtype = float, unpack = True)
                 if ii == 0:
-                    nkpoint = np.where(wan[0, :] == wan[0, 0])[0][1]
-                    nband = wan.shape[0] // nkpoint
+                    nkpoint = np.where(data[0, :] == data[0, 0])[0][1]
+                    nband = data.shape[0] // nkpoint
 
-                    kline = wan[0, 0:nkpoint]
+                    kline = data[0, 0:nkpoint]
                     oldaunit = self.aunit
                     self.set_aunit('angstrom')
                     kline *= self.alat / (2.0 * math.pi)
@@ -684,7 +596,8 @@ class File(object):
             if level > 2:
                 if ii == 0:
                     energy = np.empty((nkpoint, nband, nspin), float)
-                energy[:, :, ii] = wan[1, :].reshape(nband, nkpoint).transpose()
+                energy[:, :, ii] = data[1, :].reshape(nband, nkpoint).transpose(
+                    )
                 if ii == nspin - 1:
                     self.eunit, self.energy = 'ev', energy
 
@@ -814,17 +727,17 @@ class File(object):
                         self.kpath, knum.reshape(self.nkpath, 1)), 1))
 
     def _write_file_wannier_in(self, level, filenames):
-        d0 = {'bohr': 'bohr', 'angstrom': 'ang'}
+        d0 = {'bohr': 'Bohr', 'angstrom': 'Angstrom'}
         l0 = [' ', '\n']
 
         with open(filenames[0], 'wb') as ff:
             if level > 0:
                 if hasattr(self, 'aunit') and hasattr(self, 'alat') and hasattr(
                         self, 'avec'):
-                    ff.write(b'begin unit_cell_cart\n')
+                    ff.write(b'Begin Unit_Cell_Cart\n')
                     ff.write('{0:s}'.format(d0[self.aunit]).encode())
                     np.savetxt(ff, self.alat * self.avec)
-                    ff.write(b'end unit_cell_cart\n')
+                    ff.write(b'End Unit_Cell_Cart\n')
 
             if level > 1:
                 if hasattr(self, 'kunit') and hasattr(self, 'kpath'):

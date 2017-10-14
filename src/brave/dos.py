@@ -73,17 +73,17 @@ class DOS(Cell):
 
             if hasattr(self, 'dos'):
                 dummy = self.dos
-                dummy[1] *= common._a3scale[self.dunit[0]] / common._a3scale[
+                dummy[1, :] *= common._a3scale[self.dunit[0]] / common._a3scale[
                     dunit[0]]
                 self.dos = dummy
 
         if dunit[1] != self.dunit[1]:
             if hasattr(self, 'dos'):
                 dummy = self.dos
-                dummy[0] *= common._escale[dunit[1]] / common._escale[
-                        self.dunit[1]]
-                dummy[1] /= common._escale[dunit[1]] / common._escale[
-                        self.dunit[1]]
+                dummy[0, :] *= common._escale[dunit[1]] / common._escale[
+                    self.dunit[1]]
+                dummy[1, :] /= common._escale[dunit[1]] / common._escale[
+                    self.dunit[1]]
                 self.dos = dummy
 
         if dunit != self.dunit:
