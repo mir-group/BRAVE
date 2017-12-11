@@ -380,13 +380,13 @@ class File(object):
                                 self.aunit = 'bohr'
 
                         if level > 1:
-                            if '     K=' in line:
-                                dummy = np.fromfile(
-                                    ff, dtype = float, count = 3, sep = ' ')
+                            if b'     K=' in line:
+                                dummy = np.fromstring(line[
+                                    7:], dtype = float, count = 3, sep = ' ')
                                 klist.append(dummy)
 
                     if level > 2:
-                        if 'EIGENVALUES ARE:' in line:
+                        if b'EIGENVALUES ARE:' in line:
                             buf = io.BytesIO()
                             for line in ff:
                                 if b'EIGENVALUES BELOW THE ENERGY' in line:
@@ -404,10 +404,11 @@ class File(object):
             self.kunit = lapwkunit
 
         if level > 2:
+            nkpoint = self.kpoint.shape[0]
             energy = np.empty((nkpoint, nband, nspin), float)
             for ii in range(nspin):
                 for jj in range(nkpoint):
-                    energy[jj, :, ii] = elist[ii][jj]
+                    energy[jj, :, ii] = elist[ii][jj][0:nband]
 
             self.energy = energy
             self.eunit = 'rydberg'
