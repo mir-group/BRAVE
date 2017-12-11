@@ -274,7 +274,7 @@ class File(object):
                         if ll == nspin:
                             self.energy, self.eunit = energy, 'ev'
 
-    def _calc_lapw_avec(lattype, apar, bpar, cpar, alpha, beta, gamma):
+    def _calc_lapw_avec(self, lattype, apar, bpar, cpar, alpha, beta, gamma):
 
         if lattype[0:1] == b'P':
             phi = math.acos((math.cos(gamma) - math.cos(alpha) * math.cos(
@@ -345,7 +345,7 @@ class File(object):
             nband = sys.maxsize
             elist = []
 
-        for ii, filename in enumerate(finenames):
+        for ii, filename in enumerate(filenames):
             if level > 2:
                 elist.append([])
             with open(filename, 'rb') as ff:
@@ -373,7 +373,7 @@ class File(object):
                                     beta = float(words[7]) * math.pi / 180.0
                                     gamma = float(words[8]) * math.pi / 180.0
 
-                                self.avec = _calc_lapw_avec(
+                                self.avec = self._calc_lapw_avec(
                                     lattype, apar, bpar, cpar, alpha, beta,
                                     gamma)
                                 self.alat = apar
@@ -416,7 +416,7 @@ class File(object):
         if level > 2:
             nspin = len(filenames)
 
-        for ii, filename in enumerate(finenames):
+        for ii, filename in enumerate(filenames):
             with open(filename, 'rb') as ff:
                 line = ff.readline()
                 if ii == 0:
@@ -579,7 +579,7 @@ class File(object):
     def _read_file_wannier_out(self, level, filenames):
         nspin = len(filenames)
 
-        for ii, filename in enumerate(finenames):
+        for ii, filename in enumerate(filenames):
             if level > 1:
                 data = np.loadtxt(filename, dtype = float, unpack = True)
                 if ii == 0:
