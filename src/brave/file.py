@@ -861,7 +861,6 @@ class File(object):
 
                 s0 = ", 'old', 'formatted', 0\n"
                 s1 = ", 'unknown', 'formatted', 0\n"
-                s2 = ", 'unknown', 'unformatted', 0\n"
 
                 ff.write("5, '{0:s}'{1:s}".format(
                     filename_intrans, s0).encode())
@@ -871,38 +870,8 @@ class File(object):
                     filename_struct, s0).encode())
                 ff.write("10, '{0:s}'{1:s}".format(
                     filename_energy, s0).encode())
-                ff.write("48, '{0:s}.engre'{1:s}".format(
-                    self.prefix, s2).encode())
-                ff.write("49, '{0:s}.transdos'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("50, '{0:s}.sigxx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("51, '{0:s}.sigxxx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("21, '{0:s}.trace'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("22, '{0:s}.condtens'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("24, '{0:s}.halltens'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("30, '{0:s}_BZ.dx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("31, '{0:s}_fermi.dx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("32, '{0:s}_sigxx.dx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("33, '{0:s}_sigyy.dx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("34, '{0:s}_sigzz.dx'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("35, '{0:s}_band.dat'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("36, '{0:s}_band.gpl'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("37, '{0:s}_deriv.dat'{1:s}".format(
-                    self.prefix, s1).encode())
-                ff.write("38, '{0:s}MASS.dat'{1:s}".format(
-                    self.prefix, s1).encode())
+                ff.write("-1, '{0:s}'{1:s}".format(
+                    self.prefix, s0).encode())
 
             with open(filenames[1], 'wb') as ff:
                 nelec = self.nelec - 2 * nband_exclude
