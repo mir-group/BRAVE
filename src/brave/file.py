@@ -106,6 +106,8 @@ class File(object):
                         self.vref = float(line[line.find(b'=') + 1:].strip())
 
     def _read_file_pw_out(self, level, filenames):
+        if level > 0:
+            buf = io.BytesIO()
         if level > 1:
             nspin = 1
 
@@ -134,21 +136,13 @@ class File(object):
                         self.nelec = float(line.split()[4])
                     elif b'Sym. Ops.' in line or b'Sym.Ops.' in line:
                         nsym = int(line.split()[0])
-                    elif b'isym =  1' in line:
-                        line = ff.readline()
-                        buf = io.BytesIO()
-                        for jj in range(nsym):
-                            for kk in range(11):
-                                line = ff.readline()
-                                if kk < 3:
-                                    buf.write(line[19:53])
-                        buf.seek(0)
-                        self.rot = np.loadtxt(buf, dtype = int).reshape(
-                            nsym, 3, 3)
-                        buf.close()
+                    elif b'cryst.   s' in line:
+                        for kk in range(3):
+                            buf.write(line[19:53])
+                            line = ff.readline()
 
                 if level > 1:
-                    if b'magnetic' in line:
+                    if b'magnetic structure' in line:
                         nspin = 2
                     elif b'number of k points=' in line:
                         self.kunit = 'crystal'
@@ -175,6 +169,10 @@ class File(object):
                         words = line.split()
                         self.efermi = (float(words[6]) + float(words[7])) / 2.0
 
+            if level > 0:
+                buf.seek(0)
+                self.rot = np.loadtxt(buf, dtype = int).reshape(nsym, 3, 3)
+                buf.close()
             if level > 2:
                 self.energy = energy
 
