@@ -174,7 +174,7 @@ class Diagram(DOS, Energy):
                     _xlabel = self.klabel[ikpoint]
                     _xlist.append([_xposition, _xlabel])
                 xtick.append(_xlist)
-                xgrid.append(['solid', 'black', 1.0, None, None, None])
+                xgrid.append([['solid', 'black', 1.0], [None, None, None]])
             else:
                 xtick.append(None)
                 xgrid.append(None)
