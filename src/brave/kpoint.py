@@ -229,9 +229,9 @@ class Kpoint(Cell):
     or density (mode = 'density') of k-points.
         """
         nkpath = self.nkpath
-        nkfirst = self.kindex[1]
+        kindex = self.kindex
+        nkfirst = kindex[1]
         nksect = nkpath - 1
-        kindex = np.empty((nkpath), int)
 
         if mode == 'number':
             for ii in range(2, nkpath):
