@@ -146,7 +146,7 @@ class File(object):
                         nspin = 2
                     elif b'number of k points=' in line:
                         self.kunit = 'crystal'
-                        nkpoint = int(line.split()[4]) // nspin
+                        nkpoint = int(line.split()[4])
                     elif b' cryst. coord.' in line:
                         kk = np.genfromtxt(ff, dtype = float, delimiter = (
                             20, 12, 12, 12, 7, 12), usecols = (

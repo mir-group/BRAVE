@@ -138,8 +138,8 @@ class Diagram(DOS, Energy):
             for ispin in range(self.nspin - 1, -1, -1):
                 for iband in range(self.nband):
                     curve = np.empty((2, self.nkpoint), float)
-                    curve[0] = self.kline
-                    curve[1] = self.energy[:, iband, ispin]
+                    curve[0, :] = self.kline
+                    curve[1, :] = self.energy[:, iband, ispin]
                     data[i_e].append(curve)
                     kind[i_e].append(_kind_band[ispin])
                     style[i_e].append(_style_band[ispin])
@@ -147,8 +147,8 @@ class Diagram(DOS, Energy):
 
             if hasattr(self, 'efermi'):
                 curve = np.empty((2, 2), float)
-                curve[0, 0] = xmin
-                curve[0, 1] = xmax
+                curve[0, 0] = self.kline[0]
+                curve[0, 1] = self.kline[-1]
                 curve[1, :] = self.efermi
                 data[i_e].append(curve)
                 kind[i_e].append(_kind_efermi)
@@ -157,8 +157,8 @@ class Diagram(DOS, Energy):
 
             if hasattr(self, 'vref'):
                 curve = np.empty((2, 2), float)
-                curve[0, 0] = xmin
-                curve[0, 1] = xmax
+                curve[0, 0] = self.kline[0]
+                curve[0, 1] = self.kline[-1]
                 curve[1, :] = self.vref
                 data[i_e].append(curve)
                 kind[i_e].append(_kind_vref)
