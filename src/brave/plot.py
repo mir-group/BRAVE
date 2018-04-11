@@ -142,7 +142,8 @@ class Plot(object):
         if not isinstance(value, list) or not all(isinstance(
                 item, list) for item in value):
             raise TypeError('label {0!r}'.format(value))
-        if not all(isinstance(item, str) for group in value for item in group):
+        if not all(isinstance(item, str) or (
+                item is None) for group in value for item in group):
             raise ValueError('label {0!r}'.format(value))
         self._label = value
 
