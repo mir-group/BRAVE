@@ -1,6 +1,7 @@
 """This module defines class EPA."""
 
 import math
+import linecache
 
 import numpy as np
 
@@ -294,11 +295,11 @@ class EPA(DOS):
                 dose = np.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
 
                 if (en[nn] < np.sum(ee) / nwin):
-                    ii = 1
+                    ii = 0
                 else:
-                    ii = 2
+                    ii = 1
                 if (ne[ii] == 1):
-                    gk[:] = gavg[ii, 1, 1, ll]
+                    gk[:] = gavg[ii, 0, 0, ll]
                 else:
                     xx = (en[nn] - ee[ii]) / de[ii]
                     xx = max(xx, common.EPS12)
@@ -326,7 +327,7 @@ class EPA(DOS):
     ----------         ---------
     'boltztrap-dos'    ['case.intrans', 'case.transdos']
     'matdyn-dos'       ['prefix.vdos']
-    'epa-out'          ['epa.dat']
+    'epa-out'          ['case.intrans', 'epa.dat']
 
     Inherits fileformat and filenames from class DOS. Set soc
     to True if the calculation includes the spin-orbit coupling.
@@ -345,7 +346,9 @@ class EPA(DOS):
 
     def _read_epa_epa_out(self, filenames):
 
-        with open(filenames[0], 'rb') as ff:
+        efermi = float(linecache.getline(filenames[0], 3).split()[0])
+
+        with open(filenames[1], 'rb') as ff:
             tt = ff.readline().split()
             nwin = int(tt[0])
             nmode = int(tt[1])
@@ -358,7 +361,7 @@ class EPA(DOS):
                 ee[ii] = float(tt[0])
                 de[ii] = float(tt[1])
                 ne[ii] = int(tt[2])
-            self.ee, self.de, self.ne, = ee, de, ne
+            self.ee, self.de, self.ne, = ee - efermi * common.RYDBERG, de, ne
 
             self.wavg = np.fromfile(
                 ff, dtype = float, count = nmode, sep = ' ')
