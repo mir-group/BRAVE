@@ -32,14 +32,17 @@ class Diagram(DOS, Energy):
         del self._plot
 
     def set_plot(self, plotformat, fillgap=None):
-        """Method for setting property plot. You may want to set
-    plot.ylim, plot.note, and plot.title before calling plot.write.
+        """Sets the new value of plot.
 
-    plotformat = 'energy'|'dos'|'energy_dos'
+    Args:
+        plotformat (str): Plot format. Possible values are 'energy', 'dos' and
+            'energy_dos'
+        fillgap (list): The band and spin indices of the top valence and bottom
+            conduction bands for color filling the band gap. The order is
+            [ibandv, ispinv, ibandc, ispinc]. The default is None.
 
-    fillgap = [ibandv, ispinv, ibandc, ispinc] are the band and spin
-            indices of the top valence and bottom conduction bands
-            for color filling the band gap. The default is None.
+    You may want to set plot.ylim, plot.note and plot.title before calling
+    plot.write.
         """
         _plotformat_list = ['energy', 'dos', 'energy_dos']
         _kind_gap = 'fill'
@@ -224,7 +227,11 @@ class Diagram(DOS, Energy):
         self.plot = plot
 
     def read(self, fileformat, filenames, **kwargs):
-        """Method for reading properties from file.
+        """Reads properties from files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
 
     Inherits fileformat and filenames from classes DOS and Energy.
         """

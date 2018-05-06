@@ -61,9 +61,12 @@ class DOS(Cell):
         del self._dos
 
     def set_dunit(self, dunit):
-        """Method for setting the new value of dunit = ['uc'|'bohr3'
-    |'angstrom3'|'nm3', 'ev'|'rydberg'|'hartree'|'thz'|'cm-1']
-    and recalculating dos.
+        """Sets the new value of dunit and recalculates dos.
+
+    Args:
+        dunit (list): New value of dunit. Possible values of dunit[0] are 'uc',
+            'bohr3', 'angstrom3' and 'nm3'. Possible values of dunit[1] are
+            'ev', 'rydberg', 'hartree', 'thz' and 'cm-1'.
         """
         if dunit[0] != self.dunit[0]:
             oldaunit = self.aunit
@@ -90,15 +93,20 @@ class DOS(Cell):
             self.dunit = dunit
 
     def read(self, fileformat, filenames, soc=None):
-        """Method for reading properties from file.
+        """Reads properties from files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        soc (bool): Set to True if the calculation includes the spin-orbit
+            coupling.
 
     fileformat         filenames
     ----------         ---------
     'boltztrap-dos'    ['case.intrans', 'case.transdos']
     'matdyn-dos'       ['prefix.vdos']
 
-    Inherits fileformat and filenames from class Cell. Set soc
-    to True if the calculation includes the spin-orbit coupling.
+    Inherits fileformat and filenames from class Cell.
         """
         if soc is None:
             soc = False

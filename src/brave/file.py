@@ -843,14 +843,15 @@ class File(object):
                             ii], weights[ii]).encode())
                     ff.write(b'END\n')
 
-    def _write_file_boltztrap_in(
-            self, level, filenames, deltae, ecut, lpfac, efcut, tmax, deltat,
-            ecut2, dosmethod, nband_exclude):
+    def _write_file_boltztrap_in(self, level, filenames, boltzparam):
         if level > 2:
             self.set_aunit('bohr')
             self.set_alat(1.0)
             self.set_kunit('crystal')
             self.set_eunit('rydberg')
+
+            (deltae, ecut, lpfac, efcut, tmax, deltat, ecut2, dosmethod,
+                nband_exclude) = boltzparam
 
             with open(filenames[0], 'wb') as ff:
                 filename_intrans = os.path.basename(filenames[1])

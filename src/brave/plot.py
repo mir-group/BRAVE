@@ -775,11 +775,14 @@ class Plot(object):
         del self._frame
 
     def write(self, libraryname, fileformat, filename):
-        """Method for writing plot to file.
+        """Writes the plot to the file.
 
-    libraryname     fileformat           filename
-    -----------     ----------           --------
-    'matplotlib'    'png'|'eps'|'pdf'    'plot.ext'
+    Args:
+        libraryname (str): Name of the plotting library. Currently the only
+            possible value is 'matplotlib'.
+        fileformat (list): File format. Possible values are 'png', 'eps' and
+            'pdf'.
+        filename (str): File name.
         """
 
         if libraryname == 'matplotlib':

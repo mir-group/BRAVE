@@ -326,10 +326,14 @@ class Transport(Cell):
         del self._ZT
 
     def model_kappalat(self, kappalatvalue, tempvalue):
-        """Method for modeling kappalat dependence on mu and temp.
-    kappalat = kappalatvalue * tempvalue / temp if tempvalue > 0,
-    kappalat = kappalatvalue if tempvalue <= 0, kappalatvalue
-    in units of W/(m K), tempvalue in units of K.
+        """Models kappalat dependence on mu and temp.
+
+    Args:
+        kappalatvalue (float): Model parameter in units of W/(m K).
+        tempvalue (float): Model parameter in units of K.
+
+    if tempvalue >  0 then kappalat = kappalatvalue * tempvalue / temp,
+    if tempvalue <= 0 then kappalat = kappalatvalue.
         """
         kappalat = np.zeros((self.nmu, self.ntemp), float)
 
@@ -342,12 +346,12 @@ class Transport(Cell):
         self.kappalat = kappalat
 
     def calc_kappa(self):
-        """Method for calculating kappa given kappael and kappalat."""
+        """Calculates kappa from kappael and kappalat."""
 
         self.kappa = np.add(self.kappael, self.kappalat)
 
     def calc_L(self):
-        """Method for calculating L given sigma and kappael."""
+        """Calculates L from sigma and kappael."""
 
         _sigma = np.maximum(self.sigma, common.EPS12)
         _temp = np.broadcast_to(self.temp, (self.nmu, self.ntemp))
@@ -355,33 +359,42 @@ class Transport(Cell):
         self.L = np.divide(self.kappael, _sigma_temp)
 
     def calc_PF(self):
-        """Method for calculating PF given sigma and seebeck."""
+        """Calculates PF from sigma and seebeck."""
 
         _seebeck2 = np.square(self.seebeck)
         self.PF = np.multiply(self.sigma, _seebeck2)
 
     def calc_ZT(self):
-        """Method for calculating ZT given PF and kappa."""
+        """Calculates ZT from PF and kappa."""
 
         _temp = np.broadcast_to(self.temp, (self.nmu, self.ntemp))
         _PF_temp = np.multiply(self.PF, _temp)
         self.ZT = np.divide(_PF_temp, self.kappa)
 
     def interpolate_binary(self, propname, paramtype, paramvalue):
-        """Method for interpolating functional dependence of
-    property propname on mu, temp, or numelec at a given
-    value paramvalue = float of parameter paramtype.
-    Returns array of nmu floats for paramtype = 'temp' or
-    array of ntemp floats for paramtype = 'mu'|'numelec'.
-    In case of paramtype = 'numelec' paramvalue can be
-    array of ntemp floats.
+        """Interpolates property at some value of parameter.
+
+    Args:
+        propname (str): Name of property.
+        paramtype (str): Name of parameter. Possible values are below.
+        paramvalue (float or ndarray): Value of parameter. Possible values are
+            below.
+
+    Returns:
+        propunary (ndarray): Interpolated property. Possible values are below.
 
     paramtype       paramvalue
     ---------       ----------
-    'temp'          temperature in units of K
-    'mu'            chemical potential in units of eV
-    'numelec'       number of electrons in units of el/uc
-                    (electrons per unit cell)
+    'temp'          float, temperature in units of K
+    'mu'            float, chemical potential in units of eV
+    'numelec'       float or length-ntemp ndarray of floats, number of electrons
+                        in units of el/uc (electrons per unit cell)
+
+    paramtype       propunary
+    ---------       ---------
+    'temp'          length-nmu ndarray of floats
+    'mu'            length-ntemp ndarray of floats
+    'numelec'       length-ntemp ndarray of floats
         """
         if propname in ('nmu', 'mu', 'ntemp', 'temp'):
             raise ValueError(propname)
@@ -416,10 +429,16 @@ class Transport(Cell):
         return slice
 
     def interpolate_unary(self, propunary, argtype, argvalue):
-        """Method for interpolating value of functional dependence
-    of property propunary produced by method interpolate_binary
-    at a given value argvalue = float of argument argtype.
-    Returns float.
+        """Interpolates the interpolated property at some value of argument.
+
+    Args:
+        propunary (ndarray): Interpolated property produced by method
+            interpolate_binary.
+        argtype (str): Name of argument. Possible values are below.
+        argvalue (float): Value of argument. Possible values are below.
+
+    Returns:
+        propvalue (float): Interpolated property.
 
     argtype       argvalue
     -------       --------
@@ -436,11 +455,14 @@ class Transport(Cell):
         return value
 
     def renorm_numelec(self):
-        """Method for renormalizing property numelec.
-    Calculates numelec0, subtracts numelec0 from
-    numelec, and returns numelec0. Here numelec0
-    is interpolated from numelec, though it can
-    be extracted from file case.transdos.
+        """Renormalizes numelec by subtracting numelec0.
+
+    Returns:
+        numelec0 (float): Value of numelec at mu set to the middle of the band
+            gap and temp = 0.
+
+    Here numelec0 is interpolated from numelec, though it can be extracted from
+    file case.transdos.
         """
         numelec = self.numelec
         numelec0 = np.interp(0.0, self.mu, numelec[:, 0])
@@ -450,10 +472,17 @@ class Transport(Cell):
         return numelec0
 
     def convert_numelec(self, inputvalue, inputunit, outputunit):
-        """Method for converting number of electrons inputvalue =
-    float from units of inputunit to units of outputunit.
-    inputunit, outputunit = 'cm^-3'|'el/uc' (electrons
-    per unit cell).
+        """Converts the number of electrons between different units.
+
+    Args:
+        inputvalue (float): Number of electrons.
+        inputunit (str): Units of inputvalue. Possible values are below.
+        outputunit (str): Units of outputvalue. Possible values are below.
+
+    Returns:
+        outputvalue (float): Number of electrons.
+
+    inputunit and outputunit are 'cm^-3' or 'el/uc' (electrons per unit cell).
         """
         _unit_list = ['cm^-3', 'el/uc']
         if inputunit not in _unit_list:
@@ -474,7 +503,15 @@ class Transport(Cell):
         return outputvalue
 
     def convert_argument(self, outputtype, inputvalues):
-        """Method for converting between temp, mu, and numelec.
+        """Converts between different arguments.
+
+    Args:
+        outputtype (str): Type of output parameter. Possible values are below.
+        inputvalues (str): Values of input parameters. Possible values are
+            below.
+
+    Returns:
+        outputvalue (float): Value of output parameter.
 
     outputtype       inputvalues
     ----------       -----------
@@ -482,8 +519,8 @@ class Transport(Cell):
     'mu'             [temp, numelec]
     'numelec'        [temp, mu]
 
-    temp in K, mu in eV, numelec in el/uc
-    (electrons per unit cell)
+    temp is in units of K, mu is in units of eV, numelec is in units of el/uc
+    (electrons per unit cell).
         """
         if outputtype == 'temp':
             slice = self.interpolate_binary('numelec', 'mu', inputvalues[0])
@@ -505,14 +542,27 @@ class Transport(Cell):
         return outputvalue
 
     def optimize_mu(self, propname, mu_interval, temp, fraction=None):
-        """Method for optimizing mu within mu_interval at given
-    temp to maximize property propname. Returns the optimal
-    values of mu and numelec and the maximum value of
-    propname. If fraction is present returns the intervals
-    of mu and numelec for which propname is larger than the
-    fraction of the maximum value of propname. mu_interval
-    is a list of two floats in eV, temp is a float in K,
-    fraction is a float between 0 and 1.
+        """Optimizes mu at a given temp to maximize some property.
+
+    Args:
+        propname (str): Name of property.
+        mu_interval (list): Interval of mu values where to search for mu_opt.
+        temp (float): Value of temperature.
+        fraction (float): Fraction of propvalue_max for computing mu_range and
+            numelec_range. Optional.
+
+    Returns:
+        mu_opt (float): Optimal value of mu in units of eV.
+        numelec_opt (float): Optimal value of numelec.
+        propvalue_max (float): Maximum value of propname.
+        mu_range (list): Range of mu values for which propname is larger than
+            propvalue_max times fraction in units of eV. Optional.
+        numelec_range (list): Range of numelec values for which propname is
+            larger than propvalue_max times fraction. Optional.
+
+    mu_interval, mu_opt and mu_range are in units of eV, temp is in units of K,
+    numelec_opt and numelec_range are in units of el/uc (electrons per unit
+    cell).
         """
         nmu = self.nmu
         mu = self.mu
@@ -585,21 +635,22 @@ class Transport(Cell):
                     numelec_min, numelec_max]
 
     def read(self, fileformat, filenames, tauvc=None, kappaelzeroj=None):
-        """Method for reading properties from file.
+        """Reads properties from files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        tauvc (list): Constant electronic relaxation times for valence and
+            conduction bands in units of s. Optional.
+        kappaelzeroj (bool): Set to True to compute kappael at zero electric
+            current, kappael = kappa0 - sigma * seebeck^2 * temp, only valid
+            for isotropic systems. Optional.
 
     fileformat       filenames
     ----------       ---------
     'boltztrap-out'  ['case.intrans', 'case.trace']
 
     Inherits fileformat and filenames from class Cell.
-
-    tauvc = electronic relaxation times for valence
-    and conduction bands, list of two floats, in units
-    of s, used for 'boltztrap-out'
-
-    kappaelzeroj = True to compute kappael at zero electric
-    current, kappael = kappa0 - sigma * seebeck^2 * temp,
-    only for isotropic systems, used for 'boltztrap-out'
         """
         if kappaelzeroj is None:
             kappaelzeroj = False

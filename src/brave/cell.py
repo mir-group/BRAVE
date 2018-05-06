@@ -193,8 +193,11 @@ class Cell(File):
         del self._rot
 
     def set_aunit(self, aunit):
-        """Method for setting the new value of aunit =
-    'bohr'|'angstrom'|'nm' and recalculating alat.
+        """Sets the new value of aunit and converts alat.
+
+    Args:
+        aunit (str): New value of aunit. Possible values are 'bohr', 'angstrom'
+            and 'nm'.
         """
         if aunit != self.aunit:
             if hasattr(self, 'alat'):
@@ -202,8 +205,10 @@ class Cell(File):
             self.aunit = aunit
 
     def set_alat(self, alat):
-        """Method for setting the new value of alat = float
-    and recalculating avec, bvec, avol, and bvol.
+        """Sets the new value of alat and converts avec, bvec, avol and bvol.
+
+    Args:
+        alat (float): New value of alat.
         """
         if abs(alat - self.alat) > common.EPS12:
             if hasattr(self, 'avec'):
@@ -217,23 +222,27 @@ class Cell(File):
             self.alat = alat
 
     def calc_avec(self):
-        """Method for calculating avec given bvec."""
+        """Calculates avec from bvec."""
         self.avec = self._calc_vec(self.bvec)
 
     def calc_bvec(self):
-        """Method for calculating bvec given avec."""
+        """Calculates bvec from avec."""
         self.bvec = self._calc_vec(self.avec)
 
     def calc_avol(self):
-        """Method for calculating avol given avec."""
+        """Calculates avol from avec."""
         self.avol = abs(self._calc_vol(self.avec))
 
     def calc_bvol(self):
-        """Method for calculating bvol given bvec."""
+        """Calculates bvol from bvec."""
         self.bvol = abs(self._calc_vol(self.bvec))
 
     def read(self, fileformat, filenames):
-        """Method for reading properties from file.
+        """Reads properties from files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
 
     fileformat      filenames
     ----------      ---------
@@ -241,8 +250,7 @@ class Cell(File):
     'pw-out'        ['prefix.out']
     'wannier-in'    ['seedname.win']
     'vasp-out'      ['OUTCAR']
-    'lapw-out'      ['case.output1']
-                 or ['case.output1up', 'case.output1dn']
+    'lapw-out'      ['case.output1'] or ['case.output1up', 'case.output1dn']
         """
 
         if fileformat == 'internal':
@@ -259,7 +267,11 @@ class Cell(File):
             raise ValueError(fileformat)
 
     def write(self, fileformat, filenames):
-        """Method for writing properties to file.
+        """Writes properties to files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
 
     fileformat      filenames
     ----------      ---------

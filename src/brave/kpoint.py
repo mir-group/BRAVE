@@ -186,9 +186,10 @@ class Kpoint(Cell):
         del self._klabel
 
     def set_alat(self, alat):
-        """Method for setting the new value of alat = float
-    and recalculating properties of class Cell,
-    kpoint, kline, and kpath.
+        """Sets the new value of alat and converts kpoint, kline and kpath.
+
+    Args:
+        alat (float): New value of alat.
         """
         if abs(alat - self.alat) > common.EPS12:
             if hasattr(self, 'kline'):
@@ -201,9 +202,11 @@ class Kpoint(Cell):
         super().set_alat(alat)
 
     def set_kunit(self, kunit):
-        """Method for setting the new value of kunit =
-    'cartesian'|'crystal' and recalculating
-    kpoint and kpath.
+        """Sets the new value of kunit and converts kpoint and kpath.
+
+    Args:
+        kunit (str): New value of kunit. Possible values are 'cartesian' and
+            'crystal'.
         """
         if kunit != self.kunit:
             if kunit == 'cartesian':
@@ -221,12 +224,12 @@ class Kpoint(Cell):
             self.kunit = kunit
 
     def calc_kindex(self, mode):
-        """Method for calculating numbers of k-points along
-    different sections of the path in reciprocal space
-    given the number of k-points along the first section,
-    kindex[1] - kindex[0], where kindex[0] = 0.
-    Other sections will have the same number (mode = 'number')
-    or density (mode = 'density') of k-points.
+        """Calculates kindex[2:] from kindex[:2].
+
+    Args:
+        mode (str): Indicates whether different sections of the path in
+            reciprocal space have the same number or the same density of
+            k-points. Possible values are 'number' and 'density'.
         """
         nkpath = self.nkpath
         kindex = self.kindex
@@ -257,11 +260,13 @@ class Kpoint(Cell):
         self.kindex = kindex
 
     def check_kindex(self):
-        """Method for checking numbers of k-points along
-    different sections of the path in reciprocal space.
-    Returned value = 'uninitialized'|'number'|'density',
-    the meaning of 'number'|'density' is the same as in
-    calc_kindex.
+        """Checks which mode kindex was calculated in.
+
+    Returns:
+        mode (str): Indicates whether different sections of the path in
+            reciprocal space have the same number or the same density of
+            k-points. Possible values are 'uninitialized', 'number' and
+            'density'.
         """
         kindex = self.kindex
         nksect = self.nkpath - 1
@@ -279,7 +284,7 @@ class Kpoint(Cell):
         return mode
 
     def calc_kpoint(self):
-        """Method for calculating kpoint given kpath."""
+        """Calculates kpoint from kpath and kindex."""
         kpath = self.kpath
         kindex = self.kindex
         nksect = self.nkpath - 1
@@ -299,7 +304,7 @@ class Kpoint(Cell):
         self.kpoint = kpoint
 
     def calc_kline(self):
-        """Method for calculating kline given kpoint."""
+        """Calculates kline from kpoint."""
         oldkunit = self.kunit
         self.set_kunit('cartesian')
         kdiff = np.diff(self.kpoint, axis=0)
@@ -309,31 +314,33 @@ class Kpoint(Cell):
         self.kline = np.insert(kcumsum, 0, 0.0)
 
     def read(self, fileformat, filenames, lapwkunit=None):
-        """Method for reading properties from file.
+        """Reads properties from files.
 
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        lapwkunit (str): WIEN2k workaround. WIEN2k requires k-points in crystal
+            coordinates with respect to conventional reciprocal lattice vectors
+            (see xcrysden/tests/supportInfo.kpath). Possible values are below.
+ 
     fileformat       filenames
     ----------       ---------
     'internal'       ['prefix.brave']
     'pw-out'         ['prefix.out']
-    'bands-out'      ['prefix.out', 'bands.out']
-                  or ['prefix.out', 'bands.outup', 'bands.outdn']
+    'bands-out'      ['prefix.out', 'bands.out'] or ['prefix.out',
+                         'bands.outup', 'bands.outdn']
     'matdyn-out'     ['prefix.out', 'matdyn.modes']
     'inteqp-out'     ['prefix.out', 'bandstructure.dat']
     'sigma-out'      ['prefix.out', 'sigma_hp.log']
     'wannier-in'     ['seedname.win']
-    'wannier-out'    ['seedname.win', 'seedname_band.dat']
-                  or ['seedname.win', 'seedname_band.datup',
-                             'seedname_band.datdn']
+    'wannier-out'    ['seedname.win', 'seedname_band.dat'] or ['seedname.win',
+                         'seedname_band.datup', 'seedname_band.datdn']
     'vasp-out'       ['OUTCAR']
-    'lapw-out'       ['case.output1']
-                  or ['case.output1up', 'case.output1dn']
+    'lapw-out'       ['case.output1'] or ['case.output1up', 'case.output1dn']
 
-    lapwkunit = 'cartesian'|'crystal' used for 'lapw-kpt',
-            WIEN2k requires k-points in crystal coordinates
-            with respect to conventional reciprocal lattice
-            vectors, see xcrysden/tests/supportInfo.kpath
-            for details, use 'cartesian' for fcc or bcc and
-            'crystal' for hcp
+    fileformat       lapwkunit
+    ----------       ---------
+    'lapw-out'       'cartesian' (for fcc or bcc) or 'crystal' (for hcp)
         """
         if lapwkunit is None:
             lapwkunit = 'cartesian'
@@ -367,7 +374,14 @@ class Kpoint(Cell):
             raise ValueError(fileformat)
 
     def write(self, fileformat, filenames, lapwkunit=None):
-        """Method for writing properties to file.
+        """Writes properties to files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        lapwkunit (str): WIEN2k workaround. WIEN2k requires k-points in crystal
+            coordinates with respect to conventional reciprocal lattice vectors
+            (see xcrysden/tests/supportInfo.kpath). Possible values are below.
 
     fileformat       filenames
     ----------       ---------
@@ -377,12 +391,9 @@ class Kpoint(Cell):
     'vasp-kpt'       ['KPOINTS']
     'lapw-kpt'       ['case.klist_band']
 
-    lapwkunit = 'cartesian'|'crystal' used for 'lapw-kpt',
-            WIEN2k requires k-points in crystal coordinates
-            with respect to conventional reciprocal lattice
-            vectors, see xcrysden/tests/supportInfo.kpath
-            for details, use 'cartesian' for fcc or bcc and
-            'crystal' for hcp
+    fileformat       lapwkunit
+    ----------       ---------
+    'lapw-kpt'       'cartesian' (for fcc or bcc) or 'crystal' (for hcp)
         """
         if lapwkunit is None:
             lapwkunit = 'cartesian'

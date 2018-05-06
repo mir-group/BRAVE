@@ -113,9 +113,11 @@ class Energy(Kpoint):
         del self._vref
 
     def set_eunit(self, eunit):
-        """Method for setting the new value of eunit =
-    'ev'|'rydberg'|'hartree'|'thz'|'cm-1' and
-    recalculating energy, efermi and vref.
+        """Sets the new value of eunit and converts energy, efermi and vref.
+
+    Args:
+        eunit (str): New value of eunit. Possible values are 'ev', 'rydberg',
+            'hartree', 'thz' and 'cm-1'.
         """
         if eunit != self.eunit:
             if hasattr(self, 'energy'):
@@ -129,13 +131,20 @@ class Energy(Kpoint):
             self.eunit = eunit
 
     def calc_efermi(self, soc=None):
-        """Method for calculating efermi for insulators given the
-    number of electrons, nelec. Places efermi in the
-    middle of the band gap. Returns energies evbm and
-    ecbm in units of eunit and k-points kvbm and kcbm
-    in units of kunit at the vbm (valence band maximum)
-    and cbm (conduction band minimum). Set soc to True
-    if the calculation includes the spin-orbit coupling.
+        """Calculates efermi from nelec for insulators.
+
+    Args:
+        soc (bool): Set to True if the calculation includes the spin-orbit
+            coupling.
+
+    Returns:
+        evbm (float): VBM energy in units of eunit.
+        ecbm (float): CBM energy in units of eunit.
+        kvbm (ndarray): VBM k-point in units of kunit.
+        kcbm (ndarray): CBM k-point in units of kunit.
+
+    Places efermi in the middle of the band gap between the VBM (valence band
+    maximum) and the CBM (conduction band minimum).
         """
         if soc is None:
             soc = False
@@ -166,8 +175,9 @@ class Energy(Kpoint):
         return evbm, ecbm, kvbm, kcbm
 
     def sort_energy(self):
-        """Method for sorting energy in ascending order by band
-    to fix discontinuities in the band structure.
+        """Sorts energy in ascending order by band.
+
+    This fixes discontinuities in the band structure.
         """
         _energy = np.copy(self.energy)
 
@@ -181,33 +191,38 @@ class Energy(Kpoint):
         self.energy = _energy
 
     def read(self, fileformat, filenames, etype=None, lapwkunit=None):
-        """Method for reading properties from file.
+        """Reads properties from files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        etype (str): Energy type. Possible values are below.
+        lapwkunit (str): WIEN2k workaround. WIEN2k requires k-points in crystal
+            coordinates with respect to conventional reciprocal lattice vectors
+            (see xcrysden/tests/supportInfo.kpath). Possible values are below.
 
     fileformat       filenames
     ----------       ---------
     'internal'       ['prefix.brave']
     'pw-out'         ['prefix.out']
-    'bands-out'      ['prefix.out', 'bands.out']
-                  or ['prefix.out', 'bands.outup', 'bands.outdn']
+    'bands-out'      ['prefix.out', 'bands.out'] or ['prefix.out',
+                         'bands.outup', 'bands.outdn']
     'matdyn-out'     ['prefix.out', 'matdyn.modes']
     'inteqp-out'     ['prefix.out', 'bandstructure.dat']
     'sigma-out'      ['prefix.out', 'sigma_hp.log']
-    'wannier-out'    ['seedname.win', 'seedname_band.dat']
-                  or ['seedname.win', 'seedname_band.datup',
-                             'seedname_band.datdn']
+    'wannier-out'    ['seedname.win', 'seedname_band.dat'] or ['seedname.win',
+                         'seedname_band.datup', 'seedname_band.datdn']
     'vasp-out'       ['OUTCAR']
-    'lapw-out'       ['case.output1']
-                  or ['case.output1up', 'case.output1dn']
+    'lapw-out'       ['case.output1'] or ['case.output1up', 'case.output1dn']
 
-    etype = 'emf'|'eqp' used for 'inteqp-out'
-    etype = 'edft'|'ecor'|'eqp0'|'eqp1'|'eqp0p'|'eqp1p' used
-            for 'sigma-out'
-    lapwkunit = 'cartesian'|'crystal' used for 'lapw-kpt',
-            WIEN2k requires k-points in crystal coordinates
-            with respect to conventional reciprocal lattice
-            vectors, see xcrysden/tests/supportInfo.kpath
-            for details, use 'cartesian' for fcc or bcc
-            and 'crystal' for hcp
+    fileformat       etype
+    ----------       -----
+    'inteqp-out'     'emf' or 'eqp'
+    'sigma-out'      'edft', 'ecor', 'eqp0', 'eqp1', 'eqp0p' or 'eqp1p'
+
+    fileformat       lapwkunit
+    ----------       ---------
+    'lapw-out'       'cartesian' (for fcc or bcc) or 'crystal' (for hcp)
         """
         if lapwkunit is None:
             lapwkunit = 'cartesian'
@@ -238,11 +253,16 @@ class Energy(Kpoint):
         else:
             raise ValueError(fileformat)
 
-    def write(
-            self, fileformat, filenames, lapwkunit=None, deltae=None,
-            ecut=None, lpfac=None, efcut=None, tmax=None, deltat=None,
-            ecut2=None, dosmethod=None, nband_exclude=None):
-        """Method for writing properties to file.
+    def write(self, fileformat, filenames, lapwkunit=None, boltzparam=None):
+        """Writes properties to files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        lapwkunit (str): WIEN2k workaround. WIEN2k requires k-points in crystal
+            coordinates with respect to conventional reciprocal lattice vectors
+            (see xcrysden/tests/supportInfo.kpath). Possible values are below.
+        boltzparam (list): BoltzTraP parameters. Possible values are below.
 
     fileformat       filenames
     ----------       ---------
@@ -251,41 +271,23 @@ class Energy(Kpoint):
     'wannier-in'     ['seedname.win']
     'vasp-kpt'       ['KPOINTS']
     'lapw-kpt'       ['case.klist_band']
-    'boltztrap-in'   ['case.def', 'case.intrans', 'case.struct',
-                             'case.energy[so]']
+    'boltztrap-in'   ['case.def', 'case.intrans', 'case.struct', 'case.energy']
+                         (for spin-unpolarized case) or ['case.def',
+                         'case.intrans', 'case.struct', 'case.energyso'] (for
+                         spin-polarized case)
 
-    for 'boltztrap-in' use 'case.energy' for spin-unpolarized
-            case and 'case.energyso' for spin-polarized case
+    fileformat       lapwkunit
+    ----------       ---------
+    'lapw-kpt'       'cartesian' (for fcc or bcc) or 'crystal' (for hcp)
 
-    lapwkunit = 'cartesian'|'crystal' used for 'lapw-kpt',
-            WIEN2k requires k-points in crystal coordinates
-            with respect to conventional reciprocal lattice
-            vectors, see xcrysden/tests/supportInfo.kpath
-            for details, use 'cartesian' for fcc or bcc
-            and 'crystal' for hcp
-    deltae, ecut, lpfac, efcut, tmax, deltat, ecut2, dosmethod,
-            nband_exclude used for 'boltztrap-in'
+    fileformat       boltzparam
+    ----------       ----------
+    'boltztrap-in'   [0.0005, 0.6, 5, 0.3, 1200.0, 10.0, -1.0, 'TETRA', 0]
         """
         if lapwkunit is None:
             lapwkunit = 'cartesian'
-        if deltae is None:
-            deltae = 0.0005
-        if ecut is None:
-            ecut = 0.6
-        if lpfac is None:
-            lpfac = 5
-        if efcut is None:
-            efcut = 0.3
-        if tmax is None:
-            tmax = 1200.0
-        if deltat is None:
-            deltat = 10.0
-        if ecut2 is None:
-            ecut2 = -1.0
-        if dosmethod is None:
-            dosmethod = 'TETRA'
-        if nband_exclude is None:
-            nband_exclude = 0
+        if boltzparam is None:
+            boltzparam = [0.0005, 0.6, 5, 0.3, 1200.0, 10.0, -1.0, 'TETRA', 0]
 
         if fileformat == 'internal':
             self._write_file_internal(3, filenames)
@@ -298,9 +300,7 @@ class Energy(Kpoint):
         elif fileformat == 'lapw-kpt':
             self._write_file_lapw_kpt(2, filenames, lapwkunit) 
         elif fileformat == 'boltztrap-in':
-            self._write_file_boltztrap_in(
-                    3, filenames, deltae, ecut, lpfac, efcut, tmax, deltat,
-                    ecut2, dosmethod, nband_exclude)
+            self._write_file_boltztrap_in(3, filenames, boltzparam)
         else:
             raise ValueError(fileformat)
 

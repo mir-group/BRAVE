@@ -255,9 +255,10 @@ class EPA(DOS):
         del self._invtau
 
     def calc_invtau(self):
-        """Method for calculating invtau given energy, mu, temp.
-    dunit, dos are read using fileformat = 'boltztrap-dos'.
-    ee, de, ne, wavg, gavg are read using fileformat = 'epa-out'.
+        """Calculates invtau for energy, mu and temp.
+
+    Requires dunit and dos read with fileformat = 'boltztrap-dos' and ee, de,
+    ne, wavg and gavg read with fileformat = 'epa-out'.
         """
         if hasattr(self, 'invtau'):
             del self.invtau
@@ -321,16 +322,19 @@ class EPA(DOS):
         self.invtau = invtau * math.pow(2.0 * math.pi, 2) / common.PLANCK
 
     def read(self, fileformat, filenames, soc=None):
-        """Method for reading properties from file.
+        """Reads properties from files.
+
+    Args:
+        fileformat (str): File format. Possible values are below.
+        filenames (list): File names. Possible values are below.
+        soc (bool): Set to True if the calculation includes the spin-orbit
+            coupling.
 
     fileformat         filenames
     ----------         ---------
-    'boltztrap-dos'    ['case.intrans', 'case.transdos']
-    'matdyn-dos'       ['prefix.vdos']
     'epa-out'          ['case.intrans', 'epa.dat']
 
-    Inherits fileformat and filenames from class DOS. Set soc
-    to True if the calculation includes the spin-orbit coupling.
+    Inherits fileformat and filenames from class DOS.
         """
         if soc is None:
             soc = False
