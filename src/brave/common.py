@@ -41,16 +41,16 @@ _escale = {
         'cm-1': 1.0e-2 / PLANCK / LIGHT}
 
 def _int_pts(value, param):
-    dummy = np.abs(value - param)
-    idx1 = dummy.argmin()
-    dummy[idx1] = INF12
-    idx2 = dummy.argmin()
+    npt = value.size - 1
+    idx1 = min(np.searchsorted(value, param), npt)
+    idx2 = npt - min(np.searchsorted(-value[::-1], -param), npt)
+    dist1 = value[idx1] - param
+    dist2 = value[idx2] - param
 
-    if (value[idx1] - param) * (value[idx2] - param) < 0.0:
-        weight1 = abs(value[idx2] - param) / (
-                abs(value[idx1] - param) + abs(value[idx2] - param))
-        weight2 = abs(value[idx1] - param) / (
-                abs(value[idx1] - param) + abs(value[idx2] - param))
+    if dist1 * dist2 < 0:
+        denom = abs(dist1) + abs(dist2)
+        weight1 = abs(dist2) / denom
+        weight2 = abs(dist1) / denom
     else:
         weight1 = 1.0
         weight2 = 0.0
