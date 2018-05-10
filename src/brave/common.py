@@ -42,8 +42,9 @@ _escale = {
 
 def _int_pts(value, param):
     npt = value.size - 1
-    idx1 = min(np.searchsorted(value, param), npt)
-    idx2 = npt - min(np.searchsorted(-value[::-1], -param), npt)
+    idx = np.searchsorted(value, param, 'right')
+    idx1 = max(idx - 1, 0)
+    idx2 = min(idx, npt)
     dist1 = value[idx1] - param
     dist2 = value[idx2] - param
 
