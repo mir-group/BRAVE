@@ -869,6 +869,8 @@ class File(object):
                     filename_struct, s0).encode())
                 ff.write("10, '{0:s}'{1:s}".format(
                     filename_energy, s0).encode())
+                ff.write("88, '{0:s}.epa.e'{1:s}".format(
+                    self.prefix, s0).encode())
                 ff.write("-1, '{0:s}'{1:s}".format(
                     self.prefix, s0).encode())
 
