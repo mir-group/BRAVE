@@ -277,7 +277,7 @@ class EPA(DOS):
         ee = self.ee
         de = self.de
         ne = self.ne
-        ww = self.wavg * 1.0e2 * common.PLANCK * common.LIGHT
+        ww = self.wavg * 100 * common.PLANCK * common.LIGHT
         gavg = self.gavg
 
         gj = np.empty(nemax, float)
@@ -287,11 +287,9 @@ class EPA(DOS):
         for nn in range(nepa):
             dummy = 0.0
             for ll in range(nmode):
-                nw = 1.0 / (math.exp(ww[ll] / kt[nn]) - 1.0)
-                fa = 1.0 / (math.exp((en[nn] + ww[ll] - mu[nn]) / kt[nn]
-                        ) + 1.0)
-                fe = 1.0 / (math.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]
-                        ) + 1.0)
+                nw = 1 / (math.exp(ww[ll] / kt[nn]) - 1)
+                fa = 1 / (math.exp((en[nn] + ww[ll] - mu[nn]) / kt[nn]) + 1)
+                fe = 1 / (math.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]) + 1)
                 dosa = np.interp(en[nn] + ww[ll], dos[0,:], dos[1,:])
                 dose = np.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
 
@@ -315,8 +313,7 @@ class EPA(DOS):
                         kk = int(xx)
                         gk[mm] = gj[kk]
 
-                dummy += gk[0] * (nw + fa) * dosa + gk[1] * (nw + 1.0 - fe
-                        ) * dose
+                dummy += gk[0] * (nw + fa) * dosa + gk[1] * (nw + 1 - fe) * dose
             invtau[nn] = dummy / nspin
 
         self.invtau = invtau * math.pow(2.0 * math.pi, 2) / common.PLANCK

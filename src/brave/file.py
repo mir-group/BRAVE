@@ -367,9 +367,9 @@ class File(object):
                                     beta = math.pi / 2
                                     gamma = math.pi / 2
                                 else:
-                                    alpha = float(words[6]) * math.pi / 180.0
-                                    beta = float(words[7]) * math.pi / 180.0
-                                    gamma = float(words[8]) * math.pi / 180.0
+                                    alpha = float(words[6]) * math.pi / 180
+                                    beta = float(words[7]) * math.pi / 180
+                                    gamma = float(words[8]) * math.pi / 180
 
                                 self.avec = self._calc_lapw_avec(
                                     lattype, apar, bpar, cpar, alpha, beta,
@@ -493,7 +493,7 @@ class File(object):
 
             oldaunit = self.aunit
             self.set_aunit('bohr')
-            kscale = self.alat / (2.0 * math.pi)
+            kscale = self.alat / (2 * math.pi)
             self.set_aunit(oldaunit)
 
             kpoint = data[2:5, 0:nkpoint] * kscale
@@ -588,7 +588,7 @@ class File(object):
                     kline = data[0, 0:nkpoint]
                     oldaunit = self.aunit
                     self.set_aunit('angstrom')
-                    kline *= self.alat / (2.0 * math.pi)
+                    kline *= self.alat / (2 * math.pi)
                     self.kline = kline
                     self.set_aunit(oldaunit)
 
