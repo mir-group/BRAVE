@@ -287,9 +287,9 @@ class EPA(DOS):
         for nn in range(nepa):
             dummy = 0.0
             for ll in range(nmode):
-                nw = 1 / (math.exp(ww[ll] / kt[nn]) - 1)
-                fa = 1 / (math.exp((en[nn] + ww[ll] - mu[nn]) / kt[nn]) + 1)
-                fe = 1 / (math.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]) + 1)
+                nw = 1 / (np.exp(ww[ll] / kt[nn]) - 1)
+                fa = 1 / (np.exp((en[nn] + ww[ll] - mu[nn]) / kt[nn]) + 1)
+                fe = 1 / (np.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]) + 1)
                 dosa = np.interp(en[nn] + ww[ll], dos[0,:], dos[1,:])
                 dose = np.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
 
