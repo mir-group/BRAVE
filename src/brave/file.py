@@ -161,8 +161,10 @@ class File(object):
                     elif b'FFT' in line:
                         energy = np.empty((nkpoint, nband, nspin), float)
                     elif b'bands (ev)' in line or b'band energies (ev)' in line:
-                        energy[ii % nkpoint, :, ii // nkpoint] = np.fromfile(
-                            ff, dtype = float, count = nband, sep = ' ')
+                        energy[ii % nkpoint, :, ii // nkpoint] = np.genfromtxt(
+                            ff, dtype = float, max_rows = nband // 8 + 1,
+                            skip_header = 1, delimiter = (
+                            11, 9, 9, 9, 9, 9, 9, 9)).flatten()[:nband]
                         ii += 1
                     elif b'the Fermi energy is' in line:
                         self.efermi = float(line.split()[4])
