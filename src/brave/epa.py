@@ -362,7 +362,7 @@ class EPA(DOS):
                 ee[ii] = float(tt[0])
                 de[ii] = float(tt[1])
                 ne[ii] = int(tt[2])
-            self.ee, self.de, self.ne, = ee - efermi * common.RYDBERG, de, ne
+            self.ee, self.de, self.ne = ee - efermi * common.RYDBERG, de, ne
 
             self.wavg = np.fromfile(
                 ff, dtype = float, count = nmode, sep = ' ')
