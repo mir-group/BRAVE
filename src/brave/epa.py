@@ -368,9 +368,14 @@ class EPA(DOS):
                 ff, dtype = float, count = nmode, sep = ' ')
 
             nemax = np.amax(ne)
-            self.gavg = np.loadtxt(ff, dtype = float, usecols = (
-                ii for ii in range(3, 3 + nmode))).reshape(
-                nwin, nemax, nemax, nmode)
+            gavg = np.zeros((2, nemax, nemax, nmode), float)
+            dummy = np.loadtxt(ff, dtype = float, usecols = (
+                ii for ii in range(3, 3 + nmode)))
+            gavg[0, :ne[0], :ne[0], :] = dummy[:ne[0]**2, :].reshape(
+                ne[0], ne[0], nmode)
+            gavg[1, :ne[1], :ne[1], :] = dummy[ne[0]**2:, :].reshape(
+                ne[1], ne[1], nmode)
+            self.gavg = gavg
 
     def __init__(
             self, energy=None, mu=None, temp=None, ee=None, de=None, ne=None,
