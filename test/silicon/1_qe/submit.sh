@@ -7,7 +7,7 @@ BANDS="qe-6.1/bin/bands.x"
 PH="qe-6.1/bin/ph.x"
 Q2R="qe-6.1/bin/q2r.x"
 MATDYN="qe-6.1/bin/matdyn.x"
-EPI2EPA="qe-6.1/bin/epi2epa.x"
+EPA="qe-6.1/bin/epa.x"
 PW2BGW="qe-6.1/bin/pw2bgw.x"
 PW2WANNIER90="qe-6.1/bin/pw2wannier90.x"
 PYTHON="python3"
@@ -27,7 +27,7 @@ cp silicon.dyn0 silicon.dyn0.xml
 $MPI $Q2R < 3.q2r.in > 3.q2r.out
 $MPI $MATDYN < 4.matdyn.in > 4.matdyn.out
 $MPI $MATDYN < 5.matdyn.in > 5.matdyn.out
-$EPI2EPA < 6.epi2epa.in > 6.epi2epa.out
+$EPA < 6.epa.in > 6.epa.out
 cd ../4_bgw
 $PYTHON kpath.py
 cp -r ../1_scf/silicon.save .

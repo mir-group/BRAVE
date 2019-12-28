@@ -1,5 +1,5 @@
 &input
-   flfrc = 'silicon.fc.xml'
+   flfrc = 'silicon.fc'
    fldos = 'silicon.vdos'
    flfrq = 'silicon.freq_vdos'
    flvec = 'silicon.modes_vdos'

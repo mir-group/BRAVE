@@ -1,5 +1,5 @@
 &input
-   flfrc = 'silicon.fc.xml'
+   flfrc = 'silicon.fc'
    flfrq = 'silicon.freq'
    flvec = 'silicon.modes'
    asr = 'crystal'

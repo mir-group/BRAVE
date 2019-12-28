@@ -1,5 +1,5 @@
 &input
-   fildyn = 'silicon.dyn.xml'
+   fildyn = 'silicon.dyn'
    flfrc = 'silicon.fc'
    zasr = 'crystal'
 /
