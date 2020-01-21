@@ -80,3 +80,7 @@ An extended version of this code is located in [test/silicon/6_boltz/qe2boltz.py
 cat case.output1_? > case.output1
 cat case.output1_?? >> case.output1
 ```
+
+## License
+
+See the [LICENSE](LICENSE.txt) file for license rights and limitations (MIT).
