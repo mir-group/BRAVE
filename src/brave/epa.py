@@ -36,22 +36,22 @@ class EPA(DOS):
             raise AttributeError('nepa')
 
     @property
-    def nwin(self):
-        """An integer holding the number of energy windows."""
+    def ngrid(self):
+        """An integer holding the number of energy grids."""
         _list = []
-        if hasattr(self, 'ee'):
-            _list.append(self._ee.shape[0])
-        if hasattr(self, 'de'):
-            _list.append(self._de.shape[0])
-        if hasattr(self, 'ne'):
-            _list.append(self._ne.shape[0])
+        if hasattr(self, 'edge'):
+            _list.append(self._edge.shape[0])
+        if hasattr(self, 'step'):
+            _list.append(self._step.shape[0])
+        if hasattr(self, 'nbin'):
+            _list.append(self._nbin.shape[0])
         if hasattr(self, 'gavg'):
             _list.append(self._gavg.shape[0])
 
         if _list[1:] == _list[:-1] and len(_list) > 0:
             return _list[0]
         else:
-            raise AttributeError('nwin')
+            raise AttributeError('ngrid')
 
     @property
     def nmode(self):
@@ -68,9 +68,9 @@ class EPA(DOS):
             raise AttributeError('nmode')
 
     @property
-    def nemax(self):
+    def nbinmax(self):
         """An integer holding the maximum number of energy bins in all energy
-    windows.
+    grids.
         """
         _list = []
         if hasattr(self, 'gavg'):
@@ -80,7 +80,7 @@ class EPA(DOS):
         if _list[1:] == _list[:-1] and len(_list) > 0:
             return _list[0]
         else:
-            raise AttributeError('nemax')
+            raise AttributeError('nbinmax')
 
     @property
     def energy(self):
@@ -140,61 +140,61 @@ class EPA(DOS):
         del self._temp
 
     @property
-    def ee(self):
-        """A length-nwin ndarray of floats holding the edges of the energy
-    windows, in units of eV.
+    def edge(self):
+        """A length-ngrid ndarray of floats holding the grid edges of the
+    energy grids, in units of eV.
         """
-        return self._ee
+        return self._edge
 
-    @ee.setter
-    def ee(self, value):
+    @edge.setter
+    def edge(self, value):
         if not isinstance(value, np.ndarray):
-            raise TypeError('ee {0!r}'.format(value))
+            raise TypeError('edge {0!r}'.format(value))
         if value.dtype != np.dtype('float') or len(value.shape) != 1:
-            raise ValueError('ee {0!r}'.format(value))
-        self._ee = value
+            raise ValueError('edge {0!r}'.format(value))
+        self._edge = value
 
-    @ee.deleter
-    def ee(self):
-        del self._ee
+    @edge.deleter
+    def edge(self):
+        del self._edge
 
     @property
-    def de(self):
-        """A length-nwin ndarray of floats holding the widths of the energy
-    bins, in units of eV.
+    def step(self):
+        """A length-ngrid ndarray of floats holding the grid steps of the
+    energy grids, in units of eV.
         """
-        return self._de
+        return self._step
 
-    @de.setter
-    def de(self, value):
+    @step.setter
+    def step(self, value):
         if not isinstance(value, np.ndarray):
-            raise TypeError('de {0!r}'.format(value))
+            raise TypeError('step {0!r}'.format(value))
         if value.dtype != np.dtype('float') or len(value.shape) != 1:
-            raise ValueError('de {0!r}'.format(value))
-        self._de = value
+            raise ValueError('step {0!r}'.format(value))
+        self._step = value
 
-    @de.deleter
-    def de(self):
-        del self._de
+    @step.deleter
+    def step(self):
+        del self._step
 
     @property
-    def ne(self):
-        """A length-nwin ndarray of integers holding the numbers of energy
-    bins.
+    def nbin(self):
+        """A length-ngrid ndarray of integers holding the numbers of bins
+    in the energy grids.
         """
-        return self._ne
+        return self._nbin
 
-    @ne.setter
-    def ne(self, value):
+    @nbin.setter
+    def nbin(self, value):
         if not isinstance(value, np.ndarray):
-            raise TypeError('ne {0!r}'.format(value))
+            raise TypeError('nbin {0!r}'.format(value))
         if value.dtype != np.dtype('int') or len(value.shape) != 1:
-            raise ValueError('ne {0!r}'.format(value))
-        self._ne = value
+            raise ValueError('nbin {0!r}'.format(value))
+        self._nbin = value
 
-    @ne.deleter
-    def ne(self):
-        del self._ne
+    @nbin.deleter
+    def nbin(self):
+        del self._nbin
 
     @property
     def wavg(self):
@@ -217,9 +217,9 @@ class EPA(DOS):
 
     @property
     def gavg(self):
-        """A nwin by nemax by nemax by nmode ndarray of floats holding the
-    averaged squared absolute electron-phonon coupling matrix elements, in
-    units of eV^2.
+        """A ngrid by nbinmax by nbinmax by nmode ndarray of floats holding
+    the averaged squared absolute electron-phonon coupling matrix elements,
+    in units of eV^2.
         """
         return self._gavg
 
@@ -257,8 +257,8 @@ class EPA(DOS):
     def calc_invtau(self):
         """Calculates invtau for energy, mu and temp.
 
-    Requires dunit and dos read with fileformat = 'boltztrap-dos' and ee, de,
-    ne, wavg and gavg read with fileformat = 'epa-out'.
+    Requires dunit and dos read with fileformat = 'boltztrap-dos' and edge,
+    step, nbin, wavg and gavg read with fileformat = 'epa-out'.
         """
         if hasattr(self, 'invtau'):
             del self.invtau
@@ -268,19 +268,19 @@ class EPA(DOS):
         nspin = 2
 
         nepa = self.nepa
-        nwin = self.nwin
+        ngrid = self.ngrid
         nmode = self.nmode
-        nemax = self.nemax
+        nbinmax = self.nbinmax
         en = self.energy
         mu = self.mu
         kt = self.temp * common.BOLTZMANN
-        ee = self.ee
-        de = self.de
-        ne = self.ne
+        edge = self.edge
+        step = self.step
+        nbin = self.nbin
         ww = self.wavg * 100 * common.PLANCK * common.LIGHT
         gavg = self.gavg
 
-        gj = np.empty(nemax, float)
+        gj = np.empty(nbinmax, float)
         gk = np.empty(2, float)
         invtau = np.empty(nepa, float)
 
@@ -290,26 +290,27 @@ class EPA(DOS):
                 nw = 1 / (np.exp(ww[ll] / kt[nn]) - 1)
                 fa = 1 / (np.exp((en[nn] + ww[ll] - mu[nn]) / kt[nn]) + 1)
                 fe = 1 / (np.exp((en[nn] - ww[ll] - mu[nn]) / kt[nn]) + 1)
-                dosa = np.interp(en[nn] + ww[ll], dos[0,:], dos[1,:])
-                dose = np.interp(en[nn] - ww[ll], dos[0,:], dos[1,:])
+                dosa = np.interp(en[nn] + ww[ll], dos[0, :], dos[1, :])
+                dose = np.interp(en[nn] - ww[ll], dos[0, :], dos[1, :])
 
-                if (en[nn] < np.sum(ee) / nwin):
+                if (en[nn] < np.sum(edge) / ngrid):
                     ii = 0
                 else:
                     ii = 1
-                if (ne[ii] == 1):
+                if (nbin[ii] == 1):
                     gk[:] = gavg[ii, 0, 0, ll]
                 else:
-                    xx = (en[nn] - ee[ii]) / de[ii]
+                    xx = (en[nn] - edge[ii]) / step[ii]
                     xx = max(xx, common.EPS12)
-                    xx = min(xx, ne[ii] - common.EPS12)
+                    xx = min(xx, nbin[ii] - common.EPS12)
                     jj = int(xx)
-                    for kk in range(nemax):
+                    for kk in range(nbinmax):
                         gj[kk] = gavg[ii, jj, kk, ll]
                     for mm in range(2):
-                        xx = (en[nn] + ww[ll] * (1 - 2 * mm) - ee[ii]) / de[ii]
+                        xx = (en[nn] + ww[ll] * (1 - 2 * mm) - edge[ii]) / step[
+                            ii]
                         xx = max(xx, common.EPS12)
-                        xx = min(xx, ne[ii] - common.EPS12)
+                        xx = min(xx, nbin[ii] - common.EPS12)
                         kk = int(xx)
                         gk[mm] = gj[kk]
 
@@ -351,35 +352,36 @@ class EPA(DOS):
 
         with open(filenames[1], 'rb') as ff:
             tt = ff.readline().split()
-            nwin = int(tt[0])
+            ngrid = int(tt[0])
             nmode = int(tt[1])
 
-            ee = np.empty(nwin, float)
-            de = np.empty(nwin, float)
-            ne = np.empty(nwin, int)
-            for ii in range(nwin):
+            edge = np.empty(ngrid, float)
+            step = np.empty(ngrid, float)
+            nbin = np.empty(ngrid, int)
+            for ii in range(ngrid):
                 tt = ff.readline().split()
-                ee[ii] = float(tt[0])
-                de[ii] = float(tt[1])
-                ne[ii] = int(tt[2])
-            self.ee, self.de, self.ne = ee - efermi * common.RYDBERG, de, ne
+                edge[ii] = float(tt[0])
+                step[ii] = float(tt[1])
+                nbin[ii] = int(tt[2])
+            self.edge, self.step, self.nbin = (
+                edge - efermi * common.RYDBERG, step, nbin)
 
             self.wavg = np.fromfile(
                 ff, dtype = float, count = nmode, sep = ' ')
 
-            nemax = np.amax(ne)
-            gavg = np.zeros((2, nemax, nemax, nmode), float)
+            nbinmax = np.amax(nbin)
+            gavg = np.zeros((2, nbinmax, nbinmax, nmode), float)
             dummy = np.loadtxt(ff, dtype = float, usecols = (
                 ii for ii in range(3, 3 + nmode)))
-            gavg[0, :ne[0], :ne[0], :] = dummy[:ne[0]**2, :].reshape(
-                ne[0], ne[0], nmode)
-            gavg[1, :ne[1], :ne[1], :] = dummy[ne[0]**2:, :].reshape(
-                ne[1], ne[1], nmode)
+            gavg[0, :nbin[0], :nbin[0], :] = dummy[:nbin[0]**2, :].reshape(
+                nbin[0], nbin[0], nmode)
+            gavg[1, :nbin[1], :nbin[1], :] = dummy[nbin[0]**2:, :].reshape(
+                nbin[1], nbin[1], nmode)
             self.gavg = gavg
 
     def __init__(
-            self, energy=None, mu=None, temp=None, ee=None, de=None, ne=None,
-            wavg=None, gavg=None, invtau=None, **kwargs):
+            self, energy=None, mu=None, temp=None, edge=None, step=None,
+            nbin=None, wavg=None, gavg=None, invtau=None, **kwargs):
         super().__init__(**kwargs)
 
         if energy is not None:
@@ -388,12 +390,12 @@ class EPA(DOS):
             self.mu = mu
         if temp is not None:
             self.temp = temp
-        if ee is not None:
-            self.ee = ee
-        if de is not None:
-            self.de = de
-        if ne is not None:
-            self.ne = ne
+        if edge is not None:
+            self.edge = edge
+        if step is not None:
+            self.step = step
+        if nbin is not None:
+            self.nbin = nbin
         if wavg is not None:
             self.wavg = wavg
         if gavg is not None:
