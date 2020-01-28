@@ -330,7 +330,7 @@ class EPA(DOS):
 
     fileformat         filenames
     ----------         ---------
-    'epa-out'          ['case.intrans', 'epa.dat']
+    'epa-out'          ['case.intrans', 'prefix.epa.e']
 
     Inherits fileformat and filenames from class DOS.
         """

@@ -34,7 +34,7 @@ An extended version of this code is located in [test/silicon/6_boltz/qe2boltz.py
 | [Quantum Espresso](https://www.quantum-espresso.org/) | **bands.x**         | r      | 'bands-out'     | 'bands.out'                                              |
 | [Quantum Espresso](https://www.quantum-espresso.org/) | **matdyn.x**        | r      | 'matdyn-out'    | 'matdyn.modes'                                           |
 | [Quantum Espresso](https://www.quantum-espresso.org/) | **matdyn.x**        | r      | 'matdyn-dos'    | 'prefix.vdos'                                            |
-| [Quantum Espresso](https://www.quantum-espresso.org/) | **epa.x**           | r      | 'epa-out'       | 'epa.dat'                                                |
+| [Quantum Espresso](https://www.quantum-espresso.org/) | **epa.x**           | r      | 'epa-out'       | 'prefix.epa.e'                                           |
 | [BerkeleyGW](https://www.berkeleygw.org/)             | **inteqp.flavor.x** | r      | 'inteqp-out'    | 'bandstructure.dat'                                      |
 | [BerkeleyGW](https://www.berkeleygw.org/)             | **sigma.flavor.x**  | r      | 'sigma-out'     | 'sigma_hp.log'                                           |
 | [Wannier90](https://www.wannier.org/)                 | **wannier90.x**     | rw     | 'wannier-in'    | 'seedname.win'                                           |
