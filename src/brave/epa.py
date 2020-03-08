@@ -318,14 +318,12 @@ class EPA(DOS):
 
         self.invtau = invtau * math.pow(2.0 * math.pi, 2) / common.PLANCK
 
-    def read(self, fileformat, filenames, soc=None):
+    def read(self, fileformat, filenames):
         """Reads properties from files.
 
     Args:
         fileformat (str): File format. Possible values are below.
         filenames (list): File names. Possible values are below.
-        soc (bool): Set to True if the calculation includes the spin-orbit
-            coupling.
 
     fileformat         filenames
     ----------         ---------
@@ -333,11 +331,9 @@ class EPA(DOS):
 
     Inherits fileformat and filenames from class DOS.
         """
-        if soc is None:
-            soc = False
 
         if fileformat == 'boltztrap-dos':
-            self._read_dos_boltztrap_dos(filenames, soc)
+            self._read_dos_boltztrap_dos(filenames)
         elif fileformat == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
         elif fileformat == 'epa-out':
