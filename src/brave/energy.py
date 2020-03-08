@@ -149,9 +149,13 @@ class Energy(Kpoint):
         if soc is None:
             soc = False
 
-        nval = self.nelec
-        if not soc:
-            nval /= 2
+        if soc:
+            spin_degeneracy = 1
+        else:
+            spin_degeneracy = 2
+
+        nval = self.nelec / spin_degeneracy
+
         if nval.is_integer():
             nval = int(nval)
         else:

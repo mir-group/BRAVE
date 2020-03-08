@@ -41,9 +41,9 @@ class DOS(Cell):
 
     @property
     def dos(self):
-        """A 2 by ndos ndarray of floats holding the density of states. The
-    first column is in units of dunit[1], the second column is in units of
-    1/(dunit[0] dunit[1]).
+        """A 2 by ndos ndarray of floats holding the density of states per
+    spin channel. The first column is in units of dunit[1], the second column
+    is in units of 1/(dunit[0] dunit[1]).
         """
         return self._dos
 
@@ -92,14 +92,12 @@ class DOS(Cell):
         if dunit != self.dunit:
             self.dunit = dunit
 
-    def read(self, fileformat, filenames, soc=None):
+    def read(self, fileformat, filenames):
         """Reads properties from files.
 
     Args:
         fileformat (str): File format. Possible values are below.
         filenames (list): File names. Possible values are below.
-        soc (bool): Set to True if the calculation includes the spin-orbit
-            coupling.
 
     fileformat         filenames
     ----------         ---------
@@ -108,27 +106,19 @@ class DOS(Cell):
 
     Inherits fileformat and filenames from class Cell.
         """
-        if soc is None:
-            soc = False
-
         if fileformat == 'boltztrap-dos':
-            self._read_dos_boltztrap_dos(filenames, soc)
+            self._read_dos_boltztrap_dos(filenames)
         elif fileformat == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
         else:
             super().read(fileformat, filenames)
 
-    def _read_dos_boltztrap_dos(self, filenames, soc):
-        if soc:
-            spin_degeneracy = 1
-        else:
-            spin_degeneracy = 2
+    def _read_dos_boltztrap_dos(self, filenames):
 
         efermi = float(linecache.getline(filenames[0], 3).split()[0])
         dos = np.loadtxt(filenames[
             1], dtype = float, skiprows = 1, usecols = (0, 1), unpack = True)
         dos[0, :] -= efermi
-        dos[1, :] *= spin_degeneracy
 
         self.dunit, self.dos = ['uc', 'rydberg'], dos
 

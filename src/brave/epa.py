@@ -265,7 +265,6 @@ class EPA(DOS):
 
         self.set_dunit(['uc', 'ev'])
         dos = self.dos
-        nspin = 2
 
         nepa = self.nepa
         ngrid = self.ngrid
@@ -315,7 +314,7 @@ class EPA(DOS):
                         gk[mm] = gj[kk]
 
                 dummy += gk[0] * (nw + fa) * dosa + gk[1] * (nw + 1 - fe) * dose
-            invtau[nn] = dummy / nspin
+            invtau[nn] = dummy
 
         self.invtau = invtau * math.pow(2.0 * math.pi, 2) / common.PLANCK
 
