@@ -137,6 +137,8 @@ class File(object):
                         self.nelec = float(line.split()[4])
                     elif b'Sym. Ops.' in line or b'Sym.Ops.' in line:
                         nsym = int(line.split()[0])
+                    elif b'No symmetry found' in line:
+                        nsym = 1
                     elif b'cryst.   s' in line:
                         for kk in range(3):
                             buf.write(line[19:53])
