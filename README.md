@@ -1,6 +1,6 @@
 # Bloch Representation Analysis and Visualization Environment (BRAVE)
 
-BRAVE is a Python package that includes several modules for parsing the output files of different electronic structure codes, generating the input files for subsequent calculations, and analyzing and plotting the calculation results. For details please refer to the documentation on individual modules.
+BRAVE is a Python package that includes several modules for parsing the output files of different electronic structure codes, generating the input files for subsequent calculations, and analyzing and plotting the calculation results. It is also the main pre- and post-processing tool for computing electronic transport properties with [EPA](https://github.com/mir-group/EPA) code. For details please refer to the documentation on individual modules.
 ```python
 import brave
 help(brave)
