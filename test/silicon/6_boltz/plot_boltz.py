@@ -5,7 +5,7 @@ name = 'silicon'
 header = 'fcc Si'
 ext = 'png'
 f1 = ['{0:s}.intrans'.format(name), '{0:s}.trace'.format(name)]
-f2 = '{0:s}.{1:s}'.format(name, ext)
+f2 = '{0:s}_boltz.{1:s}'.format(name, ext)
 
 prop = ['sigma', 'seebeck', 'L']
 scale = [1.0e-5, 1.0e6, 1.0e8]
