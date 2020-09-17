@@ -188,7 +188,7 @@ class File(object):
         with open(filenames[0], 'rb') as ff:
             for line in ff:
                 if level > 0:
-                    if b'Unit_Cell_Cart' in line:
+                    if b'Begin Unit_Cell_Cart' in line:
                         self.aunit = ff.readline().strip().lower().decode()
                         self.avec = np.genfromtxt(
                             ff, dtype = float, max_rows = 3)
@@ -590,7 +590,7 @@ class File(object):
                 data = np.loadtxt(filename, dtype = float, unpack = True)
                 if ii == 0:
                     nkpoint = np.where(data[0, :] == data[0, 0])[0][1]
-                    nband = data.shape[0] // nkpoint
+                    nband = data.shape[1] // nkpoint
 
                     kline = data[0, 0:nkpoint]
                     oldaunit = self.aunit
