@@ -476,6 +476,8 @@ class File(object):
             self.kunit = 'cartesian'
 
         if level > 2:
+            nkpoint = len(klist)
+            nband = len(elist[0])
             nspin = 1
             self.energy = np.array(elist, float).reshape(nkpoint, nband, nspin)
             self.eunit = 'cm-1'
