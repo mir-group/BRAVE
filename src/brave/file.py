@@ -239,14 +239,14 @@ class File(object):
                         line = ff.readline()
                         buf = io.BytesIO()
                         for jj in range(3):
-                            line = ff.readline()
-                            buf.write(line[line.find(b'(') + 1:line.find(
-                                b')')] + b',')
+                            line = ff.readline().replace(b',', b'')
+                            buf.write(line[line.find(b'(') + 1:line.find(b')')])
                         buf.seek(0)
-                        self.avec = np.loadtxt(
-                            buf, dtype = float, delimiter = b',').reshape(
-                            3, 3) / self.alat
+                        self.avec = np.loadtxt(buf, dtype = float).reshape(
+                                3, 3) / self.alat
                         buf.close()
+                    elif b'NELECT' in line:
+                        self.nelec = float(line.split()[2])
 
                 if level > 1:
                     if b'Dimension of arrays:' in line:
@@ -254,18 +254,18 @@ class File(object):
                         words = line.split()
                         nkpoint = int(words[words.index(b'NKPTS') + 2])
                         nband = int(words[words.index(b'NBANDS=') + 1])
-                    elif b'k-points in reciprocal lattice and weights':
+                    elif b'k-points in reciprocal lattice and weights' in line:
                         dummy = np.genfromtxt(
                             ff, dtype = float, max_rows = nkpoint)
                         self.kpoint, self.kweight = dummy[:, :-1], dummy[:, 3]
                         self.kunit = 'crystal'
 
                 if level > 2:
-                    if 'ISPIN' in line:
+                    if b'ISPIN' in line:
                         nspin = int(line.split()[2])
-                    elif 'E-fermi :' in line:
+                    elif b'E-fermi :' in line:
                         self.efermi = float(line.split()[2])
-                    elif 'band No.  band energies     occupation' in line:
+                    elif b'band No.  band energies     occupation' in line:
                         if kk == 0 and ll == 0:
                             energy = np.empty((nkpoint, nband, nspin), float)
                         energy[kk, :, ll] = np.genfromtxt(
