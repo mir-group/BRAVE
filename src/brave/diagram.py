@@ -68,9 +68,9 @@ class Diagram(DOS, Energy):
             _kind_vref = 'plot'
             _style_vref = ['solid', 'None']
             _color_vref = ['black', 'none', 'none']
-        _kind_dos = ['plot']
-        _style_dos = [['solid', 'None']]
-        _color_dos = [['blue', 'none', 'none']]
+        _kind_dos = 'plot'
+        _style_dos = ['solid', 'None']
+        _color_dos = ['blue', 'none', 'none']
         _ypad = 0.1
         _ivlabel_dict = {
                 'uc': 'uc$^{-1}$',
@@ -180,7 +180,7 @@ class Diagram(DOS, Energy):
                 xgrid.append([['solid', 'black', 1.0], [None, None, None]])
             else:
                 xtick.append(None)
-                xgrid.append(None)
+                xgrid.append([[None, None, None], [None, None, None]])
 
             xlabel.append('Wavevector')
 
@@ -196,7 +196,7 @@ class Diagram(DOS, Energy):
             xlim.append([0.0, np.amax(self.dos[1]) * (1.0 + _ypad)])
 
             xtick.append(None)
-            xgrid.append(None)
+            xgrid.append([[None, None, None], [None, None, None]])
 
             xlabel.append('DOS ({0:s}{1:s})'.format(_ivlabel_dict[self.dunit[
                     0]], _ielabel_dict[self.dunit[1]]))
