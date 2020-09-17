@@ -48,7 +48,7 @@ class Diagram(DOS, Energy):
         _kind_gap = 'fill'
         _style_gap = ['None', 'None']
         _color_gap = ['yellow', 'none', 'none']
-        if self.nspin == 1:
+        if not hasattr(self, 'energy') or self.nspin == 1:
             _kind_band = ['plot']
             _style_band = [['solid', 'None']]
             _color_band = [['blue', 'none', 'none']]
@@ -201,7 +201,10 @@ class Diagram(DOS, Energy):
             xlabel.append('DOS ({0:s}{1:s})'.format(_ivlabel_dict[self.dunit[
                     0]], _ielabel_dict[self.dunit[1]]))
 
-        ylabel[0] = 'Energy ({0:s})'.format(_elabel_dict[self.eunit])
+        if i_e > -1:
+            ylabel[0] = 'Energy ({0:s})'.format(_elabel_dict[self.eunit])
+        else:
+            ylabel[0] = 'Energy ({0:s})'.format(_elabel_dict[self.dunit[1]])
 
         plot = Plot()
 
