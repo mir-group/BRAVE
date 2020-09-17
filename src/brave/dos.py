@@ -92,7 +92,7 @@ class DOS(Cell):
         if dunit != self.dunit:
             self.dunit = dunit
 
-    def read(self, fileformat, filenames):
+    def read(self, fileformat, filenames, **kwargs):
         """Reads properties from files.
 
     Args:
@@ -111,7 +111,7 @@ class DOS(Cell):
         elif fileformat == 'matdyn-dos':
             self._read_dos_matdyn_dos(filenames)
         else:
-            super().read(fileformat, filenames)
+            super().read(fileformat, filenames, **kwargs)
 
     def _read_dos_boltztrap_dos(self, filenames):
 

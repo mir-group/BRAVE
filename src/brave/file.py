@@ -491,19 +491,19 @@ class File(object):
             eindex = dd[etype]
 
         if level > 1:
-            data = np.loadtxt(filenames[
-                0], dtype = float, skiprows = 2, unpack = True)
-            nspin = int(round(data[0, -1]))
-            nband_exclude = int(round(data[1, 0])) - 1
-            nband = int(round(data[1, -1]))
-            nkpoint = data.shape[1] / nspin / (nband - nband_exclude)
+            data = np.loadtxt(filenames[0], dtype = float, skiprows = 2)
+            nspin = int(round(data[-1, 0]))
+            nband_exclude = int(round(data[0, 1])) - 1
+            nband = int(round(data[-1, 1]))
+            nkpoint = int(round(data.shape[0] / nspin / (
+                    nband - nband_exclude)))
 
             oldaunit = self.aunit
             self.set_aunit('bohr')
             kscale = self.alat / (2 * math.pi)
             self.set_aunit(oldaunit)
 
-            kpoint = data[2:5, 0:nkpoint] * kscale
+            kpoint = data[0:nkpoint, 2:5] * kscale
             self.kpoint = kpoint
             self.kunit = 'cartesian'
 
