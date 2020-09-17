@@ -381,6 +381,8 @@ class File(object):
                                     gamma)
                                 self.alat = apar
                                 self.aunit = 'bohr'
+                            elif b'number of local orbitals, nlo (hamilt)' in line:
+                                self.nelec = float(line.split()[-1])
 
                         if level > 1:
                             if b'     K=' in line:
