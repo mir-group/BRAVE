@@ -5,16 +5,16 @@ unset FORT_BUFFERED
 unset FORT_BLOCKSIZE
 unset FORT_BUFFERCOUNT
 
-NPOOL=24
+NPOOL=20
 MPI="mpirun"
-PW="qe-6.1/bin/pw.x"
-BANDS="qe-6.1/bin/bands.x"
-PH="qe-6.1/bin/ph.x"
-Q2R="qe-6.1/bin/q2r.x"
-MATDYN="qe-6.1/bin/matdyn.x"
-EPA="qe-6.1/bin/epa.x"
-PW2BGW="qe-6.1/bin/pw2bgw.x"
-PW2WANNIER90="qe-6.1/bin/pw2wannier90.x"
+PW="q-e-qe-6.6/bin/pw.x"
+BANDS="q-e-qe-6.6/bin/bands.x"
+PH="q-e-qe-6.6/bin/ph.x"
+Q2R="q-e-qe-6.6/bin/q2r.x"
+MATDYN="q-e-qe-6.6/bin/matdyn.x"
+EPA="q-e-qe-6.6/bin/epa.x"
+PW2BGW="q-e-qe-6.6/bin/pw2bgw.x"
+PW2WANNIER90="q-e-qe-6.6/bin/pw2wannier90.x"
 PYTHON="python3"
 
 cd 1_scf

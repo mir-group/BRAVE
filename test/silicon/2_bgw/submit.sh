@@ -1,9 +1,9 @@
 #!/bin/bash
 
 MPI="mpirun"
-EPSILON="BerkeleyGW-1.2.0/bin/epsilon.real.x"
-SIGMA="BerkeleyGW-1.2.0/bin/sigma.real.x"
-INTEQP="BerkeleyGW-1.2.0/bin/inteqp.real.x"
+EPSILON="BerkeleyGW-2.1/bin/epsilon.real.x"
+SIGMA="BerkeleyGW-2.1/bin/sigma.real.x"
+INTEQP="BerkeleyGW-2.1/bin/inteqp.real.x"
 
 cd 1_epsilon
 cp ../../1_qe/4_bgw/WFN .
