@@ -116,15 +116,16 @@ class DOS(Cell):
     def _read_dos_boltztrap_dos(self, filenames):
 
         efermi = float(linecache.getline(filenames[0], 3).split()[0])
-        dos = np.loadtxt(filenames[
-            1], dtype = float, skiprows = 1, usecols = (0, 1), unpack = True)
+        dos = np.loadtxt(filenames[1], dtype = float, skiprows = 1, usecols = (
+                0, 1), unpack = True)
         dos[0, :] -= efermi
 
         self.dunit, self.dos = ['uc', 'rydberg'], dos
 
     def _read_dos_matdyn_dos(self, filenames):
 
-        dos = np.loadtxt(filenames[0], dtype = float, unpack = True)
+        dos = np.loadtxt(filenames[0], dtype = float, skiprows = 1, usecols = (
+                0, 1), unpack = True)
 
         self.dunit, self.dos = ['uc', 'cm-1'], dos
 
