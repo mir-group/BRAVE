@@ -117,7 +117,8 @@ class File(object):
                 if level > 0:
                     if b'Writing output data file' in line:
                         ss = line.split()[4].decode()
-                        self.prefix = ss.split('/')[-2].replace('.save', '')
+                        tt = ss[:ss.find('.save')]
+                        self.prefix = tt[tt.rfind('/') + 1:]
                     elif b'lattice parameter' in line:
                         self.aunit = 'bohr'
                         self.alat = float(line.split()[4])
