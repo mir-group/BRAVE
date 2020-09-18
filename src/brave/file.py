@@ -880,6 +880,8 @@ class File(object):
                     filename_energy, s0).encode())
                 ff.write("88, '{0:s}.epa.e'{1:s}".format(
                     self.prefix, s0).encode())
+                ff.write("89, '{0:s}.ke0j'{1:s}".format(
+                    self.prefix, s0).encode())
                 ff.write("-1, '{0:s}'{1:s}".format(
                     self.prefix, s0).encode())
 
@@ -928,4 +930,7 @@ class File(object):
                     self.energy[ii, nband_exclude:self.nband, :].tofile(
                         ff, '\n')
                     ff.write(b'\n')
+
+            with open('{0:s}.ke0j'.format(self.prefix), 'wb') as ff:
+                ff.write('.TRUE.\n'.encode())
 
