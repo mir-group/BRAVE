@@ -58,7 +58,11 @@ An extended version of this code is located in [test/silicon/6_boltz/qe2boltz.py
 | [WIEN2k](https://susi.theochem.tuwien.ac.at/)         | **lapw1**       | r      | 'lapw-out'      | 'case.output1up', 'case.output1dn'                         |
 | [BoltzTraP](https://goo.gl/atsFQ8)                    | **BoltzTraP**   | w      | 'boltztrap-in'  | 'case.def', 'case.intrans', 'case.struct', 'case.energyso' |
 
-## Technical notes on different codes
+## Warning
+
+When reading fileformats 'epa-out' and 'boltztrap-dos', the energy scale is shifted to set the Fermi level to zero. Hopefully this brings more convenience than confusion.
+
+## Some remarks on different codes
 
 [Quantum Espresso](https://www.quantum-espresso.org/)
 
