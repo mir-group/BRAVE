@@ -1,7 +1,9 @@
 &inputpp
    prefix = 'silicon'
    seedname = 'silicon'
+   spin_component = 'none'
    write_amn = .true.
    write_mmn = .true.
+   write_unk = .false.
    outdir = '.'
 /

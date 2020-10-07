@@ -189,7 +189,7 @@ class File(object):
         with open(filenames[0], 'rb') as ff:
             for line in ff:
                 if level > 0:
-                    if b'Begin Unit_Cell_Cart' in line:
+                    if b'begin unit_cell_cart' in line:
                         self.aunit = ff.readline().strip().lower().decode()
                         self.avec = np.genfromtxt(
                             ff, dtype = float, max_rows = 3)
