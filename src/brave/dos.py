@@ -35,15 +35,10 @@ class DOS(Cell):
         del self._dunit
 
     @property
-    def ndos(self):
-        """An integer holding the number of points in the energy grid."""
-        return self._dos.shape[1]
-
-    @property
     def dos(self):
-        """A 2 by ndos ndarray of floats holding the density of states per
-    spin channel. The first column is in units of dunit[1], the second column
-    is in units of 1/(dunit[0] dunit[1]).
+        """A 2D ndarray of floats holding the total (and optionally partial)
+    density of states per spin channel. The first row is in units of dunit[1],
+    the subsequent rows are in units of 1/(dunit[0] dunit[1]).
         """
         return self._dos
 
@@ -52,7 +47,7 @@ class DOS(Cell):
         if not isinstance(value, np.ndarray):
             raise TypeError('dos {0!r}'.format(value))
         if value.dtype != np.dtype('float') or len(
-                value.shape) != 2 or value.shape[0] != 2:
+                value.shape) != 2 or value.shape[0] < 2:
             raise ValueError('dos {0!r}'.format(value))
         self._dos = value
 
@@ -76,8 +71,8 @@ class DOS(Cell):
 
             if hasattr(self, 'dos'):
                 dummy = self.dos
-                dummy[1, :] *= common._a3scale[self.dunit[0]] / common._a3scale[
-                    dunit[0]]
+                dummy[1:, :] *= common._a3scale[self.dunit[
+                    0]] / common._a3scale[dunit[0]]
                 self.dos = dummy
 
         if dunit[1] != self.dunit[1]:
@@ -85,7 +80,7 @@ class DOS(Cell):
                 dummy = self.dos
                 dummy[0, :] *= common._escale[dunit[1]] / common._escale[
                     self.dunit[1]]
-                dummy[1, :] /= common._escale[dunit[1]] / common._escale[
+                dummy[1:, :] /= common._escale[dunit[1]] / common._escale[
                     self.dunit[1]]
                 self.dos = dummy
 

@@ -31,7 +31,7 @@ class Diagram(DOS, Energy):
     def plot(self):
         del self._plot
 
-    def set_plot(self, plotformat, fillgap=None):
+    def set_plot(self, plotformat, fillgap=None, colordos=None, labeldos=None):
         """Sets the new value of plot.
 
     Args:
@@ -40,6 +40,8 @@ class Diagram(DOS, Energy):
         fillgap (list): The band and spin indices of the top valence and bottom
             conduction bands for color filling the band gap. The order is
             [ibandv, ispinv, ibandc, ispinc]. The default is None.
+        colordos (list): The colors of PDOS components.
+        labeldos (list): The labels of PDOS components.
 
     You may want to set plot.ylim, plot.note and plot.title before calling
     plot.write.
@@ -109,6 +111,7 @@ class Diagram(DOS, Energy):
         kind = [[] for ii in range(max(i_e, i_d) + 1)]
         style = [[] for ii in range(max(i_e, i_d) + 1)]
         color = [[] for ii in range(max(i_e, i_d) + 1)]
+        label = [[] for ii in range(max(i_e, i_d) + 1)]
         xlim = []
         xtick = []
         xgrid = []
@@ -137,6 +140,7 @@ class Diagram(DOS, Energy):
                 kind[i_e].append(_kind_gap)
                 style[i_e].append(_style_gap)
                 color[i_e].append(_color_gap)
+                label[i_e].append('')
 
             for ispin in range(self.nspin - 1, -1, -1):
                 for iband in range(self.nband):
@@ -147,6 +151,7 @@ class Diagram(DOS, Energy):
                     kind[i_e].append(_kind_band[ispin])
                     style[i_e].append(_style_band[ispin])
                     color[i_e].append(_color_band[ispin])
+                    label[i_e].append('')
 
             if hasattr(self, 'efermi'):
                 curve = np.empty((2, 2), float)
@@ -157,6 +162,7 @@ class Diagram(DOS, Energy):
                 kind[i_e].append(_kind_efermi)
                 style[i_e].append(_style_efermi)
                 color[i_e].append(_color_efermi)
+                label[i_e].append('')
 
             if hasattr(self, 'vref'):
                 curve = np.empty((2, 2), float)
@@ -167,6 +173,7 @@ class Diagram(DOS, Energy):
                 kind[i_e].append(_kind_vref)
                 style[i_e].append(_style_vref)
                 color[i_e].append(_color_vref)
+                label[i_e].append('')
 
             xlim.append([0.0, self.kline[self.nkpoint - 1]])
 
@@ -188,12 +195,21 @@ class Diagram(DOS, Energy):
             if i_e > -1:
                 self.set_dunit([self.dunit[0], self.eunit])
 
-            data[i_d].append(self.dos[::-1, :])
-            kind[i_d].append(_kind_dos)
-            style[i_d].append(_style_dos)
-            color[i_d].append(_color_dos)
+            ndos = self.dos.shape[0] - 1
+            for idos in range(ndos):
+                data[i_d].append(self.dos[(idos + 1, 0), :])
+                kind[i_d].append(_kind_dos)
+                style[i_d].append(_style_dos)
+                if colordos is None:
+                    color[i_d].append(_color_dos)
+                else:
+                    color[i_d].append(colordos[idos])
+                if labeldos is None:
+                    label[i_d].append('')
+                else:
+                    label[i_d].append(labeldos[idos])
 
-            xlim.append([0.0, np.amax(self.dos[1]) * (1.0 + _ypad)])
+            xlim.append([0.0, np.amax(self.dos[1:, :]) * (1.0 + _ypad)])
 
             xtick.append(None)
             xgrid.append([[None, None, None], [None, None, None]])
@@ -212,6 +228,7 @@ class Diagram(DOS, Energy):
         plot.kind = kind
         plot.style = style
         plot.color = color
+        plot.label = label
         plot.xlim = xlim
         plot.xtick = xtick
         plot.xgrid = xgrid
