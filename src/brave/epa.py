@@ -375,8 +375,9 @@ class EPA(DOS):
             self.gavg = gavg
 
     def __init__(
-            self, energy=None, mu=None, temp=None, edge=None, step=None,
-            nbin=None, wavg=None, gavg=None, invtau=None, **kwargs):
+            self, energy = None, mu = None, temp = None, edge = None,
+            step = None, nbin = None, wavg = None, gavg = None, invtau = None,
+            **kwargs):
         super().__init__(**kwargs)
 
         if energy is not None:

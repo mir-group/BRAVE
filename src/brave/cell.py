@@ -302,8 +302,9 @@ class Cell(File):
         return vol
 
     def __init__(
-            self, prefix=None, aunit=None, alat=None, avec=None, bvec=None,
-            avol=None, bvol=None, natom=None, nelec=None, rot=None):
+            self, prefix = None, aunit = None, alat = None, avec = None,
+            bvec = None, avol = None, bvol = None, natom = None, nelec = None,
+            rot = None):
 
         if prefix is not None:
             self.prefix = prefix

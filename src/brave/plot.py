@@ -1213,14 +1213,15 @@ class Plot(object):
         plt.close()
 
     def __init__(
-            self, data=None, kind=None, style=None, color=None, label=None,
-            zorder=None, legend=None, xscale=None, yscale=None, xlim=None,
-            ylim=None, xdel=None, ydel=None, xtick=None, ytick=None,
-            xgrid=None, ygrid=None, xlabel=None, ylabel=None, xlabpos=None,
-            ylabpos=None, note=None, title=None, pagesize=None, fontsize=None,
-            linewidth=None, markersize=None, labelpad=None, tickpad=None,
-            ticksize=None, griddim=None, gridpad=None, gridpos=None,
-            frame=False):
+            self, data = None, kind = None, style = None, color = None,
+            label = None, zorder = None, legend = None, xscale = None,
+            yscale = None, xlim = None, ylim = None, xdel = None, ydel = None,
+            xtick = None, ytick = None, xgrid = None, ygrid = None,
+            xlabel = None, ylabel = None, xlabpos = None, ylabpos = None,
+            note = None, title = None, pagesize = None, fontsize = None,
+            linewidth = None, markersize = None, labelpad = None,
+            tickpad = None, ticksize = None, griddim = None, gridpad = None,
+            gridpos = None, frame = False):
 
         if data is not None:
             self.data = data

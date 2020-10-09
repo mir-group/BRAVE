@@ -313,7 +313,7 @@ class Kpoint(Cell):
         kcumsum = np.cumsum(knorm)
         self.kline = np.insert(kcumsum, 0, 0.0)
 
-    def read(self, fileformat, filenames, lapwkunit=None):
+    def read(self, fileformat, filenames, lapwkunit = None):
         """Reads properties from files.
 
     Args:
@@ -373,7 +373,7 @@ class Kpoint(Cell):
         else:
             raise ValueError(fileformat)
 
-    def write(self, fileformat, filenames, lapwkunit=None):
+    def write(self, fileformat, filenames, lapwkunit = None):
         """Writes properties to files.
 
     Args:
@@ -412,8 +412,8 @@ class Kpoint(Cell):
             raise ValueError(fileformat)
 
     def __init__(
-            self, kunit=None, kpoint=None, kline=None, kweight=None,
-            kpath=None, kindex=None, klabel=None, **kwargs):
+            self, kunit = None, kpoint = None, kline = None, kweight = None,
+            kpath = None, kindex = None, klabel = None, **kwargs):
         super().__init__(**kwargs)
 
         if kunit is not None:

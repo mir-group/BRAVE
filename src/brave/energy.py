@@ -130,7 +130,7 @@ class Energy(Kpoint):
                 self.vref *= common._escale[eunit] / common._escale[self.eunit]
             self.eunit = eunit
 
-    def calc_efermi(self, soc=None):
+    def calc_efermi(self, soc = None):
         """Calculates efermi from nelec for insulators.
 
     Args:
@@ -194,7 +194,7 @@ class Energy(Kpoint):
 
         self.energy = _energy
 
-    def read(self, fileformat, filenames, etype=None, lapwkunit=None):
+    def read(self, fileformat, filenames, etype = None, lapwkunit = None):
         """Reads properties from files.
 
     Args:
@@ -257,7 +257,7 @@ class Energy(Kpoint):
         else:
             raise ValueError(fileformat)
 
-    def write(self, fileformat, filenames, lapwkunit=None, boltzparam=None):
+    def write(self, fileformat, filenames, lapwkunit = None, boltzparam = None):
         """Writes properties to files.
 
     Args:
@@ -309,7 +309,8 @@ class Energy(Kpoint):
             raise ValueError(fileformat)
 
     def __init__(
-            self, eunit=None, energy=None, efermi=None, vref=None, **kwargs):
+            self, eunit = None, energy = None, efermi = None, vref = None,
+            **kwargs):
         super().__init__(**kwargs)
 
         if eunit is not None:

@@ -541,7 +541,7 @@ class Transport(Cell):
 
         return outputvalue
 
-    def optimize_mu(self, propname, mu_interval, temp, fraction=None):
+    def optimize_mu(self, propname, mu_interval, temp, fraction = None):
         """Optimizes mu at a given temp to maximize some property.
 
     Args:
@@ -634,7 +634,7 @@ class Transport(Cell):
             return mu_opt, numelec_opt, propvalue_max, [mu_min, mu_max], [
                     numelec_min, numelec_max]
 
-    def read(self, fileformat, filenames, tauvc=None, kappaelzeroj=None):
+    def read(self, fileformat, filenames, tauvc = None, kappaelzeroj = None):
         """Reads properties from files.
 
     Args:
@@ -693,9 +693,10 @@ class Transport(Cell):
                 self.seebeck)), np.broadcast_to(self.temp, (nmu, ntemp))))
 
     def __init__(
-            self, mu=None, temp=None, numelec=None, convdos=None, seebeck=None,
-            sigma=None, hall=None, kappael=None, specheat=None, magsus=None,
-            kappalat=None, kappa=None, L=None, PF=None, ZT=None, **kwargs):
+            self, mu = None, temp = None, numelec = None, convdos = None,
+            seebeck = None, sigma = None, hall = None, kappael = None,
+            specheat = None, magsus = None, kappalat = None, kappa = None,
+            L = None, PF = None, ZT = None, **kwargs):
         super().__init__(**kwargs)
 
         if mu is not None:

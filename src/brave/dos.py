@@ -124,7 +124,7 @@ class DOS(Cell):
 
         self.dunit, self.dos = ['uc', 'cm-1'], dos
 
-    def __init__(self, dunit=None, dos=None, **kwargs):
+    def __init__(self, dunit = None, dos = None, **kwargs):
         super().__init__(**kwargs)
 
         if dunit is not None:

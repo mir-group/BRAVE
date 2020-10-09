@@ -31,7 +31,8 @@ class Diagram(DOS, Energy):
     def plot(self):
         del self._plot
 
-    def set_plot(self, plotformat, fillgap=None, colordos=None, labeldos=None):
+    def set_plot(
+            self, plotformat, fillgap = None, colordos = None, labeldos = None):
         """Sets the new value of plot.
 
     Args:
