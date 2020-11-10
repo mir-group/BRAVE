@@ -845,9 +845,9 @@ class Plot(object):
         matplotlib.rcParams['ytick.direction'] = 'in'
         matplotlib.rcParams['grid.linewidth'] = self.linewidth
         matplotlib.rcParams['errorbar.capsize'] = 3.0
-        matplotlib.rcParams['legend.framealpha'] = 1.0
-        matplotlib.rcParams['legend.edgecolor'] = 'k'
-        matplotlib.rcParams['legend.fancybox'] = False
+#        matplotlib.rcParams['legend.framealpha'] = 1.0
+#        matplotlib.rcParams['legend.edgecolor'] = 'k'
+#        matplotlib.rcParams['legend.fancybox'] = False
         matplotlib.rcParams['legend.numpoints'] = 1
         matplotlib.rcParams['legend.scatterpoints'] = 1
         matplotlib.rcParams['legend.markerscale'] = 1.0
