@@ -276,7 +276,8 @@ class EPA(DOS):
         edge = self.edge
         step = self.step
         nbin = self.nbin
-        ww = self.wavg * 100 * common.PLANCK * common.LIGHT
+        # avoid the infrared divergence of the Bose-Einstein distribution
+        ww = np.clip(self.wavg, math.sqrt(20), None) * 100 * common.PLANCK * common.LIGHT
         gavg = self.gavg
 
         gj = np.empty(nbinmax, float)
