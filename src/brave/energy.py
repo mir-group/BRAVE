@@ -144,7 +144,7 @@ class Energy(Kpoint):
         kvbm (ndarray): VBM k-point in units of kunit.
         kcbm (ndarray): CBM k-point in units of kunit.
 
-    Places efermi in the middle of the band gap between the VBM (valence band
+    Sets efermi in the middle of the band gap between the VBM (valence band
     maximum) and the CBM (conduction band minimum).
         """
         if soc is None:

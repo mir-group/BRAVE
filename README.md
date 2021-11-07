@@ -60,7 +60,7 @@ An extended version of this code is located in [test/silicon/6_boltz/qe2boltz.py
 
 ## Notes on Fermi level
 
-* For insulators, use method calc_efermi of class Energy to set the Fermi level to the middle of the band gap. For metals, do not use this method as the correct Fermi level was already read from the DFT output files.
+* For insulators, use method calc_efermi of class Energy to set the Fermi level in the middle of the band gap. For metals, do not use this method as the correct Fermi level was already read from the DFT output files.
 
 * When reading fileformats 'epa-out', 'boltztrap-dos', and 'boltztrap-out', the energy scale is shifted to set the Fermi level to zero. Hopefully this brings more convenience than confusion.
 
