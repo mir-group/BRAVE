@@ -58,11 +58,13 @@ An extended version of this code is located in [test/silicon/6_boltz/qe2boltz.py
 | [WIEN2k](https://susi.theochem.tuwien.ac.at/)         | **lapw1**       | r      | 'lapw-out'      | 'case.output1up', 'case.output1dn'                         |
 | [BoltzTraP](https://goo.gl/atsFQ8)                    | **BoltzTraP**   | w      | 'boltztrap-in'  | 'case.def', 'case.intrans', 'case.struct', 'case.energyso' |
 
-## Warning
+## Notes on Fermi level
 
-When reading fileformats 'epa-out' and 'boltztrap-dos', the energy scale is shifted to set the Fermi level to zero. Hopefully this brings more convenience than confusion.
+* For insulators, use method calc_efermi of class Energy to set the Fermi level to the middle of the band gap. For metals, do not use this method as the correct Fermi level was already read from the DFT output files.
 
-## Some remarks on different codes
+* When reading fileformats 'epa-out', 'boltztrap-dos', and 'boltztrap-out', the energy scale is shifted to set the Fermi level to zero. Hopefully this brings more convenience than confusion.
+
+## Notes on different codes
 
 [Quantum Espresso](https://www.quantum-espresso.org/)
 

@@ -131,7 +131,8 @@ class Energy(Kpoint):
             self.eunit = eunit
 
     def calc_efermi(self, soc = None):
-        """Calculates efermi from nelec for insulators.
+        """Sets the new value of efermi calculated from nelec for insulators.
+    Does not work for metals.
 
     Args:
         soc (bool): Set to True if the calculation includes the spin-orbit
