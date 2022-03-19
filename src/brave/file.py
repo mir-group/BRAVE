@@ -115,8 +115,8 @@ class File(object):
             ii = 0
             for line in ff:
                 if level > 0:
-                    if b'Writing output data file' in line:
-                        ss = line.split()[4].decode()
+                    if b'Writing' in line:
+                        ss = line.split()[-1].decode()
                         tt = ss[:ss.find('.save')]
                         self.prefix = tt[tt.rfind('/') + 1:]
                     elif b'lattice parameter' in line:
